@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cire — Opciones de tipografía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Italiana&family=Marcellus&family=Pinyon+Script&family=Parisienne&family=Gilda+Display&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0a0a0a;
+        color: #fff;
+      }
+
+      /* ---- panel de control ---- */
+      .controls {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1rem 1.5rem;
+        background: rgba(10, 10, 10, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 0.8125rem;
+      }
+      .controls label { display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.65); }
+      .controls input[type='range'] { width: 160px; accent-color: #fff; }
+      .controls output { min-width: 3.5rem; color: #fff; font-variant-numeric: tabular-nums; }
+      .controls .brand { font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; margin-right: auto; }
+      .controls button {
+        font: inherit;
+        color: rgba(255,255,255,0.65);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 999px;
+        padding: 0.35rem 0.9rem;
+        cursor: pointer;
+      }
+      .controls button[aria-pressed='true'] { background: #fff; color: #0a0a0a; border-color: #fff; }
+
+      /* ---- cada opción ---- */
+      .option { position: relative; height: 78vh; min-height: 460px; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .option video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+      .option .scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.05) 45%, transparent); pointer-events: none; }
+
+      .tag {
+        position: absolute;
+        left: 1.5rem;
+        bottom: 1.5rem;
+        z-index: 3;
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .tag .num { font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.5); font-variant-numeric: tabular-nums; }
+      .tag .name { font-size: 0.9375rem; font-weight: 500; letter-spacing: 0.01em; }
+      .tag .note { font-size: 0.75rem; color: rgba(255,255,255,0.55); }
+
+      .heading {
+        position: absolute;
+        inset-inline: 0;
+        top: 4.5rem;
+        z-index: 2;
+        padding: 0 1.5rem;
+        color: #fff;
+        line-height: 0.9;
+      }
+      .heading span { display: block; }
+      @media (min-width: 640px) { .heading { top: 6rem; padding: 0 2.5rem; } }
+
+      /* ---- las 8 propuestas ---- */
+      .f1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; text-transform: uppercase; letter-spacing: 0.02em; }
+      .f2 { font-family: 'Bodoni Moda', serif; font-weight: 400; text-transform: uppercase; letter-spacing: 0.01em; }
+      .f3 { font-family: 'Italiana', serif; text-transform: uppercase; letter-spacing: 0.04em; }
+      .f4 { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic; letter-spacing: -0.01em; }
+      .f5 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; letter-spacing: 0; }
+      .f6 { font-family: 'Marcellus', serif; text-transform: uppercase; letter-spacing: 0.05em; }
+      .f7 { font-family: 'Pinyon Script', cursive; line-height: 1.05; letter-spacing: 0; }
+      .f8 { font-family: 'Parisienne', cursive; line-height: 1.1; }
+      /* la cursiva pura necesita algo más de aire y algo más de cuerpo */
+      .f7 span, .f8 span { padding-left: 0.06em; }
+
+      /* mezcla: caps formales + cursiva en la segunda línea */
+      .f9 { font-family: 'Italiana', serif; text-transform: uppercase; letter-spacing: 0.04em; }
+      .f9 .cursive { font-family: 'Pinyon Script', cursive; text-transform: none; letter-spacing: 0; font-size: 0.62em; padding-left: 0.06em; }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <span class="brand">Cire — opciones de tipografía</span>
+      <label>
+        Tamaño
+        <input id="size" type="range" min="2.5" max="14" step="0.25" value="9" />
+        <output id="sizeOut">9rem</output>
+      </label>
+      <label>
+        Interlínea
+        <input id="lh" type="range" min="0.75" max="1.2" step="0.01" value="0.9" />
+        <output id="lhOut">0.90</output>
+      </label>
+      <button id="toggleVideo" type="button" aria-pressed="true">Video</button>
+    </div>
+
+    <!-- 1 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f1"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">01</span><span class="name">Cormorant Garamond Light</span><span class="note">serif fina, muy elegante · alto contraste</span></div></section>
+    <!-- 2 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f2"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">02</span><span class="name">Bodoni Moda</span><span class="note">didone de moda · Vogue / editorial</span></div></section>
+    <!-- 3 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f3"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">03</span><span class="name">Italiana</span><span class="note">display finísima · spa de lujo</span></div></section>
+    <!-- 4 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f4"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">04</span><span class="name">Playfair Display Italic</span><span class="note">cursiva con cuerpo · formal pero cálida</span></div></section>
+    <!-- 5 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f5"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">05</span><span class="name">Cormorant Garamond Italic</span><span class="note">cursiva delgada, aire francés</span></div></section>
+    <!-- 6 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f6"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">06</span><span class="name">Marcellus</span><span class="note">capitales romanas · formal, clásica</span></div></section>
+    <!-- 7 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f7"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">07</span><span class="name">Pinyon Script</span><span class="note">caligráfica real · muy femenina</span></div></section>
+    <!-- 8 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f8"><span>Cire</span><span>depilación.</span></h1><div class="tag"><span class="num">08</span><span class="name">Parisienne</span><span class="note">cursiva suelta, boutique</span></div></section>
+    <!-- 9 --><section class="option"><video src="/videos/hero.mp4" autoplay loop muted playsinline></video><div class="scrim"></div><h1 class="heading f9"><span>Cire</span><span class="cursive">depilación.</span></h1><div class="tag"><span class="num">09</span><span class="name">Italiana + Pinyon Script</span><span class="note">mezcla: caps formales arriba, cursiva abajo</span></div></section>
+
+    <script>
+      const headings = document.querySelectorAll('.heading')
+      const size = document.getElementById('size')
+      const sizeOut = document.getElementById('sizeOut')
+      const lh = document.getElementById('lh')
+      const lhOut = document.getElementById('lhOut')
+      const toggle = document.getElementById('toggleVideo')
+
+      function applySize() {
+        const v = Number(size.value)
+        sizeOut.textContent = v + 'rem'
+        // en pantallas chicas escalamos proporcionalmente para no desbordar
+        const scale = Math.min(1, window.innerWidth / 1280)
+        headings.forEach((h) => (h.style.fontSize = Math.max(2, v * (0.45 + 0.55 * scale)) + 'rem'))
+      }
+      function applyLh() {
+        lhOut.textContent = Number(lh.value).toFixed(2)
+        headings.forEach((h) => (h.style.lineHeight = lh.value))
+      }
+
+      size.addEventListener('input', applySize)
+      lh.addEventListener('input', applyLh)
+      window.addEventListener('resize', applySize)
+
+      toggle.addEventListener('click', () => {
+        const on = toggle.getAttribute('aria-pressed') === 'true'
+        toggle.setAttribute('aria-pressed', String(!on))
+        document.querySelectorAll('.option video').forEach((v) => {
+          v.style.display = on ? 'none' : 'block'
+        })
+      })
+
+      applySize()
+      applyLh()
+    </script>
+  </body>
+</html>

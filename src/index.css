@@ -1,0 +1,266 @@
+@import 'tailwindcss';
+
+@theme {
+  --breakpoint-xs: 400px;
+  --animate-slide-in-left: slide-in-left 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-in-right: slide-in-right 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-drift-a: drift-a 24s ease-in-out infinite;
+  --animate-drift-b: drift-b 30s ease-in-out infinite;
+  --animate-drift-c: drift-c 27s ease-in-out infinite;
+
+  /*
+   * El rosa polvo del hero (paredes y luz del video) es la única nota de
+   * color de la marca — todo lo demás vive en negro/blanco/gris. Estos tonos
+   * lo llevan a las páginas internas sin competir con el B&N del contenido;
+   * Tailwind ya trae `rose-*` pero es un magenta saturado que no matchea con
+   * el pastel apagado de la foto, así que va como escala propia.
+   */
+  --color-blush-50: #fbf1f2;
+  --color-blush-100: #f3dee1;
+  --color-blush-200: #e9c3c9;
+  --color-blush-300: #d9a0a9;
+  --color-blush-400: #c27e8a;
+  --color-blush-500: #a65e6d;
+  --color-blush-600: #82454f;
+  --color-blush-900: #3d1d22;
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Los tres resplandores del fondo de las páginas internas se mueven cada uno
+ * a su propio ritmo (distinta duración y trayecto) para que la deriva no se
+ * vea sincronizada — eso es lo que la hace sentir orgánica y no un loop.
+ */
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, 6%) scale(1.1);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6%, -8%) scale(0.94);
+  }
+}
+
+@keyframes drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-4%, -6%) scale(1.06);
+  }
+}
+
+/*
+ * Motas de luz que suben despacio detrás del contenido — el eco más liviano
+ * del video del hero en páginas que no tienen imagen propia. Cada partícula
+ * arranca con un `animation-delay` negativo (ver Layout.tsx) para no verse
+ * arrancar todas juntas en el primer frame.
+ */
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/*
+ * Custom rules below live inside Tailwind's own cascade layers
+ * (base/components). Unlayered CSS always wins over layered CSS
+ * regardless of specificity or source order, so anything left
+ * unlayered here would silently override Tailwind utility classes
+ * (e.g. `.liquid-glass { position: relative }` beating `fixed`).
+ */
+
+@layer base {
+  @font-face {
+    font-family: 'Helvetica Neue Roman';
+    src:
+      url('/fonts/HelveticaNeueRoman.woff2') format('woff2'),
+      url('/fonts/HelveticaNeueRoman.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /*
+   * Se aplica en `html` (no en `*`) para que la fuente se herede.
+   * Con `*` la regla alcanzaba a cada elemento por selector propio y
+   * pisaba el font-family declarado en un ancestro — p. ej. los <span>
+   * dentro del <h1> del hero volvían a Inter en lugar de la display.
+   */
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  .font-helvetica-neue {
+    font-family: 'Helvetica Neue Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  /*
+   * Entrada escalonada para grids de tarjetas sin tener que pasarle un delay
+   * por prop a cada hijo — cada card anima sola por su posición en el DOM.
+   * Cubre hasta 6 columnas/filas; de ahí en adelante todas comparten el
+   * último delay, que en un grid de cards sigue leyéndose parejo.
+   */
+  .stagger-fade > * {
+    animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stagger-fade > * {
+      animation: none;
+    }
+  }
+  .stagger-fade > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .stagger-fade > *:nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .stagger-fade > *:nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .stagger-fade > *:nth-child(4) {
+    animation-delay: 210ms;
+  }
+  .stagger-fade > *:nth-child(5) {
+    animation-delay: 280ms;
+  }
+  .stagger-fade > *:nth-child(n + 6) {
+    animation-delay: 350ms;
+  }
+
+  .bg-particle {
+    animation-name: float-particle;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-particle {
+      animation: none;
+      opacity: 0;
+    }
+    .animate-drift-a,
+    .animate-drift-b,
+    .animate-drift-c {
+      animation: none;
+    }
+  }
+
+  /*
+   * El hero es un video claro (rosa), donde el blanco sobre blanco de
+   * .liquid-glass deja el nav prácticamente invisible. Esta variante trae su
+   * propio velo oscuro, así el texto blanco contrasta igual sobre un fondo
+   * claro que sobre uno oscuro — y aguanta que el video cambie de brillo.
+   */
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.16);
+  }
+
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.15) 80%,
+      rgba(255, 255, 255, 0.45) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
