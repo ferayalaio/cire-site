@@ -51,7 +51,7 @@ export function Ubicaciones() {
       <div className="space-y-16">
         {grupos.map(([zona, sucursales]) => (
           <Reveal key={zona} as="section">
-            <h2 className="mb-6 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
+            <h2 className="mb-6 font-sans text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
               {zona}
             </h2>
             <Stagger

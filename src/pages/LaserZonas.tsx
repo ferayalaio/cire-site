@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { LinkCard, PageShell, Placeholder } from '../components/PageShell'
+import { LinkCard, PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -23,7 +23,7 @@ export function LaserZonas() {
       ]}
     >
       <Reveal className="space-y-4">
-        <h2 className="text-2xl text-neutral-900">Tabla de zonas</h2>
+        <SectionHeading>Tabla de zonas</SectionHeading>
 
         {/*
           Cinco columnas no entran en 375px. Antes el borde de la tarjeta
@@ -85,7 +85,7 @@ export function LaserZonas() {
       </Reveal>
 
       <Reveal className="mt-16 space-y-6">
-        <h2 className="text-2xl text-neutral-900">Combos</h2>
+        <SectionHeading>Combos</SectionHeading>
         <p className="max-w-2xl text-sm leading-relaxed text-neutral-500">
           Si tratas más de una zona, un combo casi siempre sale mejor que sumarlas sueltas. El
           precio del combo es fijo: quitar una zona no genera descuento.
@@ -128,7 +128,7 @@ export function LaserZonas() {
       </Reveal>
 
       <Reveal className="mt-16 space-y-4">
-        <h2 className="text-2xl text-neutral-900">Te puede convenir el Full Body</h2>
+        <SectionHeading>Te puede convenir el Full Body</SectionHeading>
         <Stagger className="grid gap-4 sm:grid-cols-2">
           <LinkCard
             to="/laser/cuerpo-completo"

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { PageShell, Placeholder } from '../components/PageShell'
+import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Stagger } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -26,7 +26,7 @@ export function Faq() {
       <Stagger className="space-y-10" step={90}>
         {PREGUNTAS.map((item) => (
           <div key={item.slug} className="space-y-3">
-            <h2 className="text-2xl text-neutral-900">{item.pregunta}</h2>
+            <SectionHeading className="text-2xl sm:text-3xl">{item.pregunta}</SectionHeading>
             {item.respuesta ? (
               item.respuesta.map((parrafo, index) => (
                 <p key={index} className="text-sm leading-relaxed text-neutral-600">
@@ -48,7 +48,7 @@ export function Faq() {
         ))}
 
         <div className="space-y-3">
-          <h2 className="text-2xl text-neutral-900">Fases del crecimiento del vello</h2>
+          <SectionHeading className="text-2xl sm:text-3xl">Fases del crecimiento del vello</SectionHeading>
           <ol className="flex flex-wrap gap-3">
             {FASES_VELLO.map((fase, index) => (
               <li

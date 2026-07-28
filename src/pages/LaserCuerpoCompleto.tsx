@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { PageShell, Placeholder } from '../components/PageShell'
+import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal } from '../components/Reveal'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -47,7 +47,7 @@ export function LaserCuerpoCompleto() {
     >
       <Reveal className="grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Qué incluye</h2>
+          <SectionHeading>Qué incluye</SectionHeading>
           {FULL_BODY.incluye.length > 0 ? (
             <ul className="space-y-2.5">
               {FULL_BODY.incluye.map((zona) => (
@@ -71,7 +71,7 @@ export function LaserCuerpoCompleto() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Precio</h2>
+          <SectionHeading>Precio</SectionHeading>
           {hayPrecio(FULL_BODY.precioSesion, FULL_BODY.precioPaquete) ? (
             <dl className="rounded-2xl border border-black/[0.07] bg-white p-6">
               {formatPrecio(FULL_BODY.precioSesion) && (
@@ -111,11 +111,11 @@ export function LaserCuerpoCompleto() {
 
       <Reveal className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Cómo es la sesión</h2>
+          <SectionHeading>Cómo es la sesión</SectionHeading>
           <Placeholder label="Pendiente: duración, preparación y cuidados posteriores" />
         </div>
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Antes y después</h2>
+          <SectionHeading>Antes y después</SectionHeading>
           <Placeholder label="Pendiente: subir fotos de antes/después a public/antes-despues/" />
         </div>
       </Reveal>

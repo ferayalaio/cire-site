@@ -1,4 +1,4 @@
-import { LinkCard, PageShell, Placeholder } from '../components/PageShell'
+import { LinkCard, PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppCTA } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -41,14 +41,14 @@ export function Laser() {
 
       <Reveal className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">El protocolo</h2>
+          <SectionHeading>El protocolo</SectionHeading>
           <p className="text-sm leading-relaxed text-neutral-600">{CLAIMS.protocolo}</p>
           <p className="text-sm leading-relaxed text-neutral-600">{CLAIMS.tecnologia}</p>
           <p className="text-sm leading-relaxed text-neutral-600">{CLAIMS.experiencia}</p>
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Antes y después</h2>
+          <SectionHeading>Antes y después</SectionHeading>
           <Placeholder label="Pendiente: subir fotos de antes/después a public/antes-despues/" />
         </div>
       </Reveal>

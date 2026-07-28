@@ -1,20 +1,6 @@
 import { FRONT_VIDEO } from '../lib/constants'
 import { WhatsAppCTA } from './WhatsAppCTA'
 
-/*
- * Bodoni Moda para el título del hero. Es variable en el eje `opsz`
- * (6..96) y con font-optical-sizing por defecto en `auto` el navegador
- * sube la óptica según el font-size — a 10rem eso adelgaza los remates
- * y da el contraste didone que buscamos.
- *
- * Las otras candidatas quedaron comparables en /tipografias.html; si
- * cambiás de fuente acordate de pedirla también en index.html.
- */
-const HEADING_STYLE = {
-  className: 'uppercase tracking-[0.01em]',
-  style: { fontFamily: "'Bodoni Moda', serif", fontWeight: 400 },
-} as const
-
 export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
@@ -33,10 +19,8 @@ export function Hero() {
 
       {/* Layer 3 — hero heading */}
       <div className="absolute inset-x-0 top-20 z-20 px-6 sm:top-28 sm:px-10 md:top-32">
-        <h1
-          className={`leading-[0.9] text-white text-[2.25rem] xs:text-[2.75rem] sm:text-[4.25rem] md:text-[5.5rem] lg:text-[6.5rem] ${HEADING_STYLE.className}`}
-          style={HEADING_STYLE.style}
-        >
+        <h1 className="heading-1 leading-[0.9] text-white text-[2.25rem] xs:text-[2.75rem] sm:text-[4.25rem] md:text-[5.5rem] lg:text-[6.5rem]">
+
           <span className="block animate-slide-in-left motion-reduce:animate-none">Cire</span>
           <span className="block animate-slide-in-right motion-reduce:animate-none [animation-delay:250ms]">
             depilación

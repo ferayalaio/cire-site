@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { PageShell, Placeholder } from '../components/PageShell'
+import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -47,7 +47,7 @@ export function Sucursal() {
       <Reveal className="grid gap-8 md:grid-cols-2">
         <div className="space-y-8">
           <section className="space-y-4">
-            <h2 className="text-2xl text-neutral-900">Dirección</h2>
+            <SectionHeading>Dirección</SectionHeading>
             {sucursal.direccion ? (
               <address className="not-italic text-neutral-600">
                 <p className="leading-relaxed">{sucursal.direccion}</p>
@@ -79,7 +79,7 @@ export function Sucursal() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-2xl text-neutral-900">Horario</h2>
+            <SectionHeading>Horario</SectionHeading>
             <dl className="rounded-2xl border border-black/[0.07] bg-white p-6">
               {HORARIO.map((horario, index) => (
                 <div
@@ -97,7 +97,7 @@ export function Sucursal() {
         </div>
 
         <section className="space-y-4">
-          <h2 className="text-2xl text-neutral-900">Cómo llegar</h2>
+          <SectionHeading>Cómo llegar</SectionHeading>
           {/*
             El iframe solo se monta si hay dirección o mapsQuery cargados: sin
             eso Google Maps embebe un mapa del mundo que no dice nada.
@@ -121,7 +121,7 @@ export function Sucursal() {
 
       {sucursal.testimonios && sucursal.testimonios.length > 0 && (
         <Reveal as="section" className="mt-16">
-          <h2 className="text-2xl text-neutral-900">Lo que dicen de esta sucursal</h2>
+          <SectionHeading>Lo que dicen de esta sucursal</SectionHeading>
           <Stagger className="mt-6 grid gap-6 sm:grid-cols-2">
             {sucursal.testimonios.map((testimonio) => (
               <figure

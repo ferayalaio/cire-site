@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { PageShell, Placeholder } from '../components/PageShell'
+import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -24,7 +24,7 @@ export function Cera() {
       intro="Cera italiana, para quien prefiere resultado inmediato o no es candidata a láser."
     >
       <Reveal className="space-y-4">
-        <h2 className="text-2xl text-neutral-900">Zonas y precios</h2>
+        <SectionHeading>Zonas y precios</SectionHeading>
         {CERA.length > 0 ? (
           <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
             <table className="w-full text-left text-sm">
@@ -46,7 +46,7 @@ export function Cera() {
       </Reveal>
 
       <Reveal className="mt-12 space-y-4">
-        <h2 className="text-2xl text-neutral-900">Cera vs. láser</h2>
+        <SectionHeading>Cera vs. láser</SectionHeading>
         <Placeholder label="Pendiente: comparativa para ayudar a decidir" />
       </Reveal>
 

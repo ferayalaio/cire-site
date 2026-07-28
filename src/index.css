@@ -5,10 +5,17 @@
   --animate-slide-in-left: slide-in-left 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-slide-in-right: slide-in-right 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-fade-in: fade-in 0.4s ease-out both;
   --animate-drift-a: drift-a 18s ease-in-out infinite;
   --animate-drift-b: drift-b 23s ease-in-out infinite;
   --animate-drift-c: drift-c 20s ease-in-out infinite;
+
+  /*
+   * Fuentes de marca como tokens únicos: `font-display`/`font-sans` quedan
+   * disponibles como utilidades de Tailwind y como var() en @layer base, así
+   * que cambiar de tipografía es editar estas dos líneas, no cada archivo.
+   */
+  --font-display: 'Bodoni Moda', serif;
+  --font-sans: 'Inter', sans-serif;
 
   /*
    * El rosa polvo del hero (paredes y luz del video) es la única nota de
@@ -57,24 +64,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/*
- * Solo opacidad, sin transform: la transición entre rutas (ver Layout.tsx)
- * envuelve TODO el contenido de la página en un div de ancho completo, y
- * `transform` -aunque termine en translateY(0)- deja un `matrix(1,0,0,1,0,0)`
- * calculado (nunca el literal `none`), lo que crea un stacking context nuevo
- * para siempre. Con un wrapper de ancho completo eso tapaba el fondo
- * ambiental de Layout (fixed, z-index negativo) en toda la franja vacía de
- * la página, no solo detrás del texto. `opacity` en 1 no tiene ese problema.
- */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -162,7 +151,8 @@
    * dentro del <h1> del hero volvían a Inter en lugar de la display.
    */
   html {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
+    color: var(--color-neutral-800);
   }
 
   html,
@@ -178,11 +168,34 @@
   body.menu-open {
     overflow: hidden;
   }
+
+  /*
+   * Jerarquía tipográfica global: cualquier <h2>/<h3> del sitio hereda la
+   * display de marca sin que cada página tenga que declararla. El tracking
+   * negativo es para texto en minúsculas/mixto — los títulos en mayúsculas
+   * (h1 del hero y de PageShell, kickers) fijan su propio tracking positivo
+   * como utilidad inline, que gana por estar en la capa de utilities.
+   */
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer components {
   .font-helvetica-neue {
     font-family: 'Helvetica Neue Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  /* h1 de marca: Bodoni Moda en mayúsculas, con más peso que el 400 anterior
+     para que la dramaticidad del tamaño no se quede corta en presencia. */
+  .heading-1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   .bg-particle {
@@ -248,5 +261,37 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
+  }
+
+  /*
+   * Cortina de la transición entre rutas (ver Layout.tsx). Pastel, no el
+   * blush-500 saturado de antes, con textura de cristal en tres capas:
+   * las líneas diagonales finas son el "grabado" del vidrio esmerilado, el
+   * gradiente diagonal es el brillo que cruza la superficie, y los inset
+   * arriba/abajo son el filo que atrapa luz en los dos bordes que sí se ven
+   * (los laterales no existen: la cortina cubre el ancho completo).
+   */
+  .route-curtain {
+    background-color: rgba(243, 222, 225, 0.72);
+    background-image:
+      repeating-linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.18) 0px,
+        rgba(255, 255, 255, 0.18) 1px,
+        transparent 1px,
+        transparent 7px
+      ),
+      linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0) 65%,
+        rgba(255, 255, 255, 0.4) 100%
+      );
+    backdrop-filter: blur(28px) saturate(1.5);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.3);
   }
 }

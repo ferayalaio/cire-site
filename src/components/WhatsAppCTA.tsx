@@ -5,6 +5,7 @@ import type { WhatsAppClickContext } from '../lib/analytics'
 import { trackWhatsAppClick } from '../lib/analytics'
 import { buildWhatsAppUrl } from '../lib/whatsapp'
 import { rememberSucursal } from '../lib/sucursal-context'
+import { SectionHeading } from './PageShell'
 
 /*
  * Único camino a WhatsApp en todo el sitio. Cualquier CTA nuevo pasa por acá y
@@ -85,7 +86,7 @@ interface WhatsAppSectionProps {
 export function WhatsAppSection({ context, titulo, texto, children }: WhatsAppSectionProps) {
   return (
     <section className="mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10">
-      <h2 className="text-2xl text-neutral-900">{titulo ?? '¿Lo armamos juntas?'}</h2>
+      <SectionHeading>{titulo ?? '¿Lo armamos juntas?'}</SectionHeading>
       <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
         {texto ?? 'Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.'}
       </p>

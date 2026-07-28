@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { AnimatedHeading } from './AnimatedHeading'
 import { Reveal } from './Reveal'
 import { PROMO_ACTIVA } from '../data/precios'
 
@@ -52,15 +53,18 @@ export function PageShell({ eyebrow, title, intro, breadcrumbs, children }: Page
 
         {/*
          * Mismo tratamiento que el h1 del hero (Bodoni Moda, mayúsculas,
-         * tracking sutil) para que la identidad de marca no se quede solo en
-         * el home — ver public/tipografias.html para el porqué de la fuente.
+         * tracking positivo) para que la identidad de marca no se quede solo
+         * en el home — ver public/tipografias.html para el porqué de la
+         * fuente. El underline se dibuja después de que entran las palabras,
+         * como firma visual de que esta es la página en la que estás.
          */}
-        <h1
-          className="uppercase text-4xl leading-[1.05] tracking-[0.01em] text-neutral-900 sm:text-5xl md:text-6xl"
-          style={{ fontFamily: "'Bodoni Moda', serif", fontWeight: 400 }}
+        <AnimatedHeading
+          as="h1"
+          underline
+          className="heading-1 text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl"
         >
           {title}
-        </h1>
+        </AnimatedHeading>
 
         {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
       </div>
@@ -81,6 +85,16 @@ export function PageShell({ eyebrow, title, intro, breadcrumbs, children }: Page
 
       {children && <div className="mt-14">{children}</div>}
     </main>
+  )
+}
+
+// h2 de sección, usado por todas las páginas internas: el tamaño y la
+// animación de entrada viven acá una sola vez en vez de repetirse por página.
+export function SectionHeading({ children, className = '' }: { children: string; className?: string }) {
+  return (
+    <AnimatedHeading as="h2" className={`text-3xl text-neutral-900 sm:text-4xl ${className}`}>
+      {children}
+    </AnimatedHeading>
   )
 }
 
