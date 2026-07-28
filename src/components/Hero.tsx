@@ -34,7 +34,7 @@ export function Hero() {
       {/* Layer 3 — hero heading */}
       <div className="absolute inset-x-0 top-20 z-20 px-6 sm:top-28 sm:px-10 md:top-32">
         <h1
-          className={`leading-[0.9] text-white text-[3rem] xs:text-[3.5rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] ${HEADING_STYLE.className}`}
+          className={`leading-[0.9] text-white text-[2.25rem] xs:text-[2.75rem] sm:text-[4.25rem] md:text-[5.5rem] lg:text-[6.5rem] ${HEADING_STYLE.className}`}
           style={HEADING_STYLE.style}
         >
           <span className="block animate-slide-in-left motion-reduce:animate-none">Cire</span>

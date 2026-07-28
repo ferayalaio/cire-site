@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Stagger } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { FASES_VELLO, PREGUNTAS } from '../data/faq'
@@ -22,7 +23,7 @@ export function Faq() {
       title="Lo que casi todas preguntan"
       intro="Las dudas más comunes antes de la primera sesión, resueltas."
     >
-      <div className="space-y-10">
+      <Stagger className="space-y-10" step={90}>
         {PREGUNTAS.map((item) => (
           <div key={item.slug} className="space-y-3">
             <h2 className="text-2xl text-neutral-900">{item.pregunta}</h2>
@@ -60,7 +61,7 @@ export function Faq() {
           </ol>
           <Placeholder label="Pendiente: explicación de cada fase, en src/data/faq.ts" />
         </div>
-      </div>
+      </Stagger>
 
       <WhatsAppSection
         context={{ sku: 'faq', nombre: 'sus servicios', categoria: 'general' }}

@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { HORARIO, getSucursal, mapsEmbedUrl } from '../data/sucursales'
@@ -43,7 +44,7 @@ export function Sucursal() {
         { label: 'Ubicaciones', to: '/ubicaciones' },
       ]}
     >
-      <div className="grid gap-8 md:grid-cols-2">
+      <Reveal className="grid gap-8 md:grid-cols-2">
         <div className="space-y-8">
           <section className="space-y-4">
             <h2 className="text-2xl text-neutral-900">Dirección</h2>
@@ -53,12 +54,20 @@ export function Sucursal() {
                 {sucursal.referencias && (
                   <p className="mt-2 text-sm text-neutral-400">{sucursal.referencias}</p>
                 )}
+                {sucursal.telefono && (
+                  <p className="mt-2 text-sm text-neutral-500">
+                    Tel:{' '}
+                    <a href={`tel:${sucursal.telefono.replace(/\s+/g, '')}`} className="text-neutral-900 hover:text-neutral-500">
+                      {sucursal.telefono}
+                    </a>
+                  </p>
+                )}
                 {sucursal.mapsUrl && (
                   <a
                     href={sucursal.mapsUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-block text-sm text-neutral-900 underline hover:text-neutral-500"
+                    className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-6 py-3 text-sm font-medium text-neutral-900 transition-all duration-200 hover:scale-[1.03] hover:border-black/40 active:scale-[0.98]"
                   >
                     Abrir en Google Maps
                   </a>
@@ -85,19 +94,6 @@ export function Sucursal() {
               ))}
             </dl>
           </section>
-
-          <section className="space-y-4">
-            <h2 className="text-2xl text-neutral-900">Foto</h2>
-            {sucursal.foto ? (
-              <img
-                src={sucursal.foto}
-                alt={`Sucursal ${sucursal.nombre}`}
-                className="aspect-[4/3] w-full rounded-2xl object-cover"
-              />
-            ) : (
-              <Placeholder label={`Pendiente: subir foto de ${sucursal.nombre} a public/sucursales/`} />
-            )}
-          </section>
         </div>
 
         <section className="space-y-4">
@@ -121,7 +117,35 @@ export function Sucursal() {
             <Placeholder label="Pendiente: carga la dirección en src/data/sucursales.ts para embeber el mapa" />
           )}
         </section>
-      </div>
+      </Reveal>
+
+      {sucursal.testimonios && sucursal.testimonios.length > 0 && (
+        <Reveal as="section" className="mt-16">
+          <h2 className="text-2xl text-neutral-900">Lo que dicen de esta sucursal</h2>
+          <Stagger className="mt-6 grid gap-6 sm:grid-cols-2">
+            {sucursal.testimonios.map((testimonio) => (
+              <figure
+                key={testimonio.autor}
+                className="rounded-2xl border border-black/[0.07] bg-white p-6"
+              >
+                <span
+                  aria-hidden="true"
+                  className="text-4xl leading-none text-blush-300"
+                  style={{ fontFamily: "'Bodoni Moda', serif" }}
+                >
+                  &ldquo;
+                </span>
+                <blockquote className="mt-1 text-neutral-600">
+                  <p className="leading-relaxed">{testimonio.texto}</p>
+                </blockquote>
+                <figcaption className="mt-4 text-sm text-neutral-400">
+                  — {testimonio.autor}
+                </figcaption>
+              </figure>
+            ))}
+          </Stagger>
+        </Reveal>
+      )}
 
       <WhatsAppSection
         context={{

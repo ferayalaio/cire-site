@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LinkCard, PageShell, Placeholder } from '../components/PageShell'
+import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { COMBOS, ZONAS, formatPrecio, hayPrecio } from '../data/precios'
@@ -21,7 +22,7 @@ export function LaserZonas() {
         { label: 'Láser', to: '/laser' },
       ]}
     >
-      <div className="space-y-4">
+      <Reveal className="space-y-4">
         <h2 className="text-2xl text-neutral-900">Tabla de zonas</h2>
 
         {/*
@@ -81,9 +82,9 @@ export function LaserZonas() {
         {!hayPrecio(...ZONAS.flatMap((z) => [z.precioSesion, z.precioPaquete])) && (
           <Placeholder label="Pendiente: cargar precios del tarifario en src/data/precios.ts" />
         )}
-      </div>
+      </Reveal>
 
-      <div className="mt-16 space-y-6">
+      <Reveal className="mt-16 space-y-6">
         <h2 className="text-2xl text-neutral-900">Combos</h2>
         <p className="max-w-2xl text-sm leading-relaxed text-neutral-500">
           Si tratas más de una zona, un combo casi siempre sale mejor que sumarlas sueltas. El
@@ -124,11 +125,11 @@ export function LaserZonas() {
           El 5% de descuento en efectivo de los combos se confirma por WhatsApp, no está reflejado
           en esta tabla.
         </p>
-      </div>
+      </Reveal>
 
-      <div className="mt-16 space-y-4">
+      <Reveal className="mt-16 space-y-4">
         <h2 className="text-2xl text-neutral-900">Te puede convenir el Full Body</h2>
-        <div className="stagger-fade grid gap-4 sm:grid-cols-2">
+        <Stagger className="grid gap-4 sm:grid-cols-2">
           <LinkCard
             to="/laser/cuerpo-completo"
             meta="Full Body"
@@ -141,8 +142,8 @@ export function LaserZonas() {
             title="Bikini"
             description="Del básico al brazilian, con la cobertura de cada nivel."
           />
-        </div>
-      </div>
+        </Stagger>
+      </Reveal>
 
       <WhatsAppSection
         context={{ sku: 'laser-zonas', nombre: 'una zona', categoria: 'laser', articulo: 'la' }}

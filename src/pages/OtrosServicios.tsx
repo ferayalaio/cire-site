@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Stagger } from '../components/Reveal'
 import { WhatsAppCTA } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
@@ -21,7 +22,7 @@ export function OtrosServicios() {
       title="Otros servicios"
       intro="Lo que hacemos además de depilación: recuperación, moldeado corporal y aparatología."
     >
-      <div className="stagger-fade grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {OTROS_SERVICIOS.map((servicio) => (
           <div
             key={servicio.slug}
@@ -51,7 +52,7 @@ export function OtrosServicios() {
             </WhatsAppCTA>
           </div>
         ))}
-      </div>
+      </Stagger>
 
       {!OTROS_SERVICIOS.some((s) => s.precioDesde !== null) && (
         <div className="mt-10">

@@ -5,9 +5,10 @@
   --animate-slide-in-left: slide-in-left 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-slide-in-right: slide-in-right 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-drift-a: drift-a 24s ease-in-out infinite;
-  --animate-drift-b: drift-b 30s ease-in-out infinite;
-  --animate-drift-c: drift-c 27s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-drift-a: drift-a 18s ease-in-out infinite;
+  --animate-drift-b: drift-b 23s ease-in-out infinite;
+  --animate-drift-c: drift-c 20s ease-in-out infinite;
 
   /*
    * El rosa polvo del hero (paredes y luz del video) es la única nota de
@@ -60,6 +61,24 @@
 }
 
 /*
+ * Solo opacidad, sin transform: la transición entre rutas (ver Layout.tsx)
+ * envuelve TODO el contenido de la página en un div de ancho completo, y
+ * `transform` -aunque termine en translateY(0)- deja un `matrix(1,0,0,1,0,0)`
+ * calculado (nunca el literal `none`), lo que crea un stacking context nuevo
+ * para siempre. Con un wrapper de ancho completo eso tapaba el fondo
+ * ambiental de Layout (fixed, z-index negativo) en toda la franja vacía de
+ * la página, no solo detrás del texto. `opacity` en 1 no tiene ese problema.
+ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
  * Los tres resplandores del fondo de las páginas internas se mueven cada uno
  * a su propio ritmo (distinta duración y trayecto) para que la deriva no se
  * vea sincronizada — eso es lo que la hace sentir orgánica y no un loop.
@@ -70,7 +89,7 @@
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(-5%, 6%) scale(1.1);
+    transform: translate(-9%, 11%) scale(1.2);
   }
 }
 
@@ -80,7 +99,7 @@
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(6%, -8%) scale(0.94);
+    transform: translate(10%, -13%) scale(0.85);
   }
 }
 
@@ -90,7 +109,7 @@
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(-4%, -6%) scale(1.06);
+    transform: translate(-8%, -10%) scale(1.18);
   }
 }
 
@@ -164,39 +183,6 @@
 @layer components {
   .font-helvetica-neue {
     font-family: 'Helvetica Neue Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-
-  /*
-   * Entrada escalonada para grids de tarjetas sin tener que pasarle un delay
-   * por prop a cada hijo — cada card anima sola por su posición en el DOM.
-   * Cubre hasta 6 columnas/filas; de ahí en adelante todas comparten el
-   * último delay, que en un grid de cards sigue leyéndose parejo.
-   */
-  .stagger-fade > * {
-    animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .stagger-fade > * {
-      animation: none;
-    }
-  }
-  .stagger-fade > *:nth-child(1) {
-    animation-delay: 0ms;
-  }
-  .stagger-fade > *:nth-child(2) {
-    animation-delay: 70ms;
-  }
-  .stagger-fade > *:nth-child(3) {
-    animation-delay: 140ms;
-  }
-  .stagger-fade > *:nth-child(4) {
-    animation-delay: 210ms;
-  }
-  .stagger-fade > *:nth-child(5) {
-    animation-delay: 280ms;
-  }
-  .stagger-fade > *:nth-child(n + 6) {
-    animation-delay: 350ms;
   }
 
   .bg-particle {

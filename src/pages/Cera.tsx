@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Reveal } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
@@ -22,7 +23,7 @@ export function Cera() {
       title="Depilación con cera"
       intro="Cera italiana, para quien prefiere resultado inmediato o no es candidata a láser."
     >
-      <div className="space-y-4">
+      <Reveal className="space-y-4">
         <h2 className="text-2xl text-neutral-900">Zonas y precios</h2>
         {CERA.length > 0 ? (
           <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
@@ -42,12 +43,12 @@ export function Cera() {
         ) : (
           <Placeholder label="Pendiente: tabla de zonas con precio en src/data/precios.ts (campo CERA)" />
         )}
-      </div>
+      </Reveal>
 
-      <div className="mt-12 space-y-4">
+      <Reveal className="mt-12 space-y-4">
         <h2 className="text-2xl text-neutral-900">Cera vs. láser</h2>
         <Placeholder label="Pendiente: comparativa para ayudar a decidir" />
-      </div>
+      </Reveal>
 
       <WhatsAppSection
         context={{ sku: 'cera', nombre: 'la depilación con cera', categoria: 'cera', articulo: 'la' }}

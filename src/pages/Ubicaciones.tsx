@@ -1,22 +1,22 @@
 import { PageShell } from '../components/PageShell'
+import { Reveal, Stagger } from '../components/Reveal'
 import { SucursalCard } from '../components/SucursalCard'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { HORARIO, SUCURSALES } from '../data/sucursales'
 import type { Sucursal } from '../data/sucursales'
 
 /*
- * Agrupación puramente geográfica para ordenar el grid (no es un dato de
- * negocio ni reemplaza la dirección real de cada sucursal, que sigue viviendo
- * y validándose en src/data/sucursales.ts). Ya está implícita en el copy de
- * abajo ("entre Ciudad de México y Metepec"); acá solo se usa para el layout,
- * en vez de tirar las cinco tarjetas en un único grid sin criterio.
+ * Agrupación para ordenar el grid (no es un dato de negocio ni reemplaza la
+ * dirección real de cada sucursal, que sigue viviendo y validándose en
+ * src/data/sucursales.ts). Metepec va en el mismo grupo que las de CDMX a
+ * pedido explícito — no por geografía real.
  */
 const ZONAS: Record<string, string> = {
   polanco: 'Ciudad de México',
   'del-valle': 'Ciudad de México',
   coapa: 'Ciudad de México',
   oriente: 'Ciudad de México',
-  metepec: 'Estado de México',
+  metepec: 'Ciudad de México',
 }
 
 function agruparPorZona(sucursales: Sucursal[]): [string, Sucursal[]][] {
@@ -44,22 +44,27 @@ export function Ubicaciones() {
       title="Dónde estamos"
       intro="Cinco sucursales entre Ciudad de México y Metepec. Todas atienden con cita."
     >
-      <p className="mb-14 text-sm text-neutral-400">
+      <Reveal as="section" className="mb-14 text-sm text-neutral-400">
         Horario en todas: {HORARIO.map((h) => `${h.dias} ${h.horas}`).join(' · ')}
-      </p>
+      </Reveal>
 
       <div className="space-y-16">
         {grupos.map(([zona, sucursales]) => (
-          <section key={zona}>
+          <Reveal key={zona} as="section">
             <h2 className="mb-6 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
               {zona}
             </h2>
-            <div className="stagger-fade grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Stagger
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              direction="sides"
+              duration={1200}
+              step={150}
+            >
               {sucursales.map((sucursal) => (
                 <SucursalCard key={sucursal.slug} sucursal={sucursal} />
               ))}
-            </div>
-          </section>
+            </Stagger>
+          </Reveal>
         ))}
       </div>
     </PageShell>

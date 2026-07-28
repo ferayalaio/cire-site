@@ -1,4 +1,5 @@
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Stagger } from '../components/Reveal'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { NIVELES_BIKINI, formatPrecio, hayPrecio } from '../data/precios'
@@ -20,7 +21,7 @@ export function LaserBikini() {
         { label: 'Láser', to: '/laser' },
       ]}
     >
-      <div className="stagger-fade grid gap-4 sm:grid-cols-2">
+      <Stagger className="grid gap-4 sm:grid-cols-2">
         {NIVELES_BIKINI.map((nivel, index) => (
           <div
             key={nivel.slug}
@@ -85,7 +86,7 @@ export function LaserBikini() {
             </WhatsAppCTA>
           </div>
         ))}
-      </div>
+      </Stagger>
 
       {!NIVELES_BIKINI.some((n) => n.cobertura) && (
         <div className="mt-10">

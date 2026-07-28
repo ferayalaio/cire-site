@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Reveal } from '../components/Reveal'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
@@ -44,7 +45,7 @@ export function LaserCuerpoCompleto() {
         { label: 'Láser', to: '/laser' },
       ]}
     >
-      <div className="grid gap-8 md:grid-cols-2">
+      <Reveal className="grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <h2 className="text-2xl text-neutral-900">Qué incluye</h2>
           {FULL_BODY.incluye.length > 0 ? (
@@ -106,9 +107,9 @@ export function LaserCuerpoCompleto() {
             Consultar por WhatsApp
           </WhatsAppCTA>
         </div>
-      </div>
+      </Reveal>
 
-      <div className="mt-16 grid gap-8 md:grid-cols-2">
+      <Reveal className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <h2 className="text-2xl text-neutral-900">Cómo es la sesión</h2>
           <Placeholder label="Pendiente: duración, preparación y cuidados posteriores" />
@@ -117,7 +118,7 @@ export function LaserCuerpoCompleto() {
           <h2 className="text-2xl text-neutral-900">Antes y después</h2>
           <Placeholder label="Pendiente: subir fotos de antes/después a public/antes-despues/" />
         </div>
-      </div>
+      </Reveal>
 
       <WhatsAppSection
         context={ctaContext}

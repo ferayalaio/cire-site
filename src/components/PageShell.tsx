@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { Reveal } from './Reveal'
 import { PROMO_ACTIVA } from '../data/precios'
 
 interface Crumb {
@@ -70,12 +71,12 @@ export function PageShell({ eyebrow, title, intro, breadcrumbs, children }: Page
        * solo cambio de dato, no solo en /laser como antes.
        */}
       {PROMO_ACTIVA && (
-        <div className="mt-10 rounded-2xl border border-blush-200 bg-blush-100 px-6 py-4">
+        <Reveal className="mt-10 rounded-2xl border border-blush-200 bg-blush-100 px-6 py-4">
           <p className="text-sm text-neutral-600">
             <span className="font-medium text-neutral-900">{PROMO_ACTIVA.nombre}:</span>{' '}
             {PROMO_ACTIVA.detalle}
           </p>
-        </div>
+        </Reveal>
       )}
 
       {children && <div className="mt-14">{children}</div>}

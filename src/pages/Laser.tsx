@@ -1,4 +1,5 @@
 import { LinkCard, PageShell, Placeholder } from '../components/PageShell'
+import { Reveal, Stagger } from '../components/Reveal'
 import { WhatsAppCTA } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { CLAIMS, MARCA } from '../data/marca'
@@ -17,7 +18,7 @@ export function Laser() {
       title="Láser de diodo"
       intro="Elige cómo quieres armar tu tratamiento: zona por zona, un nivel de bikini, o cuerpo completo en una sola sesión."
     >
-      <div className="stagger-fade grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <LinkCard
           to="/laser/zonas"
           meta="A la carta"
@@ -36,9 +37,9 @@ export function Laser() {
           title="Cuerpo completo"
           description="Todas las zonas en una sesión, al mejor precio por área."
         />
-      </div>
+      </Stagger>
 
-      <div className="mt-16 grid gap-8 md:grid-cols-2">
+      <Reveal className="mt-16 grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <h2 className="text-2xl text-neutral-900">El protocolo</h2>
           <p className="text-sm leading-relaxed text-neutral-600">{CLAIMS.protocolo}</p>
@@ -50,7 +51,7 @@ export function Laser() {
           <h2 className="text-2xl text-neutral-900">Antes y después</h2>
           <Placeholder label="Pendiente: subir fotos de antes/después a public/antes-despues/" />
         </div>
-      </div>
+      </Reveal>
 
       {MSI.disponible && (
         <p className="mt-12 text-sm text-neutral-400">

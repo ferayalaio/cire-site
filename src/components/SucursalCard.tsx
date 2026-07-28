@@ -49,9 +49,10 @@ export function SucursalCard({ sucursal }: SucursalCardProps) {
         >
           {sucursal.nombre}
         </span>
-        <span className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">
+        <span className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-500">
           {sucursal.direccion || 'Agenda y te confirmamos la dirección exacta por WhatsApp.'}
         </span>
+        <span className="flex-1" />
         <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-neutral-900">
           Ver sucursal
           <span

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PageShell, Placeholder } from '../components/PageShell'
+import { Reveal } from '../components/Reveal'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
@@ -22,12 +23,12 @@ export function Hifu() {
       title="HIFU"
       intro="Ultrasonido focalizado de alta intensidad para tensar sin cirugía ni tiempo de recuperación."
     >
-      <div className="space-y-4">
+      <Reveal className="space-y-4">
         <h2 className="text-2xl text-neutral-900">Qué es el Cire Lift Protocol</h2>
         <Placeholder label="Pendiente: explicación del protocolo y en qué se diferencia" />
-      </div>
+      </Reveal>
 
-      <div className="mt-12 space-y-4">
+      <Reveal className="mt-12 space-y-4">
         <h2 className="text-2xl text-neutral-900">Zonas y precios</h2>
         {HIFU.length > 0 ? (
           <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
@@ -55,12 +56,12 @@ export function Hifu() {
         ) : (
           <Placeholder label="Pendiente: zonas tratables, número de disparos y precio en src/data/precios.ts (campo HIFU)" />
         )}
-      </div>
+      </Reveal>
 
-      <div className="mt-12 space-y-4">
+      <Reveal className="mt-12 space-y-4">
         <h2 className="text-2xl text-neutral-900">Resultados</h2>
         <Placeholder label="Pendiente: en cuánto tiempo se ve, cuánto dura, cada cuánto repetir" />
-      </div>
+      </Reveal>
 
       <WhatsAppSection
         context={{ sku: 'hifu', nombre: 'HIFU — Cire Lift Protocol', categoria: 'hifu' }}
