@@ -5,6 +5,7 @@ import { useMetaPixel } from '../hooks/useMetaPixel'
 import { Footer } from './Footer'
 import { MobileMenu } from './MobileMenu'
 import { Nav } from './Nav'
+import { WhatsAppFloating } from './WhatsAppCTA'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -102,9 +103,17 @@ export function Layout() {
     <div
       className={
         isHome
-          ? // `h-dvh`, no `h-screen`: mismo motivo que en Hero.tsx — en mobile
-            // `100vh` no descuenta la barra de direcciones del navegador.
-            'h-dvh w-full overflow-hidden bg-white'
+          ? /*
+             * `h-dvh`, no `h-screen`: en mobile `100vh` no descuenta la barra
+             * de direcciones del navegador.
+             *
+             * En celular el home dejó de ser una sola pantalla fija: el hero
+             * ocupa el viewport completo y debajo va la sección con los sellos
+             * de confianza y los pasos (ver HeroMobile), así que necesita
+             * scroll — de ahí `min-h-dvh` sin `overflow-hidden`. Desde sm
+             * vuelve a ser hero a pantalla completa y clavado.
+             */
+            'min-h-dvh w-full bg-white sm:h-dvh sm:overflow-hidden'
           : /*
              * `isolate` (no solo `relative`): sin un stacking context propio
              * acá, el `-z-10` del fondo ambiental de abajo escapa a compararse
@@ -200,6 +209,7 @@ export function Layout() {
         </motion.div>
       </AnimatePresence>
       {!isHome && <Footer />}
+      <WhatsAppFloating />
     </div>
   )
 }

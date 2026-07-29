@@ -3,8 +3,13 @@ export const BG_IMAGE_1 =
 
 export const FRONT_VIDEO = '/videos/hero.mp4'
 
+/** Mismo hero, recorte vertical 9:16 propio (no un crop del horizontal). */
+export const FRONT_VIDEO_MOBILE = '/videos/hero-mobile.mp4'
+
+export const AVATAR_IMAGE = '/hero/avatar-real.jpg'
+
+/** Logo real de marca (círculo con isotipo de loto + wordmark ya integrados). */
+export const LOGO_IMAGE = '/hero/logo.jpeg'
+
 export const OVERLAY_IMAGE =
   'https://soft-zoom-63098134.figma.site/_assets/v11/3f10f1876e118f72a396e05a6c2d099569478272.png'
-
-export const LOGO_PATH =
-  'M 256 64 L 256 128 L 192.5 128 L 160 95 L 128 64 L 96 95 L 63.5 128 L 64 128 L 128 192 L 128 256 L 64.5 256 L 32 223 L 0 192 L 0 64 L 64 0 L 192 0 Z M 256 192 L 256 256 L 192.5 256 L 160 223 L 128 192 L 128 128 L 192 128 Z'

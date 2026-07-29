@@ -198,6 +198,20 @@
     letter-spacing: 0.02em;
   }
 
+  /*
+   * Rieles horizontales del mobile (sellos de confianza, pasos). La barra se
+   * oculta porque el "asomo" de la tarjeta siguiente ya comunica que hay más
+   * y en táctil la barra no se usa para arrastrar; el scroll sigue siendo
+   * scroll real, así que teclado y lectores de pantalla lo recorren igual.
+   */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .bg-particle {
     animation-name: float-particle;
     animation-timing-function: ease-in-out;
@@ -227,6 +241,17 @@
     -webkit-backdrop-filter: blur(14px) saturate(1.3);
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 4px 28px rgba(0, 0, 0, 0.16);
+  }
+
+  /* Misma idea que .glass-dark pero clara: pill translúcido en tono blanco/
+     rosa para el nav, que combine con la paleta blush en vez de un pill
+     negro sólido. */
+  .glass-light {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 28px rgba(166, 94, 109, 0.14);
   }
 
   .liquid-glass {
