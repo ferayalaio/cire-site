@@ -271,16 +271,52 @@ export const CERA: ZonaCera[] = []
 /* HIFU — /hifu                                                               */
 /* -------------------------------------------------------------------------- */
 
-export interface ZonaHifu {
+export interface ProtocoloHifu {
   slug: string
   nombre: string
-  /** Disparos incluidos, que es cómo se cotiza el HIFU. */
-  disparos: number | null
-  precio: Precio
+  resumen: string
+  /** Precio de entrada. Si `precioHasta` está presente, se muestra como rango. */
+  precioDesde: Precio
+  precioHasta?: Precio
+  duracion: string
+  incluye: string[]
+  /** El paquete recomendado, el único que lleva la insignia "Más popular". */
+  destacado?: boolean
 }
 
-/* Pendiente: zonas tratables, disparos y precio. */
-export const HIFU: ZonaHifu[] = []
+/*
+ * Catálogo por sesión. Todavía falta el catálogo por experiencia (Express,
+ * Contour, Supreme): no tiene precio asignado y no se agrega acá hasta que
+ * se defina cómo se relaciona con estos tres paquetes.
+ */
+export const HIFU_PROTOCOLOS: ProtocoloHifu[] = [
+  {
+    slug: 'cire-lift-session',
+    nombre: 'Cire Lift Session',
+    resumen: 'Una sesión de HIFU 4D para conocer el efecto tensor antes de comprometerte con un protocolo completo.',
+    precioDesde: 2500,
+    precioHasta: 3000,
+    duracion: 'Sesión única',
+    incluye: ['1 sesión de HIFU 4D'],
+  },
+  {
+    slug: 'cire-lift-protocol-3',
+    nombre: 'Cire Lift Protocol 3 Meses',
+    resumen: 'El punto de partida recomendado: tiempo suficiente para que el colágeno se active y se note.',
+    precioDesde: 4500,
+    duracion: '3 meses',
+    incluye: ['1 sesión de HIFU 4D', '3 sesiones complementarias', 'Revisión de tu evolución'],
+    destacado: true,
+  },
+  {
+    slug: 'cire-lift-protocol-6',
+    nombre: 'Cire Lift Protocol 6 Meses',
+    resumen: 'Más acompañamiento para un resultado más completo y sostenido en el tiempo.',
+    precioDesde: 5500,
+    duracion: '6 meses',
+    incluye: ['1 sesión de HIFU 4D', '5 sesiones complementarias', 'Revisión de tu evolución'],
+  },
+]
 
 /* -------------------------------------------------------------------------- */
 /* Otros servicios — /otros-servicios                                         */

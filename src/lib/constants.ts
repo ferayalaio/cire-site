@@ -6,6 +6,9 @@ export const FRONT_VIDEO = '/videos/hero.mp4'
 /** Mismo hero, recorte vertical 9:16 propio (no un crop del horizontal). */
 export const FRONT_VIDEO_MOBILE = '/videos/hero-mobile.mp4'
 
+/** Clip vertical 9:16 del HIFU, para la tarjeta tipo "phone frame" de /hifu. */
+export const HIFU_VIDEO_MOBILE = '/videos/hifu-mobile.mp4'
+
 export const AVATAR_IMAGE = '/hero/avatar-real.jpg'
 
 /** Logo real de marca (círculo con isotipo de loto + wordmark ya integrados). */
