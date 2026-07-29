@@ -3,8 +3,15 @@ import { WhatsAppCTA } from './WhatsAppCTA'
 
 export function Hero() {
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Layer 1 — full-bleed video background */}
+    <section className="relative h-dvh w-full overflow-hidden bg-black">
+      {/*
+        Layer 1 — full-bleed video background. `h-dvh` (no `h-screen`/`vh`) en
+        el section y acá: en mobile, `100vh` mide el viewport SIN restar la
+        barra de direcciones, así que el video real queda más alto que lo
+        visible — se ve "cortado" por abajo al cargar y salta al mostrar/
+        ocultarse la barra al hacer scroll. `dvh` se ajusta al viewport visible
+        real y no se mueve.
+      */}
       <video
         className="absolute inset-0 z-0 h-full w-full object-cover"
         src={FRONT_VIDEO}
@@ -15,7 +22,7 @@ export function Hero() {
       />
 
       {/* Layer 2 — scrim so white type and nav stay legible over the light video */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[45vh] bg-gradient-to-b from-black/25 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[45dvh] bg-gradient-to-b from-black/25 to-transparent" />
 
       {/* Layer 3 — hero heading */}
       <div className="absolute inset-x-0 top-20 z-20 px-6 sm:top-28 sm:px-10 md:top-32">

@@ -32,14 +32,14 @@ const EASE = [0.22, 1, 0.36, 1] as const
  */
 const CONTENT_VARIANTS = {
   initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE, delay: 0.22 } },
-  exit: { opacity: 0, y: -12, transition: { duration: 0.22, ease: EASE } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: EASE, delay: 0.16 } },
+  exit: { opacity: 0, y: -12, transition: { duration: 0.16, ease: EASE } },
 }
 
 const CURTAIN_VARIANTS = {
   initial: { scaleY: 1 },
-  animate: { scaleY: 0, transition: { duration: 0.32, ease: EASE, delay: 0.1 } },
-  exit: { scaleY: 1, transition: { duration: 0.28, ease: EASE } },
+  animate: { scaleY: 0, transition: { duration: 0.24, ease: EASE, delay: 0.08 } },
+  exit: { scaleY: 1, transition: { duration: 0.2, ease: EASE } },
 }
 
 // Sin movimiento: solo el contenido, sin cortina y sin desplazamiento — nada
@@ -102,7 +102,9 @@ export function Layout() {
     <div
       className={
         isHome
-          ? 'h-screen w-full overflow-hidden bg-white'
+          ? // `h-dvh`, no `h-screen`: mismo motivo que en Hero.tsx — en mobile
+            // `100vh` no descuenta la barra de direcciones del navegador.
+            'h-dvh w-full overflow-hidden bg-white'
           : /*
              * `isolate` (no solo `relative`): sin un stacking context propio
              * acá, el `-z-10` del fondo ambiental de abajo escapa a compararse

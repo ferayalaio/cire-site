@@ -51,7 +51,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-5 px-8 py-10 sm:px-12">
+      <div className="flex flex-1 flex-col justify-center gap-3 px-8 py-10 sm:px-12">
         {NAV_ITEMS.map((item) => {
           const parentDelay = 100 + stagger++ * 50
 
@@ -62,7 +62,11 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 end={item.to === '/'}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `block text-3xl font-medium transition-all duration-500 sm:text-4xl ${
+                  // `py-1`: igual que en los hijos, el texto solo (36px de
+                  // line-height en text-3xl) queda corto del mínimo táctil de
+                  // 44px. El `gap-3` del contenedor (antes gap-5) compensa el
+                  // padding nuevo para que el espaciado visual no cambie.
+                  `block py-1 text-3xl font-medium transition-all duration-500 sm:text-4xl ${
                     isActive ? 'text-white' : 'text-white/85'
                   }`
                 }
@@ -77,7 +81,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               </NavLink>
 
               {item.children && (
-                <div className="mt-2.5 flex flex-col gap-2 border-l border-white/15 pl-4">
+                <div className="mt-1 flex flex-col border-l border-white/15 pl-4">
                   {item.children.map((child) => {
                     const childDelay = 100 + stagger++ * 50
 
@@ -87,7 +91,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                         to={child.to}
                         onClick={onClose}
                         className={({ isActive }) =>
-                          `block text-base transition-all duration-500 ${
+                          /*
+                           * `py-2.5` en vez del gap suelto de antes: la fila
+                           * completa (texto + padding) es el área de toque, y
+                           * con solo el line-height del texto (~24px) quedaba
+                           * por debajo del mínimo táctil de 44px.
+                           */
+                          `block py-2.5 text-base transition-all duration-500 ${
                             isActive ? 'text-white' : 'text-white/50'
                           }`
                         }
