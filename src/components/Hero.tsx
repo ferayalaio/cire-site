@@ -317,43 +317,64 @@ function HeroDesktop() {
       </div>
 
       <div className="absolute inset-0 z-20">
-        {/* Columna de texto */}
-        <div className="absolute left-10 top-1/2 max-w-sm -translate-y-1/2 animate-slide-in-left motion-reduce:animate-none lg:left-16">
-          <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-blush-500">
-            <SparkleIcon />
-            Piel suave, confianza real
-          </span>
+        {/*
+         * Columna de texto: centrada verticalmente pero solo dentro de esta
+         * franja (no de toda la pantalla). Si se centrara contra el viewport
+         * completo, en ventanas bajas el bloque —que crece con el listado de
+         * confianza— terminaría empujado hacia la barra de pasos de abajo.
+         * Acotar el rango la deja pegada arriba en vez de superponerse.
+         *
+         * En ventanas bajas centrar de más deja muy poco aire entre las redes
+         * y la barra de pasos (se ve amontonado aunque técnicamente no se
+         * toquen). Ahí conviene pegar el bloque arriba de la franja en vez de
+         * centrarlo, para que todo el espacio libre quede abajo como colchón.
+         */}
+        <div className="absolute inset-x-10 top-24 bottom-44 flex items-center lg:inset-x-16 [@media(max-height:820px)]:items-start">
+          <div className="max-w-sm animate-slide-in-left motion-reduce:animate-none">
+            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-blush-500">
+              <SparkleIcon />
+              Piel suave, confianza real
+            </span>
 
-          <h1 className="heading-1 mt-4 bg-gradient-to-b from-blush-900 to-blush-300 bg-clip-text text-[2.75rem] leading-[0.95] text-transparent lg:text-[3.25rem]">
-            Depilación
-            <br />
-            láser diodo
-          </h1>
+            <h1 className="heading-1 mt-4 bg-gradient-to-b from-blush-900 to-blush-300 bg-clip-text text-[2.75rem] leading-[0.95] text-transparent lg:text-[3.25rem]">
+              Depilación
+              <br />
+              láser diodo
+            </h1>
 
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-500">
-            Resultados <strong className="font-medium text-neutral-900">visibles</strong> desde la primera sesión
-          </p>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-500">
+              Resultados <strong className="font-medium text-neutral-900">visibles</strong> desde la primera sesión
+            </p>
 
-          <div className="mt-7">
-            <WhatsAppCTA
-              className="bg-white! pr-2! text-blush-900! shadow-[0_18px_40px_-20px_rgba(166,94,109,0.5)]! hover:bg-blush-50!"
-              context={HERO_CTA_CONTEXT}
-            >
-              Reserva tu evaluación
-              <span className="ml-1 flex h-7 w-7 items-center justify-center rounded-full border border-blush-200 bg-blush-50 text-blush-900">
-                <ArrowUpRightIcon />
-              </span>
-            </WhatsAppCTA>
-          </div>
+            <div className="mt-7">
+              <WhatsAppCTA
+                className="bg-white! pr-2! text-blush-900! shadow-[0_18px_40px_-20px_rgba(166,94,109,0.5)]! hover:bg-blush-50!"
+                context={HERO_CTA_CONTEXT}
+              >
+                Reserva tu evaluación
+                <span className="ml-1 flex h-7 w-7 items-center justify-center rounded-full border border-blush-200 bg-blush-50 text-blush-900">
+                  <ArrowUpRightIcon />
+                </span>
+              </WhatsAppCTA>
+            </div>
 
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4 border-t border-black/[0.06] pt-6">
-            {TRUST.map(({ key, title, text, Icon }) => (
-              <TrustItem key={key} icon={<Icon />} title={title} text={text} />
-            ))}
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4 border-t border-black/[0.06] pt-6">
+              {TRUST.map(({ key, title, text, Icon }) => (
+                <TrustItem key={key} icon={<Icon />} title={title} text={text} />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Badge de certificación con la foto real */}
+        {/*
+         * Badge de certificación con la foto real. Las redes viven acá abajo,
+         * como un tercer elemento del mismo flujo en vez de flotar aparte: la
+         * columna de texto de la izquierda es la que crece con el listado de
+         * confianza y se queda sin aire en ventanas bajas, así que cualquier
+         * otro contenido que dependiera de ella para su posición terminaba
+         * tapado. Esta columna derecha es chica y estable — nunca compite por
+         * espacio con la barra de pasos.
+         */}
         <div className="absolute right-10 top-28 flex animate-slide-in-right flex-col items-end gap-3 motion-reduce:animate-none [animation-delay:150ms] lg:right-20">
           <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-white/50">
             <img
@@ -369,6 +390,11 @@ function HeroDesktop() {
             </div>
             <CheckBadgeIcon />
           </div>
+
+          {/* Redes — mismo ícono de trazo fino que el footer */}
+          <div className="flex items-center gap-3">
+            <SocialLinks className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.08] text-neutral-500 transition-colors hover:border-blush-300 hover:text-neutral-900" />
+          </div>
         </div>
 
         {/* Línea decorativa junto al badge — mismo acento que la referencia */}
@@ -379,11 +405,6 @@ function HeroDesktop() {
           <span className="h-1.5 w-1.5 rounded-full bg-white/50" />
           <span className="h-1.5 w-1.5 rounded-full bg-white/30" />
           <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
-        </div>
-
-        {/* Redes — mismo ícono de trazo fino que el footer */}
-        <div className="absolute bottom-32 left-10 flex items-center gap-3 lg:left-16">
-          <SocialLinks className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.08] text-neutral-500 transition-colors hover:border-blush-300 hover:text-neutral-900" />
         </div>
 
         {/* Barra de pasos */}
