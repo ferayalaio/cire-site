@@ -81,11 +81,16 @@ interface WhatsAppSectionProps {
   titulo?: string
   texto?: string
   children?: ReactNode
+  /** Ancla para el scroll contextual del nav (ver RUTAS_CON_AGENDAR en lib/nav.ts). */
+  id?: string
 }
 
-export function WhatsAppSection({ context, titulo, texto, children }: WhatsAppSectionProps) {
+export function WhatsAppSection({ context, titulo, texto, children, id }: WhatsAppSectionProps) {
   return (
-    <section className="mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10">
+    <section
+      id={id}
+      className={`mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10 ${id ? 'scroll-anchor' : ''}`}
+    >
       <SectionHeading>{titulo ?? '¿Lo armamos juntas?'}</SectionHeading>
       <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
         {texto ?? 'Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.'}

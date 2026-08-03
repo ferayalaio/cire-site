@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { NAV_ITEMS } from '../lib/nav'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { NAV_ITEMS, RUTAS_CON_AGENDAR } from '../lib/nav'
 
 interface MobileMenuProps {
   open: boolean
@@ -11,6 +11,8 @@ const EASING = 'cubic-bezier(0.77, 0, 0.18, 1)'
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const [visible, setVisible] = useState(false)
+  const { pathname } = useLocation()
+  const tieneAgendar = RUTAS_CON_AGENDAR.has(pathname)
 
   useEffect(() => {
     if (!open) {
@@ -157,23 +159,48 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         </div>
 
         <div className="flex shrink-0 justify-center px-8 pb-10">
-          <Link
-            to="/ubicaciones"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-500 hover:bg-neutral-700"
-            style={{
-              transitionTimingFunction: EASING,
-              transitionDelay: `${140 + stagger * 50}ms`,
-              transform: visible ? 'translateY(0)' : 'translateY(24px)',
-              opacity: visible ? 1 : 0,
-            }}
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-            </span>
-            Agendar cita
-          </Link>
+          {/*
+            Igual que en Nav.tsx: si la página actual ya tiene su propio
+            cierre de embudo (`id="agendar"`), el botón hace scroll ahí en
+            vez de saltar a /ubicaciones sin contexto.
+          */}
+          {tieneAgendar ? (
+            <a
+              href="#agendar"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-500 hover:bg-neutral-700"
+              style={{
+                transitionTimingFunction: EASING,
+                transitionDelay: `${140 + stagger * 50}ms`,
+                transform: visible ? 'translateY(0)' : 'translateY(24px)',
+                opacity: visible ? 1 : 0,
+              }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+              </span>
+              Agendar cita
+            </a>
+          ) : (
+            <Link
+              to="/ubicaciones"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-500 hover:bg-neutral-700"
+              style={{
+                transitionTimingFunction: EASING,
+                transitionDelay: `${140 + stagger * 50}ms`,
+                transform: visible ? 'translateY(0)' : 'translateY(24px)',
+                opacity: visible ? 1 : 0,
+              }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+              </span>
+              Agendar cita
+            </Link>
+          )}
         </div>
         </div>
       </div>

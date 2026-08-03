@@ -121,6 +121,7 @@ export function LaserCuerpoCompleto() {
       </Reveal>
 
       <WhatsAppSection
+        id="agendar"
         context={ctaContext}
         titulo="¿Empezamos con el Full Body?"
         texto="Te confirmamos precio, sesiones y disponibilidad por WhatsApp."

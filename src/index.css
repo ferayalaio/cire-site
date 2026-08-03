@@ -170,6 +170,18 @@
   }
 
   /*
+   * Scroll suave para los anchors internos de cada página (nav "Agendar
+   * cita" -> #agendar, etc.). Va detrás de un media query porque
+   * `scroll-behavior: smooth` es justo el tipo de movimiento que
+   * prefers-reduced-motion pide evitar.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /*
    * Jerarquía tipográfica global: cualquier <h2>/<h3> del sitio hereda la
    * display de marca sin que cada página tenga que declararla. El tracking
    * negativo es para texto en minúsculas/mixto — los títulos en mayúsculas
@@ -210,6 +222,12 @@
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* El nav fijo mide ~5rem: sin este offset, un anchor deja el título de la
+     sección tapado justo debajo del nav. */
+  .scroll-anchor {
+    scroll-margin-top: 6rem;
   }
 
   .bg-particle {

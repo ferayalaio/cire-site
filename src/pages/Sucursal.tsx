@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
-import { Reveal, Stagger } from '../components/Reveal'
+import { Reveal } from '../components/Reveal'
+import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { HORARIO, getSucursal, mapsEmbedUrl } from '../data/sucursales'
@@ -121,29 +122,7 @@ export function Sucursal() {
 
       {sucursal.testimonios && sucursal.testimonios.length > 0 && (
         <Reveal as="section" className="mt-16">
-          <SectionHeading>Lo que dicen de esta sucursal</SectionHeading>
-          <Stagger className="mt-6 grid gap-6 sm:grid-cols-2">
-            {sucursal.testimonios.map((testimonio) => (
-              <figure
-                key={testimonio.autor}
-                className="rounded-2xl border border-black/[0.07] bg-white p-6"
-              >
-                <span
-                  aria-hidden="true"
-                  className="text-4xl leading-none text-blush-300"
-                  style={{ fontFamily: "'Bodoni Moda', serif" }}
-                >
-                  &ldquo;
-                </span>
-                <blockquote className="mt-1 text-neutral-600">
-                  <p className="leading-relaxed">{testimonio.texto}</p>
-                </blockquote>
-                <figcaption className="mt-4 text-sm text-neutral-400">
-                  — {testimonio.autor}
-                </figcaption>
-              </figure>
-            ))}
-          </Stagger>
+          <TestimoniosSection testimonios={sucursal.testimonios} titulo="Lo que dicen de esta sucursal" />
         </Reveal>
       )}
 

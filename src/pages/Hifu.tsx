@@ -4,11 +4,13 @@ import { AnimatedHeading } from '../components/AnimatedHeading'
 import { LoopVideo } from '../components/LoopVideo'
 import { Reveal, Stagger } from '../components/Reveal'
 import { SectionHeading } from '../components/PageShell'
+import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { HIFU_VIDEO_MOBILE } from '../lib/constants'
 import { trackViewContent } from '../lib/analytics'
 import { HIFU_PROTOCOLOS, formatPrecio } from '../data/precios'
+import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
 
 /* -------------------------------------------------------------------------- */
 /* Iconos — mismo trazo fino (viewBox 24, stroke 1.4-1.6) que el resto del    */
@@ -172,12 +174,14 @@ const QUOTES = [
  * Frase-acento entre secciones. Lleva su propio margen vertical (no lo pone
  * quien la usa) para que sea el único espacio de separación entre bloques —
  * antes cada sección sumaba su propio `mt` al de la frase y el resultado eran
- * huecos dobles.
+ * huecos dobles. El margen sube a 100–140px (mismo objetivo que el resto del
+ * sitio) para que el scroll entre bloques se sienta tan pausado como en las
+ * demás páginas, sin duplicar el espacio agregando otro wrapper.
  */
 function Quote({ children }: { children: string }) {
   return (
-    <Reveal className="mx-auto my-14 max-w-xl text-center sm:my-16">
-      <p className="font-display text-xl leading-snug text-blush-500 sm:text-2xl">“{children}”</p>
+    <Reveal className="mx-auto my-24 max-w-xl text-center sm:my-32">
+      <p className="font-display text-xl leading-snug text-blush-500 sm:text-2xl">&ldquo;{children}&rdquo;</p>
     </Reveal>
   )
 }
@@ -289,7 +293,7 @@ export function Hifu() {
       <Quote>{QUOTES[1]}</Quote>
 
       {/* ---------------------------------------------- Cómo funciona ----- */}
-      <section>
+      <section id="beneficios" className="scroll-anchor">
         <SectionHeading>Cómo funciona</SectionHeading>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
           Sin sonar a laboratorio: así es como tu piel va cambiando, paso a paso.
@@ -355,7 +359,7 @@ export function Hifu() {
       <Quote>{QUOTES[3]}</Quote>
 
       {/* ------------------------------------------------- Paquetes -------- */}
-      <section>
+      <section id="precios" className="scroll-anchor">
         <SectionHeading>Elige cómo empezar</SectionHeading>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
           Desde una sola sesión para conocer el efecto, hasta un protocolo completo pensado para
@@ -413,6 +417,15 @@ export function Hifu() {
         </Stagger>
       </section>
 
+      {/*
+        Reseñas: no lleva su propio Quote antes (Paquetes no suma margen), así
+        que trae el mismo salto que un Quote daría. El de abajo (QUOTES[4])
+        sigue siendo el que separa esto del FAQ.
+      */}
+      <section id="resenas" className="scroll-anchor mt-24 sm:mt-32">
+        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS} />
+      </section>
+
       <Quote>{QUOTES[4]}</Quote>
 
       {/* ------------------------------------------------------- FAQ ------- */}
@@ -430,7 +443,7 @@ export function Hifu() {
       </section>
 
       {/* ---------------------------------------------------- CTA final --- */}
-      <div className="mt-16 sm:mt-24">
+      <div id="agendar" className="scroll-anchor mt-24 sm:mt-32">
         <WhatsAppSection
           context={{ sku: 'hifu-cta-final', nombre: 'el Cire Lift Protocol', categoria: 'hifu', articulo: 'el' }}
           titulo="Empecemos con una valoración"

@@ -146,6 +146,7 @@ export function LaserZonas() {
       </Reveal>
 
       <WhatsAppSection
+        id="agendar"
         context={{ sku: 'laser-zonas', nombre: 'una zona', categoria: 'laser', articulo: 'la' }}
         titulo="¿No sabes por dónde empezar?"
         texto="Cuéntanos qué zona te interesa y te armamos la mejor combinación de precio."

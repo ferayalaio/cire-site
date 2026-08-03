@@ -1,5 +1,6 @@
+import type { ReactNode } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { NAV_ITEMS } from '../lib/nav'
+import { NAV_ITEMS, RUTAS_CON_AGENDAR } from '../lib/nav'
 import type { NavItem } from '../lib/nav'
 import { LOGO_IMAGE } from '../lib/constants'
 
@@ -15,6 +16,35 @@ interface NavProps {
 function isActive(pathname: string, to: string) {
   if (to === '/') return pathname === '/'
   return pathname === to || pathname.startsWith(`${to}/`)
+}
+
+interface AgendarLinkProps {
+  pathname: string
+  className: string
+  children: ReactNode
+}
+
+/*
+ * La página actual ya tiene su propio cierre de embudo (`id="agendar"`) en
+ * las rutas listadas en RUTAS_CON_AGENDAR: ahí el botón hace scroll suave
+ * dentro de la misma página en vez de mandar a otra ruta sin contexto. En el
+ * resto (Ubicaciones, FAQ, detalle de sucursal) no hay ese bloque, así que
+ * conserva el link a /ubicaciones.
+ */
+function AgendarLink({ pathname, className, children }: AgendarLinkProps) {
+  if (RUTAS_CON_AGENDAR.has(pathname)) {
+    return (
+      <a href="#agendar" className={className}>
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <Link to="/ubicaciones" className={className}>
+      {children}
+    </Link>
+  )
 }
 
 function ArrowUpRightIcon() {
@@ -46,15 +76,15 @@ export function Nav({ onOpenMenu }: NavProps) {
         ))}
       </div>
 
-      <Link
-        to="/ubicaciones"
+      <AgendarLink
+        pathname={pathname}
         className="glass-light hidden shrink-0 items-center gap-2.5 rounded-full py-2 pl-5 pr-2 text-sm font-medium text-blush-900 transition-colors md:inline-flex"
       >
         Agendar cita
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-blush-200 bg-white text-blush-900">
           <ArrowUpRightIcon />
         </span>
-      </Link>
+      </AgendarLink>
 
       <button
         type="button"

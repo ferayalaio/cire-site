@@ -95,6 +95,7 @@ export function LaserBikini() {
       )}
 
       <WhatsAppSection
+        id="agendar"
         context={{ sku: 'laser-bikini', nombre: 'un nivel de bikini', categoria: 'laser' }}
         titulo="¿No sabes qué nivel elegir?"
         texto="Cuéntanos qué buscas y te ayudamos a decidir cuál te conviene."

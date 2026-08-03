@@ -20,6 +20,24 @@ export interface NavItem {
   children?: NavChild[]
 }
 
+/*
+ * Rutas que, tras la restructuración en secciones, terminan con su propio
+ * bloque `id="agendar"`. El botón "Agendar cita" del nav usa esta lista para
+ * decidir si hace smooth-scroll dentro de la página actual o si navega a
+ * /ubicaciones (única opción razonable en páginas sin ese bloque, como
+ * Ubicaciones mismo, FAQ o el detalle de una sucursal).
+ */
+export const RUTAS_CON_AGENDAR = new Set([
+  '/',
+  '/laser',
+  '/laser/zonas',
+  '/laser/bikini',
+  '/laser/cuerpo-completo',
+  '/cera',
+  '/hifu',
+  '/otros-servicios',
+])
+
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Inicio', to: '/' },
   {
