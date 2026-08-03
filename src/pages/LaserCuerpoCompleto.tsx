@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal } from '../components/Reveal'
+import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
 import { FULL_BODY, MSI, formatPrecio, hayPrecio } from '../data/precios'
+import { TESTIMONIOS_DESTACADOS_ALT } from '../data/testimonios'
 
 /*
  * Página de mayor prioridad de conversión: acá se empuja el Full Body como la
@@ -118,6 +120,10 @@ export function LaserCuerpoCompleto() {
           <SectionHeading>Antes y después</SectionHeading>
           <Placeholder label="Pendiente: subir fotos de antes/después a public/antes-despues/" />
         </div>
+      </Reveal>
+
+      <Reveal className="mt-16">
+        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS_ALT} />
       </Reveal>
 
       <WhatsAppSection

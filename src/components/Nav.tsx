@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { NAV_ITEMS, RUTAS_CON_AGENDAR } from '../lib/nav'
 import type { NavItem } from '../lib/nav'
@@ -117,6 +118,21 @@ function entryClass(active: boolean) {
 
 function NavEntry({ item, active }: NavEntryProps) {
   const linkClass = entryClass(active)
+  const { pathname } = useLocation()
+  const [open, setOpen] = useState(false)
+
+  /*
+   * Antes el dropdown abría solo con CSS (group-hover/group-focus-within),
+   * sin estado en React. Al navegar con un clic o un tap, el cursor/foco se
+   * queda físicamente sobre el mismo lugar y el panel no tenía forma de
+   * enterarse de que la ruta cambió: se quedaba pegado encima de la página
+   * nueva (más notorio en táctil, donde el tap deja el :hover "prendido"
+   * hasta el próximo toque afuera). Este efecto lo cierra a la fuerza en
+   * cuanto cambia la ruta.
+   */
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   if (!item.children) {
     return (
@@ -126,31 +142,42 @@ function NavEntry({ item, active }: NavEntryProps) {
     )
   }
 
-  /*
-   * El dropdown abre con hover y con focus-within, así el teclado llega a los
-   * hijos sin estado en React. El padding-top del panel deja un puente
-   * invisible entre el trigger y el menú para que no se cierre al cruzar el
-   * hueco con el mouse.
-   */
   return (
-    <div className="group relative">
-      <NavLink to={item.to} className={`${linkClass} inline-flex items-center gap-1.5`}>
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+      }}
+    >
+      <NavLink
+        to={item.to}
+        onClick={() => setOpen(false)}
+        className={`${linkClass} inline-flex items-center gap-1.5`}
+      >
         {item.label}
         <svg
           viewBox="0 0 10 6"
           aria-hidden="true"
-          className="h-[6px] w-[10px] opacity-60 transition-transform duration-200 group-hover:rotate-180"
+          className={`h-[6px] w-[10px] opacity-60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         >
           <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" />
         </svg>
       </NavLink>
 
-      <div className="pointer-events-none absolute left-1/2 top-full w-max -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-200 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
+      <div
+        className={`absolute left-1/2 top-full w-max -translate-x-1/2 pt-3 transition-opacity duration-200 ${
+          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      >
         <div className="glass-light min-w-[220px] rounded-2xl p-1.5">
           {item.children.map((child) => (
             <NavLink
               key={child.to}
               to={child.to}
+              onClick={() => setOpen(false)}
               className={({ isActive: on }) =>
                 `block rounded-xl px-3.5 py-2.5 transition-colors ${
                   on ? 'bg-black/[0.06] text-neutral-900' : 'text-neutral-600 hover:bg-black/[0.04] hover:text-neutral-900'

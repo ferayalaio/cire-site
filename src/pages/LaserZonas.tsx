@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { LinkCard, PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal, Stagger } from '../components/Reveal'
+import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { COMBOS, ZONAS, formatPrecio, hayPrecio } from '../data/precios'
+import { TESTIMONIOS_DESTACADOS_ALT } from '../data/testimonios'
 
 export function LaserZonas() {
   useDocumentMeta({
@@ -143,6 +145,10 @@ export function LaserZonas() {
             description="Del básico al brazilian, con la cobertura de cada nivel."
           />
         </Stagger>
+      </Reveal>
+
+      <Reveal className="mt-16">
+        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS_ALT} />
       </Reveal>
 
       <WhatsAppSection

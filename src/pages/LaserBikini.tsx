@@ -1,8 +1,10 @@
 import { PageShell, Placeholder } from '../components/PageShell'
-import { Stagger } from '../components/Reveal'
+import { Reveal, Stagger } from '../components/Reveal'
+import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { NIVELES_BIKINI, formatPrecio, hayPrecio } from '../data/precios'
+import { TESTIMONIOS_DESTACADOS_ALT } from '../data/testimonios'
 
 export function LaserBikini() {
   useDocumentMeta({
@@ -93,6 +95,10 @@ export function LaserBikini() {
           <Placeholder label="Pendiente: descripción de cobertura de cada nivel y precios en src/data/precios.ts" />
         </div>
       )}
+
+      <Reveal className="mt-16">
+        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS_ALT} />
+      </Reveal>
 
       <WhatsAppSection
         id="agendar"

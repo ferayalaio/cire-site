@@ -11,3 +11,12 @@ import { SUCURSALES } from './sucursales'
 export const TESTIMONIOS_DESTACADOS: Testimonio[] = SUCURSALES.flatMap((sucursal) =>
   sucursal.testimonios?.length ? [sucursal.testimonios[0]] : [],
 )
+
+/*
+ * Segunda curaduría (el otro testimonio de cada sucursal). Existe para que
+ * páginas que se navegan una detrás de otra en el mismo recorrido — como
+ * /laser y sus tres subpáginas — no repitan las mismas tres citas cada vez.
+ */
+export const TESTIMONIOS_DESTACADOS_ALT: Testimonio[] = SUCURSALES.flatMap((sucursal) =>
+  sucursal.testimonios && sucursal.testimonios.length > 1 ? [sucursal.testimonios[1]] : [],
+)
