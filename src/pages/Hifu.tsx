@@ -2,12 +2,19 @@ import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { AnimatedHeading } from '../components/AnimatedHeading'
 import { LoopVideo } from '../components/LoopVideo'
+import { VideoAccent } from '../components/VideoAccent'
 import { Reveal, Stagger } from '../components/Reveal'
+import { Section } from '../components/Section'
 import { SectionHeading } from '../components/PageShell'
 import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
-import { HIFU_VIDEO_MOBILE } from '../lib/constants'
+import {
+  HIFU_VIDEO_MOBILE,
+  HIFU_VIDEO_REFERENCIA_1,
+  HIFU_VIDEO_REFERENCIA_2,
+  HIFU_VIDEO_REFERENCIA_3,
+} from '../lib/constants'
 import { trackViewContent } from '../lib/analytics'
 import { HIFU_PROTOCOLOS, formatPrecio } from '../data/precios'
 import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
@@ -171,17 +178,18 @@ const QUOTES = [
 ]
 
 /*
- * Frase-acento entre secciones. Lleva su propio margen vertical (no lo pone
- * quien la usa) para que sea el único espacio de separación entre bloques —
- * antes cada sección sumaba su propio `mt` al de la frase y el resultado eran
- * huecos dobles. El margen sube a 100–140px (mismo objetivo que el resto del
- * sitio) para que el scroll entre bloques se sienta tan pausado como en las
- * demás páginas, sin duplicar el espacio agregando otro wrapper.
+ * Frase-acento entre secciones. Ahora vive *entre* dos `<Section>` (cada una
+ * con su propio py-24/32/36), no dentro de un `<main>` con padding propio —
+ * por eso ya no trae su propio margen vertical (antes sí, para no depender
+ * de que alguien más lo pusiera): el espacio lo aportan las secciones a los
+ * lados, y duplicar acá volvía a dejar huecos enormes. Sí necesita su propio
+ * padding horizontal, porque al ser un elemento de nivel superior (no un hijo
+ * del contenedor `max-w-6xl` de una Section) no hereda ninguno.
  */
 function Quote({ children }: { children: string }) {
   return (
-    <Reveal className="mx-auto my-24 max-w-xl text-center sm:my-32">
-      <p className="font-display text-xl leading-snug text-blush-500 sm:text-2xl">&ldquo;{children}&rdquo;</p>
+    <Reveal className="mx-auto max-w-xl px-6 text-center sm:px-10">
+      <p className="font-display text-xl leading-[1.6] text-blush-500 sm:text-2xl">&ldquo;{children}&rdquo;</p>
     </Reveal>
   )
 }
@@ -212,7 +220,14 @@ export function Hifu() {
   }, [])
 
   return (
-    <main className="mx-auto max-w-6xl px-6 pb-24 pt-32 sm:px-10 sm:pt-40">
+    <>
+      {/*
+        Solo el hero vive en `<main>` con su propio `max-w-6xl` — igual que
+        PageShell en el resto del sitio. Sin padding inferior propio: la
+        `Section` que sigue ya aporta su espacio superior (py-24/32/36); si el
+        `<main>` también sumara el suyo, el hueco quedaba doble.
+      */}
+      <main className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
       {/* ---------------------------------------------------------- Hero --- */}
       <section className="grid items-center gap-14 md:grid-cols-2 md:gap-16">
         <div className="animate-fade-in-up motion-reduce:animate-none">
@@ -267,33 +282,39 @@ export function Hifu() {
           </div>
         </div>
       </section>
+      </main>
 
       <Quote>{QUOTES[0]}</Quote>
 
       {/* ------------------------------------------------- Problema ------- */}
-      <Reveal className="space-y-5" as="section">
-        <SectionHeading>¿Te reconoces en esto?</SectionHeading>
-        <p className="max-w-2xl text-base leading-relaxed text-neutral-500">
-          Muchas de nuestras clientas llegan notando lo mismo: pérdida de firmeza, un poco de papada, un
-          rostro que ya no se ve tan definido como antes. No buscan un cambio drástico — buscan una
-          solución natural, progresiva y segura, que respete su rostro en vez de transformarlo.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          {PREOCUPACIONES.map((item) => (
-            <span
-              key={item}
-              className="rounded-full border border-black/[0.07] bg-white px-4 py-2 text-sm text-neutral-600"
-            >
-              {item}
-            </span>
-          ))}
+      <Section>
+        <Reveal className="grid gap-8 md:grid-cols-[1fr_300px] md:items-center">
+        <div className="space-y-5">
+          <SectionHeading>¿Te reconoces en esto?</SectionHeading>
+          <p className="max-w-2xl text-base leading-relaxed text-neutral-500">
+            Muchas de nuestras clientas llegan notando lo mismo: pérdida de firmeza, un poco de papada, un
+            rostro que ya no se ve tan definido como antes. No buscan un cambio drástico — buscan una
+            solución natural, progresiva y segura, que respete su rostro en vez de transformarlo.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {PREOCUPACIONES.map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-black/[0.07] bg-white px-4 py-2 text-sm text-neutral-600"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
-      </Reveal>
+        <VideoAccent src={HIFU_VIDEO_REFERENCIA_1} className="h-64 w-full sm:h-80 md:h-96" />
+        </Reveal>
+      </Section>
 
       <Quote>{QUOTES[1]}</Quote>
 
       {/* ---------------------------------------------- Cómo funciona ----- */}
-      <section id="beneficios" className="scroll-anchor">
+      <Section id="beneficios" tone="alt">
         <SectionHeading>Cómo funciona</SectionHeading>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
           Sin sonar a laboratorio: así es como tu piel va cambiando, paso a paso.
@@ -325,15 +346,13 @@ export function Hifu() {
             ))}
           </Stagger>
         </div>
-      </section>
+      </Section>
 
       <Quote>{QUOTES[2]}</Quote>
 
       {/* --------------------------------------------- Diferenciador ------ */}
-      <Reveal
-        className="rounded-3xl border border-blush-200 bg-gradient-to-br from-blush-50 to-white px-6 py-10 shadow-[0_35px_80px_-40px_rgba(166,94,109,0.4)] sm:px-12 sm:py-14"
-        as="section"
-      >
+      <Section>
+        <Reveal className="rounded-3xl border border-blush-200 bg-gradient-to-br from-blush-50 to-white px-6 py-10 shadow-[0_35px_80px_-40px_rgba(166,94,109,0.4)] sm:px-12 sm:py-14">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-blush-500">El diferenciador</p>
         <AnimatedHeading as="h2" className="mt-3 text-3xl leading-tight text-neutral-900 sm:text-4xl">
           No es solo una sesión de HIFU… es un protocolo diseñado según tu piel.
@@ -354,12 +373,13 @@ export function Hifu() {
           Eso es lo que nos separa de una clínica fría con sesiones genéricas: acá no hay dos protocolos
           iguales, porque no hay dos rostros iguales.
         </p>
-      </Reveal>
+        </Reveal>
+      </Section>
 
       <Quote>{QUOTES[3]}</Quote>
 
       {/* ------------------------------------------------- Paquetes -------- */}
-      <section id="precios" className="scroll-anchor">
+      <Section id="precios" tone="alt">
         <SectionHeading>Elige cómo empezar</SectionHeading>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
           Desde una sola sesión para conocer el efecto, hasta un protocolo completo pensado para
@@ -415,43 +435,43 @@ export function Hifu() {
             </div>
           ))}
         </Stagger>
-      </section>
+      </Section>
 
-      {/*
-        Reseñas: no lleva su propio Quote antes (Paquetes no suma margen), así
-        que trae el mismo salto que un Quote daría. El de abajo (QUOTES[4])
-        sigue siendo el que separa esto del FAQ.
-      */}
-      <section id="resenas" className="scroll-anchor mt-24 sm:mt-32">
+      {/* Reseñas: ya no necesita su propio salto — lo aporta la Section. */}
+      <Section id="resenas">
         <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS} />
-      </section>
+      </Section>
 
       <Quote>{QUOTES[4]}</Quote>
 
       {/* ------------------------------------------------------- FAQ ------- */}
-      <section>
+      <Section tone="alt">
         <SectionHeading>Antes de decidir</SectionHeading>
 
-        <Stagger className="mt-8 space-y-4" step={90}>
-          {PREGUNTAS_HIFU.map((item) => (
-            <div key={item.key} className="rounded-2xl border border-black/[0.07] bg-white p-6">
-              <p className="text-lg font-medium text-neutral-900">{item.pregunta}</p>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-500">{item.respuesta}</p>
-            </div>
-          ))}
-        </Stagger>
-      </section>
+        <div className="mt-8 grid gap-6 md:grid-cols-[1fr_240px]">
+          <Stagger className="space-y-4" step={90}>
+            {PREGUNTAS_HIFU.map((item) => (
+              <div key={item.key} className="rounded-2xl border border-black/[0.07] bg-white p-6">
+                <p className="text-lg font-medium text-neutral-900">{item.pregunta}</p>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-500">{item.respuesta}</p>
+              </div>
+            ))}
+          </Stagger>
+          <VideoAccent src={HIFU_VIDEO_REFERENCIA_2} className="hidden h-full min-h-[300px] md:block" />
+        </div>
+      </Section>
 
       {/* ---------------------------------------------------- CTA final --- */}
-      <div id="agendar" className="scroll-anchor mt-24 sm:mt-32">
+      <Section id="agendar">
         <WhatsAppSection
           context={{ sku: 'hifu-cta-final', nombre: 'el Cire Lift Protocol', categoria: 'hifu', articulo: 'el' }}
           titulo="Empecemos con una valoración"
           texto="Ahí analizamos tu piel y te decimos exactamente qué zonas conviene trabajar, cómo, y qué resultado puedes esperar."
+          videoSrc={HIFU_VIDEO_REFERENCIA_3}
         >
           Agenda tu valoración
         </WhatsAppSection>
-      </div>
-    </main>
+      </Section>
+    </>
   )
 }

@@ -6,6 +6,7 @@ import { trackWhatsAppClick } from '../lib/analytics'
 import { buildWhatsAppUrl } from '../lib/whatsapp'
 import { rememberSucursal } from '../lib/sucursal-context'
 import { SectionHeading } from './PageShell'
+import { VideoAccent } from './VideoAccent'
 
 /*
  * Único camino a WhatsApp en todo el sitio. Cualquier CTA nuevo pasa por acá y
@@ -83,21 +84,42 @@ interface WhatsAppSectionProps {
   children?: ReactNode
   /** Ancla para el scroll contextual del nav (ver RUTAS_CON_AGENDAR en lib/nav.ts). */
   id?: string
+  /** Clip opcional de referencia para llenar el espacio libre a la derecha (solo desktop). Sin esto, la tarjeta queda igual que siempre. */
+  videoSrc?: string
+  /** Leyenda opcional sobre el video (ver VideoAccent) — sin esto, el clip va sin texto encima. */
+  videoCaption?: { tag: string; title: string }
 }
 
-export function WhatsAppSection({ context, titulo, texto, children, id }: WhatsAppSectionProps) {
+export function WhatsAppSection({
+  context,
+  titulo,
+  texto,
+  children,
+  id,
+  videoSrc,
+  videoCaption,
+}: WhatsAppSectionProps) {
   return (
     <section
       id={id}
-      className={`mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10 ${id ? 'scroll-anchor' : ''}`}
+      className={`mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10 ${videoSrc ? 'sm:flex sm:items-center sm:justify-between sm:gap-8' : ''} ${id ? 'scroll-anchor' : ''}`}
     >
-      <SectionHeading>{titulo ?? '¿Lo armamos juntas?'}</SectionHeading>
-      <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
-        {texto ?? 'Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.'}
-      </p>
-      <div className="mt-7">
-        <WhatsAppCTA context={{ ...context, placement: 'seccion' }}>{children}</WhatsAppCTA>
+      <div className={videoSrc ? 'sm:max-w-xl' : undefined}>
+        <SectionHeading>{titulo ?? '¿Lo armamos juntas?'}</SectionHeading>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
+          {texto ?? 'Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.'}
+        </p>
+        <div className="mt-7">
+          <WhatsAppCTA context={{ ...context, placement: 'seccion' }}>{children}</WhatsAppCTA>
+        </div>
       </div>
+      {videoSrc && (
+        <VideoAccent
+          src={videoSrc}
+          caption={videoCaption}
+          className="mt-8 hidden shrink-0 sm:mt-0 sm:block sm:h-56 sm:w-48 md:h-[340px] md:w-[300px]"
+        />
+      )}
     </section>
   )
 }

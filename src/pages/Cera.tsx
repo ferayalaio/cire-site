@@ -3,9 +3,11 @@ import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Section } from '../components/Section'
 import { Stagger } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
-import { WhatsAppCTA } from '../components/WhatsAppCTA'
+import { VideoAccent } from '../components/VideoAccent'
+import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
+import { CERA_VIDEO_PRINCIPAL, CERA_VIDEO_REFERENCIA_1, CERA_VIDEO_REFERENCIA_2 } from '../lib/constants'
 import { CERA, formatPrecio } from '../data/precios'
 import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
 
@@ -69,7 +71,6 @@ const AGENDAR_CONTEXT = {
   nombre: 'la depilación con cera',
   categoria: 'cera',
   articulo: 'la',
-  placement: 'seccion',
 } as const
 
 export function Cera() {
@@ -89,6 +90,7 @@ export function Cera() {
         eyebrow="Servicios"
         title="Depilación con cera"
         intro="Cera italiana, para quien prefiere resultado inmediato o no es candidata a láser."
+        media={<VideoAccent src={CERA_VIDEO_PRINCIPAL} className="h-72 w-full sm:h-80 md:h-[26rem]" />}
       />
 
       <Section id="beneficios">
@@ -107,27 +109,36 @@ export function Cera() {
       </Section>
 
       <Section id="precios" tone="alt">
-        <SectionHeading>Zonas y precios</SectionHeading>
-        {CERA.length > 0 ? (
-          <div className="mt-8 overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
-            <table className="w-full text-left text-sm">
-              <tbody>
-                {CERA.map((zona) => (
-                  <tr key={zona.slug} className="border-b border-black/[0.05] transition-colors last:border-0 hover:bg-blush-50/60">
-                    <td className="px-5 py-4 text-neutral-900">{zona.nombre}</td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      {formatPrecio(zona.precio) ?? <span className="text-neutral-300">Pendiente</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="grid gap-8 md:grid-cols-[1fr_300px] md:items-center">
+          <div>
+            <SectionHeading>Zonas y precios</SectionHeading>
+            {CERA.length > 0 ? (
+              <div className="mt-8 overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
+                <table className="w-full text-left text-sm">
+                  <tbody>
+                    {CERA.map((zona) => (
+                      <tr key={zona.slug} className="border-b border-black/[0.05] transition-colors last:border-0 hover:bg-blush-50/60">
+                        <td className="px-5 py-4 text-neutral-900">{zona.nombre}</td>
+                        <td className="px-5 py-4 text-neutral-600">
+                          {formatPrecio(zona.precio) ?? <span className="text-neutral-300">Pendiente</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="mt-8">
+                <Placeholder label="Pendiente: tabla de zonas con precio en src/data/precios.ts (campo CERA)" />
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="mt-8">
-            <Placeholder label="Pendiente: tabla de zonas con precio en src/data/precios.ts (campo CERA)" />
-          </div>
-        )}
+          <VideoAccent
+            src={CERA_VIDEO_REFERENCIA_1}
+            caption={{ tag: 'Sesión real', title: 'Cera italiana en acción' }}
+            className="hidden h-80 w-full md:block"
+          />
+        </div>
       </Section>
 
       <Section id="resenas">
@@ -135,13 +146,15 @@ export function Cera() {
       </Section>
 
       <Section id="agendar" tone="alt">
-        <SectionHeading>Saca tu turno</SectionHeading>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
-          Dinos qué zona y en qué sucursal, y te confirmamos precio y disponibilidad.
-        </p>
-        <div className="mt-7">
-          <WhatsAppCTA context={AGENDAR_CONTEXT}>Escríbenos por WhatsApp</WhatsAppCTA>
-        </div>
+        <WhatsAppSection
+          context={AGENDAR_CONTEXT}
+          titulo="Saca tu turno"
+          texto="Dinos qué zona y en qué sucursal, y te confirmamos precio y disponibilidad."
+          videoSrc={CERA_VIDEO_REFERENCIA_2}
+          videoCaption={{ tag: 'Resultado inmediato', title: 'Sales con la zona lista' }}
+        >
+          Escríbenos por WhatsApp
+        </WhatsAppSection>
       </Section>
     </>
   )

@@ -120,7 +120,12 @@ export const SUCURSALES: Sucursal[] = [
       },
     ],
   },
-  { slug: 'oriente', nombre: 'Oriente', direccion: '' },
+  {
+    slug: 'oriente',
+    nombre: 'Oriente',
+    direccion: 'Río Tacámbaro 56-Interior 2, Paseos de Churubusco, Iztapalapa, 09030 CDMX',
+    foto: '/sucursales/oriente.png',
+  },
   {
     slug: 'metepec',
     nombre: 'Metepec',

@@ -14,59 +14,72 @@ interface PageShellProps {
   title: string
   intro?: string
   breadcrumbs?: Crumb[]
+  /** Acento de video opcional junto al título (ver VideoAccent), solo visible desde `md`. Sin esto, el header queda igual que siempre. */
+  media?: ReactNode
   children?: ReactNode
 }
 
 /*
  * Encabezado común de las páginas internas. El `pt-32` deja libre la franja
- * del nav fijo, que mide 5rem de alto y no participa del flujo.
+ * del nav fijo, que mide 5rem de alto y no participa del flujo. Sin padding
+ * inferior propio: la sección siguiente (`Section`) ya aporta su propio
+ * espacio superior, y sumar los dos dejaba un salto enorme entre el intro y
+ * el primer heading de sección.
  */
-export function PageShell({ eyebrow, title, intro, breadcrumbs, children }: PageShellProps) {
+export function PageShell({ eyebrow, title, intro, breadcrumbs, media, children }: PageShellProps) {
   return (
-    <main className="mx-auto max-w-6xl px-6 pb-24 pt-32 sm:px-10 sm:pt-40">
-      {/*
-       * El bloque de encabezado entra igual que el h1 del hero (fade-up en
-       * vez de slide horizontal, porque acá hay una sola línea de contenido
-       * y no dos): es el eco de esa animación en cada página interna.
-       */}
-      <div className="animate-fade-in-up motion-reduce:animate-none">
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <nav aria-label="Ruta" className="mb-6 flex flex-wrap items-center gap-2 text-sm text-neutral-400">
-            {breadcrumbs.map((crumb, index) => (
-              <span key={crumb.to} className="flex items-center gap-2">
-                {/* El separador va antes, no después: puesto al final queda una
-                    barra colgando sin nada que la siga. */}
-                {index > 0 && <span aria-hidden="true">/</span>}
-                <Link to={crumb.to} className="hover:text-neutral-900">
-                  {crumb.label}
-                </Link>
-              </span>
-            ))}
-          </nav>
-        )}
-
-        {eyebrow && (
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
-            {eyebrow}
-          </p>
-        )}
-
+    <main className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+      <div className={media ? 'grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14' : undefined}>
         {/*
-         * Mismo tratamiento que el h1 del hero (Bodoni Moda, mayúsculas,
-         * tracking positivo) para que la identidad de marca no se quede solo
-         * en el home — ver public/tipografias.html para el porqué de la
-         * fuente. El underline se dibuja después de que entran las palabras,
-         * como firma visual de que esta es la página en la que estás.
+         * El bloque de encabezado entra igual que el h1 del hero (fade-up en
+         * vez de slide horizontal, porque acá hay una sola línea de contenido
+         * y no dos): es el eco de esa animación en cada página interna.
          */}
-        <AnimatedHeading
-          as="h1"
-          underline
-          className="heading-1 text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl"
-        >
-          {title}
-        </AnimatedHeading>
+        <div className="animate-fade-in-up motion-reduce:animate-none">
+          {breadcrumbs && breadcrumbs.length > 0 && (
+            <nav aria-label="Ruta" className="mb-6 flex flex-wrap items-center gap-2 text-sm text-neutral-400">
+              {breadcrumbs.map((crumb, index) => (
+                <span key={crumb.to} className="flex items-center gap-2">
+                  {/* El separador va antes, no después: puesto al final queda una
+                      barra colgando sin nada que la siga. */}
+                  {index > 0 && <span aria-hidden="true">/</span>}
+                  <Link to={crumb.to} className="hover:text-neutral-900">
+                    {crumb.label}
+                  </Link>
+                </span>
+              ))}
+            </nav>
+          )}
 
-        {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
+          {eyebrow && (
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
+              {eyebrow}
+            </p>
+          )}
+
+          {/*
+           * Mismo tratamiento que el h1 del hero (Bodoni Moda, mayúsculas,
+           * tracking positivo) para que la identidad de marca no se quede solo
+           * en el home — ver public/tipografias.html para el porqué de la
+           * fuente. El underline se dibuja después de que entran las palabras,
+           * como firma visual de que esta es la página en la que estás.
+           */}
+          <AnimatedHeading
+            as="h1"
+            underline
+            className="heading-1 text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl"
+          >
+            {title}
+          </AnimatedHeading>
+
+          {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
+        </div>
+
+        {media && (
+          <div className="hidden animate-fade-in-up motion-reduce:animate-none [animation-delay:150ms] md:block">
+            {media}
+          </div>
+        )}
       </div>
 
       {/*

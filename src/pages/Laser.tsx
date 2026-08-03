@@ -2,11 +2,13 @@ import { LinkCard, PageShell, Placeholder, SectionHeading } from '../components/
 import { Section } from '../components/Section'
 import { Stagger } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
-import { WhatsAppCTA } from '../components/WhatsAppCTA'
+import { VideoAccent } from '../components/VideoAccent'
+import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { CLAIMS, MARCA } from '../data/marca'
 import { MSI } from '../data/precios'
 import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
+import { LASER_VIDEO_PRINCIPAL, LASER_VIDEO_REFERENCIA_1, LASER_VIDEO_REFERENCIA_2 } from '../lib/constants'
 
 interface IconProps {
   className?: string
@@ -75,6 +77,7 @@ export function Laser() {
         eyebrow={MARCA.protocolo}
         title="Láser de diodo"
         intro="Elige cómo quieres armar tu tratamiento: zona por zona, un nivel de bikini, o cuerpo completo en una sola sesión."
+        media={<VideoAccent src={LASER_VIDEO_PRINCIPAL} className="h-72 w-full sm:h-80 md:h-[26rem]" />}
       />
 
       <Section id="beneficios">
@@ -93,38 +96,43 @@ export function Laser() {
       </Section>
 
       <Section id="precios" tone="alt">
-        <SectionHeading>Elige cómo armar tu tratamiento</SectionHeading>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
-          Zona por zona, un nivel de bikini, o cuerpo completo en una sola sesión.
-        </p>
+        <div className="grid gap-8 md:grid-cols-[1fr_300px] md:items-center">
+          <div>
+            <SectionHeading>Elige cómo armar tu tratamiento</SectionHeading>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
+              Zona por zona, un nivel de bikini, o cuerpo completo en una sola sesión.
+            </p>
 
-        <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" step={90}>
-          <LinkCard
-            to="/laser/zonas"
-            meta="A la carta"
-            title="Por zonas"
-            description="Precio de cada zona individual y a qué combo te conviene pasarte si tratas más de una."
-          />
-          <LinkCard
-            to="/laser/bikini"
-            meta="4 niveles"
-            title="Bikini"
-            description="Del bikini básico al brazilian, con la cobertura de cada nivel."
-          />
-          <LinkCard
-            to="/laser/cuerpo-completo"
-            meta="Full Body"
-            title="Cuerpo completo"
-            description="Todas las zonas en una sesión, al mejor precio por área."
-          />
-        </Stagger>
+            <Stagger className="mt-10 grid gap-4 sm:grid-cols-2" step={90}>
+              <LinkCard
+                to="/laser/zonas"
+                meta="A la carta"
+                title="Por zonas"
+                description="Precio de cada zona individual y a qué combo te conviene pasarte si tratas más de una."
+              />
+              <LinkCard
+                to="/laser/bikini"
+                meta="4 niveles"
+                title="Bikini"
+                description="Del bikini básico al brazilian, con la cobertura de cada nivel."
+              />
+              <LinkCard
+                to="/laser/cuerpo-completo"
+                meta="Full Body"
+                title="Cuerpo completo"
+                description="Todas las zonas en una sesión, al mejor precio por área."
+              />
+            </Stagger>
 
-        {MSI.disponible && (
-          <p className="mt-10 text-sm text-neutral-400">
-            Meses sin intereses disponibles{MSI.meses.length > 0 ? ` a ${MSI.meses.join(' y ')} meses` : ''}
-            . {MSI.nota}
-          </p>
-        )}
+            {MSI.disponible && (
+              <p className="mt-10 text-sm text-neutral-400">
+                Meses sin intereses disponibles{MSI.meses.length > 0 ? ` a ${MSI.meses.join(' y ')} meses` : ''}
+                . {MSI.nota}
+              </p>
+            )}
+          </div>
+          <VideoAccent src={LASER_VIDEO_REFERENCIA_1} className="hidden h-80 w-full md:block" />
+        </div>
       </Section>
 
       <Section id="antes-despues">
@@ -139,13 +147,14 @@ export function Laser() {
       </Section>
 
       <Section id="agendar">
-        <SectionHeading>¿Lo armamos juntas?</SectionHeading>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
-          Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.
-        </p>
-        <div className="mt-7">
-          <WhatsAppCTA context={AGENDAR_CONTEXT}>Escríbenos por WhatsApp</WhatsAppCTA>
-        </div>
+        <WhatsAppSection
+          context={AGENDAR_CONTEXT}
+          titulo="¿Lo armamos juntas?"
+          texto="Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad."
+          videoSrc={LASER_VIDEO_REFERENCIA_2}
+        >
+          Escríbenos por WhatsApp
+        </WhatsAppSection>
       </Section>
     </>
   )

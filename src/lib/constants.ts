@@ -9,6 +9,21 @@ export const FRONT_VIDEO_MOBILE = '/videos/hero-mobile.mp4'
 /** Clip vertical 9:16 del HIFU, para la tarjeta tipo "phone frame" de /hifu. */
 export const HIFU_VIDEO_MOBILE = '/videos/hifu-mobile.mp4'
 
+/** Clips de sesiones reales, sin audio, para los acentos de video de /hifu. */
+export const HIFU_VIDEO_REFERENCIA_1 = '/videos/hifu-referencia-1.mp4'
+export const HIFU_VIDEO_REFERENCIA_2 = '/videos/hifu-referencia-2.mp4'
+export const HIFU_VIDEO_REFERENCIA_3 = '/videos/hifu-referencia-3.mp4'
+
+/** Mismo patrón, para los acentos de video de /cera. */
+export const CERA_VIDEO_PRINCIPAL = '/videos/cera-principal.mp4'
+export const CERA_VIDEO_REFERENCIA_1 = '/videos/cera-referencia-1.mp4'
+export const CERA_VIDEO_REFERENCIA_2 = '/videos/cera-referencia-2.mp4'
+
+/** Mismo patrón, para los acentos de video de /laser. */
+export const LASER_VIDEO_PRINCIPAL = '/videos/laser-principal.mp4'
+export const LASER_VIDEO_REFERENCIA_1 = '/videos/laser-referencia-1.mp4'
+export const LASER_VIDEO_REFERENCIA_2 = '/videos/laser-referencia-2.mp4'
+
 export const AVATAR_IMAGE = '/hero/avatar-real.jpg'
 
 /** Logo real de marca (círculo con isotipo de loto + wordmark ya integrados). */
