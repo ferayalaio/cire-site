@@ -27,6 +27,13 @@ export const CLAIMS = {
   protocolo: 'Protocolo Láser Expert 8® — diseñado para tu tipo de piel y vello',
   experiencia: 'Resultados progresivos, respaldados por 9 años de experiencia',
   tecnologia: 'Tecnología láser diodo con punta de zafiro',
+  /*
+   * Agregado fuera del brief original, a pedido explícito (05/ago/26) para
+   * atender la objeción #1 antes de precio: el miedo al dolor. Ancla la
+   * comodidad a la punta de zafiro (dato técnico real, ya mencionado en
+   * `tecnologia`) en vez de una frase genérica de "sin dolor" sin sustento.
+   */
+  comodidad: 'Punta de zafiro que enfría la piel al momento, para mayor comodidad',
 }
 
 /*

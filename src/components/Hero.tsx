@@ -1,4 +1,9 @@
-import { FRONT_VIDEO, FRONT_VIDEO_MOBILE } from '../lib/constants'
+import {
+  FRONT_VIDEO,
+  FRONT_VIDEO_MOBILE,
+  FRONT_VIDEO_MOBILE_POSTER,
+  FRONT_VIDEO_POSTER,
+} from '../lib/constants'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { LoopVideo } from './LoopVideo'
 import { WhatsAppCTA } from './WhatsAppCTA'
@@ -93,11 +98,19 @@ export function Hero() {
  * abajo para no tapar el sujeto del video: eyebrow → título → subtítulo →
  * botón. El resto del embudo (beneficios, precios, reseñas, agendar) vive en
  * sus propias secciones debajo, fuera de este viewport.
+ *
+ * `liquid-glass` en la section (ver index.css) le pone el mismo marco de
+ * vidrio blanco que el resto de los videos del sitio, pegado al borde de la
+ * pantalla ya que este hero es a sangre completa (sin tarjeta ni márgenes).
  */
 function HeroMobile() {
   return (
-    <section className="relative flex h-dvh flex-col justify-end overflow-hidden bg-black">
-      <LoopVideo className="absolute inset-0 h-full w-full object-cover" src={FRONT_VIDEO_MOBILE} />
+    <section className="liquid-glass relative flex h-dvh flex-col justify-end overflow-hidden bg-black">
+      <LoopVideo
+        className="absolute inset-0 h-full w-full object-cover"
+        src={FRONT_VIDEO_MOBILE}
+        poster={FRONT_VIDEO_MOBILE_POSTER}
+      />
 
       {/*
        * Velo que sube de transparente a casi negro. Arranca en 0 a propósito:
@@ -126,7 +139,8 @@ function HeroMobile() {
         </h1>
 
         <p className="mt-3.5 max-w-[19rem] text-[0.9375rem] leading-relaxed text-white/75">
-          Resultados <strong className="font-medium text-white">visibles</strong> desde la primera sesión
+          Resultados <strong className="font-medium text-white">visibles</strong> desde la primera sesión, con la
+          comodidad de la punta de zafiro
         </p>
 
         <WhatsAppCTA
@@ -153,12 +167,16 @@ function HeroMobile() {
  * texto flota encima, a la izquierda. Sellos de confianza, pasos y foto de la
  * especialista se movieron a la sección de Beneficios (ver Home.tsx): acá
  * solo queda lo que sostiene la decisión de un solo vistazo.
+ *
+ * `liquid-glass` acá igual que en HeroMobile: mismo marco de vidrio que el
+ * resto de los videos del sitio (ver VideoAccent), pegado al borde de la
+ * pantalla porque este hero también es a sangre completa.
  */
 function HeroDesktop() {
   return (
-    <section className="relative h-dvh w-full overflow-hidden bg-black">
+    <section className="liquid-glass relative h-dvh w-full overflow-hidden bg-black">
       <div className="absolute inset-0">
-        <LoopVideo className="h-full w-full object-cover" src={FRONT_VIDEO} />
+        <LoopVideo className="h-full w-full object-cover" src={FRONT_VIDEO} poster={FRONT_VIDEO_POSTER} />
       </div>
 
       <div className="absolute inset-x-10 inset-y-0 z-20 flex items-center lg:inset-x-16">
@@ -175,7 +193,8 @@ function HeroDesktop() {
           </h1>
 
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-500">
-            Resultados <strong className="font-medium text-neutral-900">visibles</strong> desde la primera sesión
+            Resultados <strong className="font-medium text-neutral-900">visibles</strong> desde la primera sesión,
+            con la comodidad de la punta de zafiro
           </p>
 
           <div className="mt-7">

@@ -6,7 +6,7 @@ import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { CLAIMS, REDES } from '../data/marca'
-import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
+import { TESTIMONIOS_HOME } from '../data/testimonios'
 import { AVATAR_IMAGE } from '../lib/constants'
 
 interface IconProps {
@@ -177,7 +177,7 @@ const TRATAMIENTOS = [
     to: '/otros-servicios',
     meta: 'Recuperación y moldeado',
     title: 'Otros servicios',
-    description: 'Post-operatorio, Cire Sculpt y aparatología.',
+    description: 'Post-operatorio, Cire Sculpt y moldeo corporal.',
   },
 ]
 
@@ -294,7 +294,7 @@ export function Home() {
       </Section>
 
       <Section id="resenas">
-        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS} />
+        <TestimoniosSection testimonios={TESTIMONIOS_HOME} />
       </Section>
 
       <Section id="agendar" tone="alt">

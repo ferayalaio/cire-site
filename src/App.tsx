@@ -2,7 +2,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { AvisoPrivacidad } from './pages/AvisoPrivacidad'
 import { Cera } from './pages/Cera'
-import { Faq } from './pages/Faq'
 import { Hifu } from './pages/Hifu'
 import { Home } from './pages/Home'
 import { Laser } from './pages/Laser'
@@ -11,6 +10,9 @@ import { LaserCuerpoCompleto } from './pages/LaserCuerpoCompleto'
 import { LaserZonas } from './pages/LaserZonas'
 import { NotFound } from './pages/NotFound'
 import { OtrosServicios } from './pages/OtrosServicios'
+import { OtrosServiciosCireSculpt } from './pages/OtrosServiciosCireSculpt'
+import { OtrosServiciosMoldeoCorporal } from './pages/OtrosServiciosMoldeoCorporal'
+import { OtrosServiciosPostOperatorio } from './pages/OtrosServiciosPostOperatorio'
 import { PaqueteRedirect } from './pages/PaqueteRedirect'
 import { Sucursal } from './pages/Sucursal'
 import { Ubicaciones } from './pages/Ubicaciones'
@@ -32,7 +34,14 @@ function App() {
 
           <Route path="cera" element={<Cera />} />
           <Route path="hifu" element={<Hifu />} />
-          <Route path="otros-servicios" element={<OtrosServicios />} />
+
+          {/* Mismo patrón que /laser: un hub que enlaza a un catálogo propio por ruta. */}
+          <Route path="otros-servicios">
+            <Route index element={<OtrosServicios />} />
+            <Route path="moldeo-corporal" element={<OtrosServiciosMoldeoCorporal />} />
+            <Route path="cire-sculpt-anticelulitico" element={<OtrosServiciosCireSculpt />} />
+            <Route path="post-operatorio" element={<OtrosServiciosPostOperatorio />} />
+          </Route>
 
           <Route path="ubicaciones">
             <Route index element={<Ubicaciones />} />
@@ -41,7 +50,6 @@ function App() {
             <Route path=":slug" element={<Sucursal />} />
           </Route>
 
-          <Route path="faq" element={<Faq />} />
           <Route path="aviso-de-privacidad" element={<AvisoPrivacidad />} />
 
           {/*

@@ -19,7 +19,7 @@ import { ga4Lead, ga4PageView, ga4ViewItem, initGa4 } from './ga4'
  * El env var sigue ganando, que es lo que permite apuntar a un pixel de prueba
  * sin tocar código.
  */
-const DEFAULT_PIXEL_ID = '914517111006240'
+const DEFAULT_PIXEL_ID = '706257346536151'
 
 const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID || DEFAULT_PIXEL_ID
 

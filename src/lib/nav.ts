@@ -25,7 +25,7 @@ export interface NavItem {
  * bloque `id="agendar"`. El botón "Agendar cita" del nav usa esta lista para
  * decidir si hace smooth-scroll dentro de la página actual o si navega a
  * /ubicaciones (única opción razonable en páginas sin ese bloque, como
- * Ubicaciones mismo, FAQ o el detalle de una sucursal).
+ * Ubicaciones mismo o el detalle de una sucursal).
  */
 export const RUTAS_CON_AGENDAR = new Set([
   '/',
@@ -36,6 +36,9 @@ export const RUTAS_CON_AGENDAR = new Set([
   '/cera',
   '/hifu',
   '/otros-servicios',
+  '/otros-servicios/moldeo-corporal',
+  '/otros-servicios/cire-sculpt-anticelulitico',
+  '/otros-servicios/post-operatorio',
 ])
 
 export const NAV_ITEMS: NavItem[] = [
@@ -51,7 +54,22 @@ export const NAV_ITEMS: NavItem[] = [
   },
   { label: 'Cera', to: '/cera' },
   { label: 'HIFU', to: '/hifu' },
-  { label: 'Otros servicios', to: '/otros-servicios' },
+  {
+    label: 'Otros servicios',
+    to: '/otros-servicios',
+    children: [
+      { label: 'Moldeo corporal', to: '/otros-servicios/moldeo-corporal', description: 'Moldeo Cire-Na y Cire Body' },
+      {
+        label: 'Cire Sculpt Anticelulítico',
+        to: '/otros-servicios/cire-sculpt-anticelulitico',
+        description: 'Protocolo anticelulítico por sesiones',
+      },
+      {
+        label: 'Cire Sculpt Post Operativo',
+        to: '/otros-servicios/post-operatorio',
+        description: 'Drenaje y acompañamiento post-quirúrgico',
+      },
+    ],
+  },
   { label: 'Ubicaciones', to: '/ubicaciones' },
-  { label: 'FAQ', to: '/faq' },
 ]

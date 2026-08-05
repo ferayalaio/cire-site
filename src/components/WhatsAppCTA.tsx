@@ -40,12 +40,22 @@ const BASE =
 const VARIANTS: Record<Variant, string> = {
   primary: `${BASE} bg-neutral-900 px-6 py-3.5 text-white hover:bg-neutral-700`,
   secondary: `${BASE} border border-black/15 px-6 py-3.5 text-neutral-900 hover:border-black/40`,
-  floating: `${BASE} bg-neutral-900 px-5 py-3.5 text-white shadow-lg shadow-blush-900/30 hover:bg-neutral-700`,
+  // Más grande que primary/secondary a propósito: es el único CTA presente en
+  // TODAS las rutas, así que le conviene pesar más que uno de sección.
+  floating: `${BASE} bg-neutral-900 px-8 py-5 text-lg text-white shadow-lg shadow-blush-900/30 hover:bg-neutral-700`,
 }
 
-function WhatsAppGlyph() {
+// Más grande en floating para que el glifo escale junto con el padding y el
+// texto de arriba, en vez de quedar chico dentro de una pastilla más grande.
+const GLYPH_SIZE: Record<Variant, string> = {
+  primary: 'h-4 w-4',
+  secondary: 'h-4 w-4',
+  floating: 'h-6 w-6',
+}
+
+function WhatsAppGlyph({ className = 'h-4 w-4' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 shrink-0" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="currentColor" className={`${className} shrink-0`} aria-hidden="true">
       <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.35-.54.05-1.04.24-3.5-.73-2.96-1.17-4.83-4.24-4.98-4.44-.14-.2-1.18-1.58-1.18-3.01 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.19 0 .43-.07.67.5.24.58.83 2.01.9 2.16.07.15.12.32.02.51-.1.2-.36.53-.53.71-.17.19-.25.24-.12.48.14.24.61 1.01 1.31 1.63.9.8 1.66 1.05 1.9 1.17.24.12.38.1.52-.06.14-.17.6-.7.76-.94.17-.24.34-.2.56-.12.22.08 1.42.67 1.66.79.24.12.4.18.46.29.05.1.05.66-.19 1.3Z" />
     </svg>
   )
@@ -65,7 +75,7 @@ export function WhatsAppCTA({
       onClick={() => trackWhatsAppClick(context)}
       className={`${VARIANTS[variant]} ${className}`}
     >
-      <WhatsAppGlyph />
+      <WhatsAppGlyph className={GLYPH_SIZE[variant]} />
       {children ?? 'Escríbenos por WhatsApp'}
     </a>
   )
@@ -86,6 +96,8 @@ interface WhatsAppSectionProps {
   id?: string
   /** Clip opcional de referencia para llenar el espacio libre a la derecha (solo desktop). Sin esto, la tarjeta queda igual que siempre. */
   videoSrc?: string
+  /** Frame estático del clip de arriba (ver LoopVideo) — sin esto, la tarjeta se ve negra un instante al entrar a la ruta. */
+  videoPoster?: string
   /** Leyenda opcional sobre el video (ver VideoAccent) — sin esto, el clip va sin texto encima. */
   videoCaption?: { tag: string; title: string }
 }
@@ -97,6 +109,7 @@ export function WhatsAppSection({
   children,
   id,
   videoSrc,
+  videoPoster,
   videoCaption,
 }: WhatsAppSectionProps) {
   return (
@@ -116,6 +129,7 @@ export function WhatsAppSection({
       {videoSrc && (
         <VideoAccent
           src={videoSrc}
+          poster={videoPoster}
           caption={videoCaption}
           className="mt-8 hidden shrink-0 sm:mt-0 sm:block sm:h-56 sm:w-48 md:h-[340px] md:w-[300px]"
         />
@@ -205,6 +219,36 @@ function contextForPath(pathname: string, sucursalSlug: string | undefined): Wha
   }
 
   if (primero === 'otros-servicios') {
+    if (segundo === 'moldeo-corporal') {
+      return {
+        sku: 'moldeo-corporal',
+        nombre: 'moldeo corporal',
+        categoria: 'otros',
+        placement: 'floating',
+        articulo: 'el',
+        sucursal: sucursalSlug,
+      }
+    }
+    if (segundo === 'cire-sculpt-anticelulitico') {
+      return {
+        sku: 'cire-sculpt',
+        nombre: 'Cire Sculpt Anticelulítico',
+        categoria: 'otros',
+        placement: 'floating',
+        articulo: 'el',
+        sucursal: sucursalSlug,
+      }
+    }
+    if (segundo === 'post-operatorio') {
+      return {
+        sku: 'post-operatorio',
+        nombre: 'el post-operatorio',
+        categoria: 'otros',
+        placement: 'floating',
+        articulo: 'el',
+        sucursal: sucursalSlug,
+      }
+    }
     return {
       sku: 'otros',
       nombre: 'sus servicios',

@@ -29,7 +29,7 @@ ve desde el navegador. **No pongas acá el token de la Conversions API.**
 
 | Variable              | Default                  | Para qué |
 | --------------------- | ------------------------ | -------- |
-| `VITE_META_PIXEL_ID`  | `914517111006240`        | Sobrescribí solo para apuntar a un pixel de prueba. |
+| `VITE_META_PIXEL_ID`  | `706257346536151`        | Sobrescribí solo para apuntar a un pixel de prueba. |
 | `VITE_WHATSAPP_PHONE` | — (**hay que cargarla**) | Un solo número para las cinco sucursales. Sin esto los links van a `wa.me/` sin número y no abren nada. |
 | `VITE_GA4_ID`         | — (opcional)             | ID de medición de GA4 (`G-XXXXXXXXXX`). Sin esto no se manda nada a GA4; el pixel sigue funcionando igual. |
 
@@ -52,10 +52,9 @@ prellenado (ver "Mensaje de WhatsApp" más abajo).
 | `/laser/cuerpo-completo` | `pages/LaserCuerpoCompleto.tsx` | **Full Body — la página de mayor prioridad de conversión** |
 | `/cera` | `pages/Cera.tsx` | Secundario |
 | `/hifu` | `pages/Hifu.tsx` | Secundario |
-| `/otros-servicios` | `pages/OtrosServicios.tsx` | Terciario — post-operatorio, Cire Sculpt, aparatología |
+| `/otros-servicios` | `pages/OtrosServicios.tsx` | Terciario — post-operatorio, Cire Sculpt, moldeo corporal |
 | `/ubicaciones` | `pages/Ubicaciones.tsx` | Hub de las 5 sucursales |
 | `/ubicaciones/:slug` | `pages/Sucursal.tsx` | Una plantilla para las 5 (`polanco`, `del-valle`, `coapa`, `oriente`, `metepec`) |
-| `/faq` | `pages/Faq.tsx` | Contenido de calentamiento |
 | `/aviso-de-privacidad` | `pages/AvisoPrivacidad.tsx` | Legal |
 
 Blog: fase 2, no entra en este lanzamiento.
@@ -86,7 +85,6 @@ es editar ese archivo — el diseño de las páginas no se toca.
 | `src/data/precios.ts` | Zonas, niveles de bikini, combos, Full Body, cera, HIFU, otros servicios, MSI y la promo estacional activa |
 | `src/data/sucursales.ts` | Las 5 sucursales: dirección, link de Maps, foto, horario |
 | `src/data/marca.ts` | Claims de posicionamiento y la línea de COFEPRIS |
-| `src/data/faq.ts` | Las preguntas y respuestas de `/faq` |
 
 Un precio en `null` significa "pendiente de cargar" y la página lo muestra
 así, en vez de inventar un número. `formatPrecio()` centraliza el formato
@@ -140,7 +138,7 @@ Todo pasa por `src/lib/analytics.ts` — ninguna página llama a `fbq` o `gtag`
 por su cuenta. Un solo lugar para cambiar nombres de evento o parámetros, y no
 se puede agregar un CTA que se olvide de mandar el contexto.
 
-### Meta Pixel (`914517111006240`)
+### Meta Pixel (`706257346536151`)
 
 | Evento | Dónde | Qué manda |
 | ------ | ----- | --------- |
@@ -262,7 +260,7 @@ vercel --prod
 
 Esto **no se hace desde el código**. Hay que entrar a
 [Events Manager](https://business.facebook.com/events_manager2) con el pixel
-`914517111006240`.
+`706257346536151`.
 
 ### 1. Verificación de dominio
 
@@ -334,8 +332,8 @@ llegan incompletas.
 ## Roadmap
 
 **Fase 1 (este lanzamiento):** todo lo de arriba — Home, las tres páginas de
-láser, cera, HIFU, otros servicios, las 5 ubicaciones, FAQ, aviso de
-privacidad, pixel + GA4 funcionando, precios en capa de datos editable.
+láser, cera, HIFU, otros servicios, las 5 ubicaciones, aviso de privacidad,
+pixel + GA4 funcionando, precios en capa de datos editable.
 
 **Fase 2 (después de medir 3-4 semanas):** blog SEO de cola larga, posible
 calculadora de precios interactiva, ajustes según qué páginas convierten mejor
@@ -357,10 +355,6 @@ algunos assets de marca**. Los huecos se muestran como bloques punteados
   sucursal, copiados tal cual del listado oficial (no se inventan ni se
   parafrasean). El mapa embebido en cada sucursal no aparece hasta que haya
   dirección cargada.
-- **`src/data/faq.ts`** — las respuestas a las 6 preguntas (dolor, frecuencia
-  de sesiones, etc.) y la explicación de las 3 fases del vello. Los nombres y
-  el orden ya están, las respuestas no: son afirmaciones clínicas y no se
-  completan de memoria.
 - **`src/pages/AvisoPrivacidad.tsx`** — el texto legal lo define Cire.
 - **Iconos de los 4 niveles de bikini** — van en `public/` y se referencian
   desde `NIVELES_BIKINI` en `precios.ts` (campo `icono`). Mientras no estén, la

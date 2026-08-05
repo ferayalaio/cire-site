@@ -13,6 +13,14 @@ interface PageShellProps {
   eyebrow?: string
   title: string
   intro?: string
+  /**
+   * Bloque opcional debajo del `intro`, para cuando el copy de la página no
+   * entra cómodo en un solo párrafo gris (ver /laser/cuerpo-completo: una
+   * frase corta como `intro` + el resto del texto en una tarjeta con más
+   * jerarquía, mismo patrón que ya usaba HIFU con su propio hero). Sin esto,
+   * el header queda igual que siempre — es aditivo, no reemplaza a `intro`.
+   */
+  introExtra?: ReactNode
   breadcrumbs?: Crumb[]
   /** Acento de video opcional junto al título (ver VideoAccent), solo visible desde `md`. Sin esto, el header queda igual que siempre. */
   media?: ReactNode
@@ -26,7 +34,7 @@ interface PageShellProps {
  * espacio superior, y sumar los dos dejaba un salto enorme entre el intro y
  * el primer heading de sección.
  */
-export function PageShell({ eyebrow, title, intro, breadcrumbs, media, children }: PageShellProps) {
+export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, media, children }: PageShellProps) {
   return (
     <main className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
       <div className={media ? 'grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14' : undefined}>
@@ -73,6 +81,7 @@ export function PageShell({ eyebrow, title, intro, breadcrumbs, media, children 
           </AnimatedHeading>
 
           {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
+          {introExtra}
         </div>
 
         {media && (
@@ -116,14 +125,25 @@ interface LinkCardProps {
   title: string
   description: string
   meta?: string
+  /**
+   * Marco vino ya visible en reposo (no solo al hover) y sombra levantada.
+   * Opt-in porque LinkCard se usa también en hubs más neutros (Home,
+   * /ubicaciones) donde ese acento no aplica — acá lo pide /laser para que
+   * las 4 tarjetas de "armar tu tratamiento" no se vean tan planas.
+   */
+  accent?: boolean
 }
 
 // Tarjeta de los hubs (/laser, /ubicaciones) que lleva a cada sub-ruta.
-export function LinkCard({ to, title, description, meta }: LinkCardProps) {
+export function LinkCard({ to, title, description, meta, accent }: LinkCardProps) {
   return (
     <Link
       to={to}
-      className="group flex flex-col rounded-2xl border border-black/[0.07] bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blush-300 hover:shadow-[0_20px_45px_-20px_rgba(166,94,109,0.35)]"
+      className={`group flex flex-col rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blush-300 hover:shadow-[0_20px_45px_-20px_rgba(166,94,109,0.35)] ${
+        accent
+          ? 'border-blush-200 bg-gradient-to-br from-blush-50 to-white shadow-[0_15px_35px_-22px_rgba(166,94,109,0.4)]'
+          : 'border-black/[0.07] bg-white'
+      }`}
     >
       {meta && (
         <span className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-blush-500">

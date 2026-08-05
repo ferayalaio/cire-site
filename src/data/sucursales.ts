@@ -42,6 +42,10 @@ export interface Sucursal {
 export interface Testimonio {
   texto: string
   autor: string
+  /** Nombre de negocio + sucursal a mostrar bajo el autor, ej. "Cire Coapa". Opcional: en páginas que mezclan varias sucursales se omite. */
+  sucursal?: string
+  /** Foto de perfil real de la reseña de Google, recortada a public/avatars/. */
+  avatarSrc?: string
 }
 
 /*
@@ -66,18 +70,6 @@ export const SUCURSALES: Sucursal[] = [
     direccion: 'Gutenberg 194, Anzures, Miguel Hidalgo, 11590 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=3247528200057585679',
     foto: '/sucursales/polanco.png',
-    testimonios: [
-      {
-        texto:
-          'El personal es súper amable y el lugar se mantiene impecable, se nota el cuidado en cada detalle.',
-        autor: 'Renata G.',
-      },
-      {
-        texto:
-          'Desde las primeras sesiones ya se notaba la diferencia, y en cada cita me explican exactamente cómo va mi tratamiento.',
-        autor: 'Valeria H.',
-      },
-    ],
   },
   {
     slug: 'del-valle',
@@ -87,18 +79,6 @@ export const SUCURSALES: Sucursal[] = [
     mapsUrl: 'https://maps.google.com/?cid=18410687439098431653',
     telefono: '+52 55 2800 8869',
     foto: '/sucursales/del-valle.png',
-    testimonios: [
-      {
-        texto:
-          'Desde la segunda sesión ya notaba menos vello y más parejo el crecimiento — no tuve que esperar meses para ver resultado.',
-        autor: 'Fernanda R.',
-      },
-      {
-        texto:
-          'Lo que más se agradece es el trato: el lugar impecable y el personal siempre atento a explicarte cada paso.',
-        autor: 'Andrea M.',
-      },
-    ],
   },
   {
     slug: 'coapa',
@@ -108,17 +88,6 @@ export const SUCURSALES: Sucursal[] = [
     mapsUrl: 'https://maps.google.com/?cid=10278530957479471836',
     telefono: '+52 56 3039 9230',
     foto: '/sucursales/coapa.png',
-    testimonios: [
-      {
-        texto: 'Me sorprendió lo rápido que empezó a notarse el cambio, casi desde las primeras citas.',
-        autor: 'Karla S.',
-      },
-      {
-        texto:
-          'Cada sesión se siente pensada para mi piel y mi zona, no una rutina genérica — se nota la atención personalizada.',
-        autor: 'Daniela P.',
-      },
-    ],
   },
   {
     slug: 'oriente',
@@ -129,8 +98,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'metepec',
     nombre: 'Metepec',
-    direccion: '',
-    mapsUrl: 'https://maps.app.goo.gl/AfyJ6FsWemM6MFa36',
+    direccion:
+      'C. Adolfo López Mateos 1100-Loc 10-A, La Asunción, 52172 San Salvador Tizatlalli, Méx.',
+    mapsUrl: 'https://maps.app.goo.gl/RJXpuQuSgiNSU6iR8',
     mapsQuery: '19.2679641,-99.5746308',
     foto: '/sucursales/metepec.png',
   },

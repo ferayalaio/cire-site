@@ -11,13 +11,17 @@ import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import {
   HIFU_VIDEO_MOBILE,
+  HIFU_VIDEO_MOBILE_POSTER,
   HIFU_VIDEO_REFERENCIA_1,
+  HIFU_VIDEO_REFERENCIA_1_POSTER,
   HIFU_VIDEO_REFERENCIA_2,
+  HIFU_VIDEO_REFERENCIA_2_POSTER,
   HIFU_VIDEO_REFERENCIA_3,
+  HIFU_VIDEO_REFERENCIA_3_POSTER,
 } from '../lib/constants'
 import { trackViewContent } from '../lib/analytics'
 import { HIFU_PROTOCOLOS, formatPrecio } from '../data/precios'
-import { TESTIMONIOS_DESTACADOS } from '../data/testimonios'
+import { TESTIMONIOS_HIFU } from '../data/testimonios'
 
 /* -------------------------------------------------------------------------- */
 /* Iconos — mismo trazo fino (viewBox 24, stroke 1.4-1.6) que el resto del    */
@@ -268,12 +272,19 @@ export function Hifu() {
         {/*
           Tarjeta vertical tipo "phone frame" para el clip 9:16: el video es
           corto y vertical, así que va contenido en una tarjeta con object-cover
-          en vez de estirarlo como fondo horizontal.
+          en vez de estirarlo como fondo horizontal. `liquid-glass` agrega el
+          mismo marco de vidrio que el resto de los videos, tallado justo
+          adentro del bisel oscuro de 6px (border-neutral-900) — no lo
+          reemplaza, la utilidad de Tailwind gana por capa de cascada.
         */}
         <div className="animate-fade-in-up motion-reduce:animate-none [animation-delay:150ms]">
           <div className="relative mx-auto w-full max-w-[300px]">
-            <div className="relative aspect-[9/16] overflow-hidden rounded-[2.25rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-[0_35px_70px_-30px_rgba(166,94,109,0.45)]">
-              <LoopVideo src={HIFU_VIDEO_MOBILE} className="h-full w-full object-cover" />
+            <div className="liquid-glass relative aspect-[9/16] rounded-[2.25rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-[0_35px_70px_-30px_rgba(166,94,109,0.45)]">
+              <LoopVideo
+                src={HIFU_VIDEO_MOBILE}
+                poster={HIFU_VIDEO_MOBILE_POSTER}
+                className="h-full w-full object-cover"
+              />
               <span
                 aria-hidden="true"
                 className="absolute left-1/2 top-2 h-1.5 w-14 -translate-x-1/2 rounded-full bg-neutral-900/80"
@@ -307,7 +318,12 @@ export function Hifu() {
             ))}
           </div>
         </div>
-        <VideoAccent src={HIFU_VIDEO_REFERENCIA_1} className="h-64 w-full sm:h-80 md:h-96" />
+        <VideoAccent
+          src={HIFU_VIDEO_REFERENCIA_1}
+          poster={HIFU_VIDEO_REFERENCIA_1_POSTER}
+          caption={{ tag: 'Sesión real', title: 'Cire Lift Protocol en acción' }}
+          className="h-64 w-full sm:h-80 md:h-96"
+        />
         </Reveal>
       </Section>
 
@@ -439,7 +455,7 @@ export function Hifu() {
 
       {/* Reseñas: ya no necesita su propio salto — lo aporta la Section. */}
       <Section id="resenas">
-        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS} />
+        <TestimoniosSection testimonios={TESTIMONIOS_HIFU} />
       </Section>
 
       <Quote>{QUOTES[4]}</Quote>
@@ -457,7 +473,12 @@ export function Hifu() {
               </div>
             ))}
           </Stagger>
-          <VideoAccent src={HIFU_VIDEO_REFERENCIA_2} className="hidden h-full min-h-[300px] md:block" />
+          <VideoAccent
+            src={HIFU_VIDEO_REFERENCIA_2}
+            poster={HIFU_VIDEO_REFERENCIA_2_POSTER}
+            caption={{ tag: 'Sin cirugía', title: 'Resultado natural y progresivo' }}
+            className="hidden h-full min-h-[300px] md:block"
+          />
         </div>
       </Section>
 
@@ -468,6 +489,8 @@ export function Hifu() {
           titulo="Empecemos con una valoración"
           texto="Ahí analizamos tu piel y te decimos exactamente qué zonas conviene trabajar, cómo, y qué resultado puedes esperar."
           videoSrc={HIFU_VIDEO_REFERENCIA_3}
+          videoPoster={HIFU_VIDEO_REFERENCIA_3_POSTER}
+          videoCaption={{ tag: 'HIFU 4D', title: 'Firmeza desde la primera sesión' }}
         >
           Agenda tu valoración
         </WhatsAppSection>

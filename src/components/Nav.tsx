@@ -29,7 +29,7 @@ interface AgendarLinkProps {
  * La página actual ya tiene su propio cierre de embudo (`id="agendar"`) en
  * las rutas listadas en RUTAS_CON_AGENDAR: ahí el botón hace scroll suave
  * dentro de la misma página en vez de mandar a otra ruta sin contexto. En el
- * resto (Ubicaciones, FAQ, detalle de sucursal) no hay ese bloque, así que
+ * resto (Ubicaciones, detalle de sucursal) no hay ese bloque, así que
  * conserva el link a /ubicaciones.
  */
 function AgendarLink({ pathname, className, children }: AgendarLinkProps) {

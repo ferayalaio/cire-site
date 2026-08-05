@@ -7,6 +7,8 @@ interface VideoAccentCaption {
 
 interface VideoAccentProps {
   src: string
+  /** Frame estático mostrado hasta que el clip decodifica (ver LoopVideo) — sin esto, el marco se ve negro un instante al entrar a la ruta. */
+  poster?: string
   className?: string
   caption?: VideoAccentCaption
 }
@@ -23,16 +25,21 @@ interface VideoAccentProps {
  * anuncio suelta. `caption` es opcional porque junto al h1 de una página
  * (ver PageShell) ya hay jerarquía de sobra; en tarjetas más chicas (precios,
  * CTA de WhatsApp) sí aporta un motivo de por qué ese clip está ahí.
+ *
+ * `.liquid-glass` (index.css) pone el "marquito de vidrio": un filo con
+ * degradado que solo se ve en las esquinas/bordes redondeados, más un
+ * highlight sutil arriba — no un borde sólido ni relleno, así el clip sigue
+ * sangrando hasta el borde en vez de quedar con padding blanco alrededor.
  */
-export function VideoAccent({ src, className = '', caption }: VideoAccentProps) {
+export function VideoAccent({ src, poster, className = '', caption }: VideoAccentProps) {
   return (
     <div className={`relative ${className}`}>
       <div
         aria-hidden="true"
         className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-blush-200/70 blur-md"
       />
-      <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] shadow-[0_25px_55px_-25px_rgba(61,29,34,0.45)]">
-        <LoopVideo src={src} className="h-full w-full object-cover" />
+      <div className="liquid-glass relative h-full w-full rounded-[1.75rem] shadow-[0_25px_55px_-25px_rgba(61,29,34,0.45)]">
+        <LoopVideo src={src} poster={poster} className="h-full w-full object-cover" />
 
         {caption && (
           <>

@@ -3,6 +3,15 @@ import { useEffect, useRef } from 'react'
 interface LoopVideoProps {
   src: string
   className?: string
+  /**
+   * Frame estático (jpg) que se ve mientras el .mp4 todavía no descarga lo
+   * suficiente para pintar — sin esto el `<video>` se ve negro (su fondo por
+   * default) durante ese hueco, que en navegación de ruta puede ser notorio
+   * incluso con el archivo cacheado, porque el elemento nace vacío en cada
+   * mount. Generado con ffmpeg a partir del propio clip (ver
+   * public/videos/posters/), así siempre matchea el primer frame real.
+   */
+  poster?: string
 }
 
 /*
@@ -18,8 +27,14 @@ interface LoopVideoProps {
  * mute forzado lo desbloquea, así que no hace falta mostrar ese error en
  * consola. `onEnded` es un respaldo por si algún navegador no dispara el
  * loop nativo con el atributo solo.
+ *
+ * `preload="auto"` es explícito a propósito: el default del navegador para
+ * video muted+autoplay suele ser más conservador (a veces solo trae
+ * metadata), lo que alarga justo el hueco que `poster` cubre. El swap
+ * poster → primer frame lo hace el navegador solo y no se nota como salto
+ * porque el poster viene extraído del mismo frame.
  */
-export function LoopVideo({ src, className }: LoopVideoProps) {
+export function LoopVideo({ src, className, poster }: LoopVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -34,6 +49,8 @@ export function LoopVideo({ src, className }: LoopVideoProps) {
       ref={ref}
       className={className}
       src={src}
+      poster={poster}
+      preload="auto"
       autoPlay
       loop
       muted

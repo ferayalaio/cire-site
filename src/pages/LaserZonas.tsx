@@ -5,7 +5,7 @@ import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { COMBOS, ZONAS, formatPrecio, hayPrecio } from '../data/precios'
-import { TESTIMONIOS_DESTACADOS_ALT } from '../data/testimonios'
+import { TESTIMONIOS_LASER_ZONAS } from '../data/testimonios'
 
 export function LaserZonas() {
   useDocumentMeta({
@@ -18,7 +18,7 @@ export function LaserZonas() {
     <PageShell
       eyebrow="Depilación láser"
       title="Precios por zona"
-      intro="Cada zona por separado. Si vas a tratar más de una, los combos casi siempre salen mejor."
+      intro="Cada zona por separado. Si vas a tratar más de una, los combos casi siempre salen mejor. Con punta de zafiro que enfría la piel al momento, para mayor comodidad."
       breadcrumbs={[
         { label: 'Inicio', to: '/' },
         { label: 'Láser', to: '/laser' },
@@ -35,29 +35,38 @@ export function LaserZonas() {
           la tarjeta sigue recortando solo las esquinas) y el aviso de swipe
           solo se muestra en mobile, donde hace falta.
         */}
-        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
+        <div className="overflow-hidden rounded-3xl border-2 border-blush-200 bg-white shadow-[0_25px_60px_-30px_rgba(130,69,79,0.35)]">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-black/[0.07] text-neutral-400">
-                  <th className="px-5 py-3 font-normal">Zona</th>
-                  <th className="px-5 py-3 font-normal">Por sesión</th>
-                  <th className="px-5 py-3 font-normal">Paquete</th>
-                  <th className="px-5 py-3 font-normal">Sesiones</th>
-                  <th className="px-5 py-3" />
+                <tr className="bg-gradient-to-r from-blush-600 to-blush-900 text-blush-50">
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Zona</th>
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Paquete</th>
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Sesiones</th>
+                  <th className="px-5 py-4" />
                 </tr>
               </thead>
               <tbody>
-                {ZONAS.map((zona) => (
-                  <tr key={zona.slug} className="border-b border-black/[0.05] transition-colors last:border-0 hover:bg-blush-50/60">
-                    <td className="px-5 py-4 text-neutral-900">{zona.nombre}</td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      {formatPrecio(zona.precioSesion) ?? <span className="text-neutral-300">Pendiente</span>}
+                {ZONAS.map((zona, i) => (
+                  <tr
+                    key={zona.slug}
+                    className={`border-b border-blush-100 transition-colors last:border-0 hover:bg-blush-100/70 ${
+                      i % 2 === 1 ? 'bg-blush-50/50' : 'bg-white'
+                    }`}
+                  >
+                    <td className="px-5 py-4 font-medium text-neutral-900">{zona.nombre}</td>
+                    <td className="px-5 py-4 text-base font-semibold text-blush-600">
+                      {formatPrecio(zona.precioPaquete) ?? <span className="text-sm font-normal text-neutral-300">Pendiente</span>}
                     </td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      {formatPrecio(zona.precioPaquete) ?? <span className="text-neutral-300">Pendiente</span>}
+                    <td className="px-5 py-4">
+                      {zona.sesiones !== null ? (
+                        <span className="inline-flex items-center rounded-full bg-blush-50 px-2.5 py-1 text-xs font-semibold text-blush-600 ring-1 ring-inset ring-blush-200">
+                          {zona.sesiones} sesiones
+                        </span>
+                      ) : (
+                        <span className="text-neutral-300">—</span>
+                      )}
                     </td>
-                    <td className="px-5 py-4 text-neutral-600">{zona.sesiones ?? '—'}</td>
                     <td className="px-5 py-4">
                       {/*
                         Zonas sin combo exacto: el upsell a Full Body va en la
@@ -67,7 +76,7 @@ export function LaserZonas() {
                       {zona.sinComboExacto && (
                         <Link
                           to="/laser/cuerpo-completo"
-                          className="whitespace-nowrap text-xs font-medium text-neutral-500 underline hover:text-neutral-900"
+                          className="whitespace-nowrap text-xs font-semibold text-blush-500 underline hover:text-blush-700"
                         >
                           Ahorra más con Full Body →
                         </Link>
@@ -81,7 +90,7 @@ export function LaserZonas() {
         </div>
         <p className="text-xs text-neutral-400 sm:hidden">Desliza para ver todas las columnas →</p>
 
-        {!hayPrecio(...ZONAS.flatMap((z) => [z.precioSesion, z.precioPaquete])) && (
+        {!hayPrecio(...ZONAS.map((z) => z.precioPaquete)) && (
           <Placeholder label="Pendiente: cargar precios del tarifario en src/data/precios.ts" />
         )}
       </Reveal>
@@ -93,28 +102,37 @@ export function LaserZonas() {
           precio del combo es fijo: quitar una zona no genera descuento.
         </p>
 
-        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
+        <div className="overflow-hidden rounded-3xl border-2 border-blush-200 bg-white shadow-[0_25px_60px_-30px_rgba(130,69,79,0.35)]">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-left text-sm">
               <thead>
-                <tr className="border-b border-black/[0.07] text-neutral-400">
-                  <th className="px-5 py-3 font-normal">Combo</th>
-                  <th className="px-5 py-3 font-normal">Por sesión</th>
-                  <th className="px-5 py-3 font-normal">Paquete</th>
-                  <th className="px-5 py-3 font-normal">Sesiones</th>
+                <tr className="bg-gradient-to-r from-blush-600 to-blush-900 text-blush-50">
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Combo</th>
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Paquete</th>
+                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em]">Sesiones</th>
                 </tr>
               </thead>
               <tbody>
-                {COMBOS.map((combo) => (
-                  <tr key={combo.slug} className="border-b border-black/[0.05] transition-colors last:border-0 hover:bg-blush-50/60">
-                    <td className="px-5 py-4 text-neutral-900">{combo.nombre}</td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      {formatPrecio(combo.precioSesion) ?? <span className="text-neutral-300">Pendiente</span>}
+                {COMBOS.map((combo, i) => (
+                  <tr
+                    key={combo.slug}
+                    className={`border-b border-blush-100 transition-colors last:border-0 hover:bg-blush-100/70 ${
+                      i % 2 === 1 ? 'bg-blush-50/50' : 'bg-white'
+                    }`}
+                  >
+                    <td className="px-5 py-4 font-medium text-neutral-900">{combo.nombre}</td>
+                    <td className="px-5 py-4 text-base font-semibold text-blush-600">
+                      {formatPrecio(combo.precioPaquete) ?? <span className="text-sm font-normal text-neutral-300">Pendiente</span>}
                     </td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      {formatPrecio(combo.precioPaquete) ?? <span className="text-neutral-300">Pendiente</span>}
+                    <td className="px-5 py-4">
+                      {combo.sesiones !== null ? (
+                        <span className="inline-flex items-center rounded-full bg-blush-50 px-2.5 py-1 text-xs font-semibold text-blush-600 ring-1 ring-inset ring-blush-200">
+                          {combo.sesiones} sesiones
+                        </span>
+                      ) : (
+                        <span className="text-neutral-300">—</span>
+                      )}
                     </td>
-                    <td className="px-5 py-4 text-neutral-600">{combo.sesiones ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -122,11 +140,6 @@ export function LaserZonas() {
           </div>
         </div>
         <p className="text-xs text-neutral-400 sm:hidden">Desliza para ver todas las columnas →</p>
-
-        <p className="text-xs text-neutral-400">
-          El 5% de descuento en efectivo de los combos se confirma por WhatsApp, no está reflejado
-          en esta tabla.
-        </p>
       </Reveal>
 
       <Reveal className="mt-16 space-y-4">
@@ -137,25 +150,27 @@ export function LaserZonas() {
             meta="Full Body"
             title="Cuerpo completo"
             description="Si estás sumando tres zonas o más, el paquete completo suele costar menos."
+            accent
           />
           <LinkCard
             to="/laser/bikini"
             meta="4 niveles"
             title="Bikini"
             description="Del básico al brazilian, con la cobertura de cada nivel."
+            accent
           />
         </Stagger>
       </Reveal>
 
       <Reveal className="mt-16">
-        <TestimoniosSection testimonios={TESTIMONIOS_DESTACADOS_ALT} />
+        <TestimoniosSection testimonios={TESTIMONIOS_LASER_ZONAS} />
       </Reveal>
 
       <WhatsAppSection
         id="agendar"
         context={{ sku: 'laser-zonas', nombre: 'una zona', categoria: 'laser', articulo: 'la' }}
         titulo="¿No sabes por dónde empezar?"
-        texto="Cuéntanos qué zona te interesa y te armamos la mejor combinación de precio."
+        texto="Resultados visibles desde la primera sesión. Cuéntanos qué zona te interesa y te armamos la mejor combinación de precio."
       >
         Consultar por WhatsApp
       </WhatsAppSection>
