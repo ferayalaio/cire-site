@@ -33,10 +33,14 @@ interface PageShellProps {
  * inferior propio: la sección siguiente (`Section`) ya aporta su propio
  * espacio superior, y sumar los dos dejaba un salto enorme entre el intro y
  * el primer heading de sección.
+ *
+ * Al padding se le suma `--anuncio-h` (ver AnnouncementBar.tsx): el nav se
+ * corre esos 2.5rem cuando el cintillo está abierto, y sin sumarlos acá el nav
+ * quedaba a 4px del breadcrumb en celular en vez de tener aire.
  */
 export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, media, children }: PageShellProps) {
   return (
-    <main className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+    <main className="mx-auto max-w-6xl px-6 pt-[calc(8rem+var(--anuncio-h,0px))] sm:px-10 sm:pt-[calc(10rem+var(--anuncio-h,0px))]">
       <div className={media ? 'grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14' : undefined}>
         {/*
          * El bloque de encabezado entra igual que el h1 del hero (fade-up en

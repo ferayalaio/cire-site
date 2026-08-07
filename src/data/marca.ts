@@ -37,6 +37,99 @@ export const CLAIMS = {
 }
 
 /*
+ * Los 4 micro-sellos que van debajo del CTA del hero (05/ago/26). Cada uno
+ * contesta una objeción distinta antes de cualquier scroll: dolor, confianza,
+ * tiempo hasta ver resultado y quién te atiende.
+ *
+ * Viven acá y no en Hero.tsx porque son claims de marca: los números salen de
+ * MARCA, así que si cambia la cantidad de sucursales o de años no queda una
+ * copia desactualizada suelta en el hero.
+ *
+ * Desde el rediseño a pastillas (ver SellosConfianza en Hero.tsx) cada sello
+ * lleva dos textos y un ícono:
+ *
+ * - `texto` es la etiqueta corta que se ve en la pastilla. Corto es un
+ *   requisito de forma, no una preferencia: una pastilla que se parte en dos
+ *   renglones deja de leerse de un vistazo, que es todo lo que hace útil a
+ *   este bloque.
+ * - `detalle` es el claim completo, el que llevaban antes como texto visible.
+ *   Va al `title` y al texto accesible de cada pastilla, así lo que se pierde
+ *   al acortar sigue estando para quien lo busca y para el crawler.
+ * - `icono` es una clave, no un componente ni un emoji: los glifos se dibujan
+ *   en Hero.tsx (ver SELLO_ICONS) para que este archivo siga siendo copy y no
+ *   arrastre JSX.
+ */
+export type SelloIcono = 'frio' | 'experiencia' | 'resultado' | 'certificadas'
+
+export interface SelloHero {
+  icono: SelloIcono
+  texto: string
+  detalle: string
+}
+
+export const SELLOS_HERO: SelloHero[] = [
+  {
+    icono: 'frio',
+    texto: 'Punta de zafiro',
+    detalle: 'Tecnología fría punta de zafiro (sin dolor)',
+  },
+  {
+    icono: 'experiencia',
+    texto: `${MARCA.anosExperiencia} años de experiencia`,
+    detalle: `${MARCA.anosExperiencia} años de experiencia y ${MARCA.cantidadSucursales} sucursales`,
+  },
+  {
+    icono: 'resultado',
+    texto: 'Resultados 1ª sesión',
+    detalle: 'Resultados visibles desde la 1ª sesión',
+  },
+  {
+    icono: 'certificadas',
+    texto: 'Certificadas',
+    detalle: 'Especialistas 100% certificadas',
+  },
+]
+
+/*
+ * Calificación agregada que acompaña a las reseñas del sitio.
+ *
+ * PENDIENTE DE VERIFICAR: el 4.9 viene del ejemplo del pedido (05/ago/26), NO
+ * de una lectura del panel de Google Business. Hay que confirmarlo contra el
+ * perfil real antes de publicar — es un número que cualquiera puede contrastar
+ * en Maps en dos segundos, y si no coincide hace más daño que no ponerlo.
+ *
+ * Por el mismo motivo no se emite como `aggregateRating` en el JSON-LD (ver
+ * useJsonLd.ts): marcar como structured data un promedio sin verificar es
+ * justo lo que Google penaliza.
+ */
+export const GOOGLE_REVIEWS = {
+  promedio: '4.9',
+  escala: '5',
+  fuente: 'Google Reviews',
+  /** Texto de la insignia sobre cada reseña. */
+  insignia: 'Reseña verificada de Google Maps',
+}
+
+/*
+ * Gancho de captura del formulario de leads del home (ver LeadForm.tsx). Es la
+ * única promesa comercial del sitio fuera de los precios, así que va textual y
+ * en un solo lugar: quien atiende en WhatsApp tiene que poder honrar
+ * exactamente esto.
+ */
+export const LEAD_MAGNET = {
+  /*
+   * Etiqueta de la insignia que corona la tarjeta (ver LeadForm.tsx). Dice
+   * "web" a propósito: acota la promesa al canal donde se ve, así quien
+   * atiende en WhatsApp no tiene que honrarla en una llamada ni en mostrador.
+   */
+  badge: 'Promoción exclusiva web',
+  titulo: 'Obtén un 10% de descuento en tu primera sesión o una evaluación de piel gratuita',
+  texto:
+    '¿Todavía no te decides? Déjanos tus datos y una especialista te contacta con el beneficio aplicado, sin compromiso.',
+  cta: 'Obtener mi descuento',
+}
+
+/*
  * Línea de cumplimiento sanitario. El permiso COFEPRIS existe pero el documento
  * NO se publica por confidencialidad: va solo esta línea genérica, textual.
  */

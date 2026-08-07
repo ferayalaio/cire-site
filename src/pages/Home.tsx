@@ -1,11 +1,19 @@
+import { BeneficiosStrip } from '../components/BeneficiosStrip'
+import { Faq } from '../components/Faq'
 import { Hero } from '../components/Hero'
-import { LinkCard, SectionHeading } from '../components/PageShell'
+import { LeadForm } from '../components/LeadForm'
+import { SectionHeading } from '../components/PageShell'
 import { Section } from '../components/Section'
 import { Stagger } from '../components/Reveal'
+import { SucursalesHome } from '../components/SucursalesHome'
 import { TestimoniosSection } from '../components/Testimonios'
+import type { Tratamiento } from '../components/TratamientoCard'
+import { TratamientoCard } from '../components/TratamientoCard'
 import { WhatsAppCTA } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
-import { CLAIMS, REDES } from '../data/marca'
+import { useFaqJsonLd, useLocalBusinessJsonLd } from '../hooks/useJsonLd'
+import { CLAIMS, LEAD_MAGNET, REDES } from '../data/marca'
+import { FAQ_HOME } from '../data/faq'
 import { TESTIMONIOS_HOME } from '../data/testimonios'
 import { AVATAR_IMAGE } from '../lib/constants'
 
@@ -154,30 +162,46 @@ const PASOS = [
   },
 ]
 
-const TRATAMIENTOS = [
+/*
+ * Los cuatro servicios, ahora como tarjetas con imagen y badge (ver
+ * TratamientoCard.tsx). Los badges no describen el servicio —para eso está la
+ * descripción— sino que le dan a cada uno un motivo distinto para ser elegido:
+ * el más pedido, el que da resultado hoy, el que no es depilación. Solo el
+ * láser lleva `badgeDestacado`: si los cuatro gritan, no destaca ninguno.
+ *
+ * Las imágenes son los posters de los videos que ya usa la página de cada
+ * servicio (ver constants.ts), así que no entra un solo asset nuevo al repo y
+ * la tarjeta muestra exactamente la técnica que se ve al entrar.
+ */
+const TRATAMIENTOS: Tratamiento[] = [
   {
     to: '/laser',
-    meta: 'Núcleo del protocolo',
+    badge: 'Láser diodo',
+    badgeDestacado: true,
     title: 'Láser de diodo',
     description: 'Zona por zona, por nivel de bikini, o cuerpo completo en una sola sesión.',
+    imagen: '/videos/posters/laser-principal.jpg',
   },
   {
     to: '/cera',
-    meta: 'Resultado inmediato',
+    badge: 'Resultado inmediato',
     title: 'Cera italiana',
     description: 'Para quien prefiere resultado inmediato o no es candidata a láser.',
+    imagen: '/videos/posters/cera-principal.jpg',
   },
   {
     to: '/hifu',
-    meta: 'Cire Lift Protocol',
+    badge: 'Popular',
     title: 'HIFU 4D',
     description: 'Lifting sin cirugía: reafirma, define y rejuvenece desde las capas profundas de la piel.',
+    imagen: '/videos/posters/hifu-referencia-1.jpg',
   },
   {
     to: '/otros-servicios',
-    meta: 'Recuperación y moldeado',
+    badge: 'Recuperación y moldeado',
     title: 'Otros servicios',
     description: 'Post-operatorio, Cire Sculpt y moldeo corporal.',
+    imagen: '/resultados-reales/resultado-moldeo-1.png',
   },
 ]
 
@@ -190,14 +214,26 @@ const HOME_CTA_CONTEXT = {
 
 export function Home() {
   useDocumentMeta({
-    title: 'Cire Depilación — Láser Expert 8®, cera y HIFU',
+    title: 'Depilación láser diodo en CDMX y Metepec — Cire Depilación',
     description:
-      'Depilación láser de diodo con punta de zafiro, cera italiana y HIFU. 9 años de experiencia y 5 sucursales en Ciudad de México y Metepec. Agenda tu cita por WhatsApp.',
+      'Depilación láser de diodo con punta de zafiro, cera italiana y HIFU. 9 años de experiencia y 5 sucursales en CDMX (Polanco, Del Valle, Coapa, Oriente) y Metepec. Agenda tu evaluación por WhatsApp.',
   })
+
+  /*
+   * Los dos bloques de structured data van solo en el home: es la página que
+   * describe al negocio completo y la única que tiene el FAQ. Repetirlos en
+   * cada ruta no suma nada y multiplica el riesgo de que uno quede desfasado.
+   */
+  useLocalBusinessJsonLd()
+  useFaqJsonLd(FAQ_HOME)
 
   return (
     <>
       <Hero />
+
+      {/* Banda oscura pegada al hero: lo cierra y arranca el contenido. Ver
+          BeneficiosStrip.tsx. */}
+      <BeneficiosStrip />
 
       <Section id="beneficios">
         <SectionHeading>Por qué elegir Cire</SectionHeading>
@@ -280,31 +316,96 @@ export function Home() {
         </div>
       </Section>
 
-      <Section id="precios" tone="alt">
+      {/*
+        Entre "Por qué elegir Cire" y "Elige tu tratamiento" a propósito: ya
+        convenció de la marca, todavía no eligió servicio, y "¿me queda cerca?"
+        es la pregunta que se cruza justo ahí. Ver SucursalesHome.tsx para el
+        lado de SEO local.
+      */}
+      <Section id="sucursales" tone="alt">
+        <SucursalesHome />
+      </Section>
+
+      <Section id="precios">
         <SectionHeading>Elige tu tratamiento</SectionHeading>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
           Cada servicio tiene su propio detalle de precios y paquetes.
         </p>
 
-        <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" step={80}>
+        {/* `[&>div]:h-full` estira el wrapper que agrega Stagger para animar
+            (ver Reveal.tsx): es el ítem del grid, así que sin él las tarjetas
+            no tienen contra qué crecer y quedan de alturas distintas cuando
+            una descripción se parte en tres renglones. */}
+        <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 [&>div]:h-full" step={80}>
           {TRATAMIENTOS.map((tratamiento) => (
-            <LinkCard key={tratamiento.to} {...tratamiento} />
+            <TratamientoCard key={tratamiento.to} {...tratamiento} />
           ))}
         </Stagger>
       </Section>
 
-      <Section id="resenas">
-        <TestimoniosSection testimonios={TESTIMONIOS_HOME} />
+      {/* El tono alterna sección por sección (ver Section.tsx); al insertar
+          Sucursales se corrió un lugar todo lo que sigue. */}
+      <Section id="resenas" tone="alt">
+        {/* `carrusel`: solo el home lo pide, ver la nota del prop en
+            Testimonios.tsx. */}
+        <TestimoniosSection testimonios={TESTIMONIOS_HOME} carrusel />
       </Section>
 
-      <Section id="agendar" tone="alt">
-        <SectionHeading>¿Lo armamos juntas?</SectionHeading>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
-          Cuéntanos qué tratamiento te interesa y te confirmamos disponibilidad por WhatsApp.
-        </p>
-        <div className="mt-7">
-          <WhatsAppCTA context={HOME_CTA_CONTEXT}>Escríbenos por WhatsApp</WhatsAppCTA>
+      {/*
+        Dos caminos en la misma sección, en orden de esfuerzo: el CTA directo a
+        WhatsApp arriba para quien ya decidió, y el formulario debajo para
+        quien todavía compara y no va a abrir un chat hoy (ver LeadForm.tsx).
+        El orden no es negociable — invertirlo pondría el paso más caro
+        primero para la persona que ya estaba lista.
+      */}
+      {/*
+        En negro (`tone="dark"`, ver Section.tsx) desde el rediseño: es el
+        bloque de la oferta del 10%, o sea lo único que se está vendiendo en
+        toda la página, y como sección blanca más quedaba indistinguible de
+        Beneficios o Precios. La tarjeta blanca del formulario encima del negro
+        es el contraste más alto de la página, que es exactamente donde
+        corresponde ponerlo.
+      */}
+      <Section id="agendar" tone="dark">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-blush-400/40 bg-blush-500/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-blush-200">
+              {LEAD_MAGNET.badge}
+            </span>
+
+            <SectionHeading className="mt-4 text-white!">¿Lo armamos juntas?</SectionHeading>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-white/60">
+              Cuéntanos qué tratamiento te interesa y te confirmamos disponibilidad por WhatsApp.
+            </p>
+
+            {/* Botón blanco y no el `primary` negro por defecto: sobre la banda
+                oscura, un CTA negro desaparece. */}
+            <div className="mt-7">
+              <WhatsAppCTA
+                className="bg-white! px-7! py-4! text-blush-900! shadow-[0_18px_45px_-18px_rgba(255,255,255,0.45)]! hover:bg-blush-50!"
+                context={HOME_CTA_CONTEXT}
+              >
+                Escríbenos por WhatsApp
+              </WhatsAppCTA>
+            </div>
+          </div>
+
+          <LeadForm />
         </div>
+      </Section>
+
+      {/*
+        El FAQ va último, después del CTA y no antes: son objeciones de quien
+        todavía duda, y ponerlas delante del botón obliga a scrollear un muro
+        de texto a quien ya se decidió. También se emite como structured data
+        FAQPage arriba, así que su lugar en la página es una decisión de CRO,
+        no de SEO.
+      */}
+      <Section id="faq" tone="alt">
+        <Faq
+          items={FAQ_HOME}
+          intro="Lo que más nos preguntan antes de la primera cita. Si te queda una duda que no está acá, escríbenos por WhatsApp."
+        />
       </Section>
     </>
   )

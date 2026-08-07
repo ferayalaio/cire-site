@@ -13,9 +13,23 @@
  * está el link: se le pasa la dirección a Maps y embebe eso.
  */
 
+export type Region = 'Ciudad de México' | 'Estado de México'
+
 export interface Sucursal {
   slug: string
   nombre: string
+
+  /**
+   * Entidad real donde está la sucursal. La consume el bloque de SEO local del
+   * home (ver SucursalesHome.tsx), donde el objetivo es que "CDMX" y "Estado
+   * de México" aparezcan como texto indexable junto a cada zona.
+   *
+   * OJO: /ubicaciones agrupa distinto — ahí las cinco caen bajo "Ciudad de
+   * México" por pedido explícito (ver ZONAS en Ubicaciones.tsx). Son dos
+   * agrupaciones con propósitos distintos, no una duplicada mal: este campo es
+   * el dato geográfico real, ese mapa es una decisión de presentación.
+   */
+  region: Region
 
   /** Dirección exacta del listado oficial. Vacío = pendiente. */
   direccion: string
@@ -49,6 +63,18 @@ export interface Testimonio {
 }
 
 /*
+ * Sigla de cada entidad, para la insignia de las tarjetas de sucursal (ver
+ * SucursalesHome.tsx). La tarjeta muestra la sigla porque es lo que se escanea
+ * de un vistazo, y arrastra el nombre completo en un `sr-only` al lado: la
+ * entidad escrita entera es justo lo que se está tratando de posicionar, así
+ * que no puede desaparecer del HTML por una decisión de tamaño.
+ */
+export const REGION_SIGLA: Record<Region, string> = {
+  'Ciudad de México': 'CDMX',
+  'Estado de México': 'EDOMEX',
+}
+
+/*
  * El horario es el mismo en las cinco, así que vive una sola vez. Si alguna
  * llega a tener horario propio, se le agrega un campo `horarios` a esa sucursal
  * y la página lo prefiere sobre este.
@@ -67,6 +93,7 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'polanco',
     nombre: 'Polanco',
+    region: 'Ciudad de México',
     direccion: 'Gutenberg 194, Anzures, Miguel Hidalgo, 11590 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=3247528200057585679',
     foto: '/sucursales/polanco.png',
@@ -74,6 +101,7 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'del-valle',
     nombre: 'Del Valle',
+    region: 'Ciudad de México',
     direccion:
       'Cda. Dr. José Ignacio Bartolache 1038, Interior 1, Col. Del Valle Centro, Benito Juárez, 03100 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=18410687439098431653',
@@ -83,6 +111,7 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'coapa',
     nombre: 'Coapa',
+    region: 'Ciudad de México',
     direccion:
       'Calz. del Hueso 453, Local 19, primer piso, Col. Los Girasoles, Coapa, Coyoacán, 04920 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=10278530957479471836',
@@ -92,12 +121,14 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'oriente',
     nombre: 'Oriente',
+    region: 'Ciudad de México',
     direccion: 'Río Tacámbaro 56-Interior 2, Paseos de Churubusco, Iztapalapa, 09030 CDMX',
     foto: '/sucursales/oriente.png',
   },
   {
     slug: 'metepec',
     nombre: 'Metepec',
+    region: 'Estado de México',
     direccion:
       'C. Adolfo López Mateos 1100-Loc 10-A, La Asunción, 52172 San Salvador Tizatlalli, Méx.',
     mapsUrl: 'https://maps.app.goo.gl/RJXpuQuSgiNSU6iR8',
@@ -105,6 +136,13 @@ export const SUCURSALES: Sucursal[] = [
     foto: '/sucursales/metepec.png',
   },
 ]
+
+/*
+ * `agruparPorRegion` vivía acá y agrupaba las tarjetas del home bajo un
+ * encabezado por entidad. Se fue con el rediseño a tarjetas con insignia (ver
+ * SucursalesHome.tsx): la entidad ahora la lleva cada tarjeta, así que el
+ * agrupamiento decía dos veces lo mismo y ya no lo llamaba nadie.
+ */
 
 export function getSucursal(slug: string | undefined): Sucursal | undefined {
   return SUCURSALES.find((sucursal) => sucursal.slug === slug)

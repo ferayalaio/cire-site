@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import type { WhatsAppClickContext } from '../lib/analytics'
 import { trackWhatsAppClick } from '../lib/analytics'
@@ -268,6 +268,41 @@ function contextForPath(pathname: string, sucursalSlug: string | undefined): Wha
 }
 
 /*
+ * `true` mientras la sección `#agendar` ocupa la franja inferior del viewport
+ * — justo la esquina donde vive el botón flotante.
+ *
+ * Existe porque esa sección ahora tiene un formulario (ver LeadForm.tsx) y en
+ * celular su botón de envío queda debajo del flotante: dos targets táctiles
+ * pisados, y el que gana no es el que la persona quiso tocar. De paso resuelve
+ * algo que ya molestaba antes: en la única sección que ya tiene su propio CTA
+ * a WhatsApp, el flotante no aporta nada y compite consigo mismo.
+ *
+ * El `rootMargin` negativo arriba es lo que hace que dispare solo cuando la
+ * sección llega abajo, y no apenas asoma por el borde inferior de la pantalla.
+ */
+function useAgendarEnZonaDelBoton(pathname: string): boolean {
+  const [enZona, setEnZona] = useState(false)
+
+  useEffect(() => {
+    setEnZona(false)
+
+    // No todas las rutas tienen bloque `#agendar` (ver RUTAS_CON_AGENDAR en
+    // lib/nav.ts); en esas el botón se comporta como siempre.
+    const node = document.getElementById('agendar')
+    if (!node || typeof IntersectionObserver === 'undefined') return
+
+    const observer = new IntersectionObserver(([entry]) => setEnZona(entry.isIntersecting), {
+      rootMargin: '-60% 0px 0px 0px',
+    })
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [pathname])
+
+  return enZona
+}
+
+/*
  * Botón fijo, presente en todas las rutas. Es el que sostiene el objetivo del
  * sitio: no importa cuánto scrolleó la persona ni en qué página está, siempre
  * tiene WhatsApp a un toque.
@@ -282,11 +317,46 @@ export function WhatsAppFloating() {
   // se necesita para no leer sucursal fuera de esa ruta.
   const { slug } = useParams<{ slug: string }>()
 
+  const oculto = useAgendarEnZonaDelBoton(pathname)
+
   return (
-    <div className="fixed bottom-5 right-5 z-40 sm:bottom-7 sm:right-7">
-      <WhatsAppCTA context={contextForPath(pathname, slug)} variant="floating">
-        WhatsApp
-      </WhatsAppCTA>
+    /*
+     * Se esconde con opacity + pointer-events y no desmontando el nodo: así la
+     * salida y la entrada son un fade y no un parpadeo, y `inert` se encarga de
+     * que mientras está invisible tampoco lo alcancen el teclado ni un lector
+     * de pantalla (sin eso quedaría un link enfocable encima del formulario).
+     */
+    <div
+      inert={oculto ? true : undefined}
+      className={`fixed bottom-5 right-5 z-40 transition-opacity duration-300 sm:bottom-7 sm:right-7 ${
+        oculto ? 'pointer-events-none opacity-0' : 'opacity-100'
+      }`}
+    >
+      {/*
+       * El anillo que late detrás del botón (ver `pulse-ring` en index.css).
+       * Es la única animación permanente del sitio y está puesta con criterio:
+       * el flotante está siempre ahí y por eso mismo el ojo lo deja de ver a
+       * los dos scrolls: el pulso lo devuelve a la periferia sin moverlo de
+       * lugar ni taparle nada al contenido.
+       *
+       * Va en un hermano absoluto y no en el propio botón: animar el botón
+       * significa escalar el texto y el glifo con él. `inset-0` lo calca sobre
+       * el CTA, así que el anillo sale exactamente del borde de la pastilla
+       * sin que haya que replicar su tamaño a mano.
+       */}
+      <span className="relative block">
+        <span
+          aria-hidden="true"
+          className="animate-pulse-ring pointer-events-none absolute inset-0 rounded-full bg-blush-400 motion-reduce:hidden"
+        />
+        <WhatsAppCTA
+          context={contextForPath(pathname, slug)}
+          variant="floating"
+          className="relative"
+        >
+          WhatsApp
+        </WhatsAppCTA>
+      </span>
     </div>
   )
 }

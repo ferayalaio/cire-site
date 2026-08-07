@@ -115,3 +115,49 @@ function buildMessage(context: WhatsAppClickContext): string {
 export function buildWhatsAppUrl(context: WhatsAppClickContext): string {
   return `https://wa.me/${resolvePhone()}?text=${encodeURIComponent(buildMessage(context))}`
 }
+
+/* ------------------------------------------------------- formulario de lead */
+
+export interface LeadDatos {
+  nombre: string
+  /** WhatsApp o email, tal como lo escribió la persona. */
+  contacto: string
+}
+
+/*
+ * El formulario de captura del home (ver LeadForm.tsx) sale por el mismo caño
+ * que todo lo demás: WhatsApp. No hay backend en este sitio, y meter uno solo
+ * para este formulario significaría un segundo buzón que alguien tiene que
+ * acordarse de revisar — mientras que el chat ya lo atiende el equipo todo el
+ * día.
+ *
+ * Lo que cambia respecto de un CTA normal es que el mensaje lleva los datos
+ * que la persona ya tipeó: quien atiende recibe nombre y forma de contacto en
+ * el primer mensaje, así que si la conversación se corta igual puede
+ * retomarla.
+ *
+ * NOTA: mientras el envío pase por WhatsApp, el lead solo queda registrado si
+ * la persona aprieta "enviar" del otro lado. Si en algún momento se quiere
+ * capturar también a quien abandona ahí, hace falta un endpoint real; el
+ * evento `Lead` ya se dispara acá (ver LeadForm.tsx) para poder medir esa
+ * brecha desde ahora.
+ */
+export function buildLeadWhatsAppUrl(datos: LeadDatos, sku: string): string {
+  const campaign = getCampaignLabel()
+  const ref = `(ref: ${campaign ? `${sku}/${campaign}` : sku})`
+
+  const partes = [
+    `Hola, soy ${datos.nombre}`,
+    'y quiero mi 10% de descuento en la primera sesión o mi evaluación de piel gratuita.',
+    `Me pueden contactar en ${datos.contacto}`,
+  ]
+
+  const cerca = getLastSucursal()
+  if (cerca) {
+    partes.push(`— estoy cerca de ${nombreSucursal(cerca)}`)
+  }
+
+  partes.push(ref)
+
+  return `https://wa.me/${resolvePhone()}?text=${encodeURIComponent(partes.join(' '))}`
+}

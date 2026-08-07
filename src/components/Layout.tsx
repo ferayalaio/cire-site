@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useLocation, useOutlet } from 'react-router-dom'
 import { useMetaPixel } from '../hooks/useMetaPixel'
+import { AnnouncementBar, ANUNCIO_ALTO, useAnuncio } from './AnnouncementBar'
 import { Footer } from './Footer'
 import { MobileMenu } from './MobileMenu'
 import { Nav } from './Nav'
@@ -73,6 +75,7 @@ export function Layout() {
   const element = useOutlet()
   const shouldReduceMotion = useReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
+  const anuncio = useAnuncio()
 
   // El Layout envuelve todas las rutas, así que es el único lugar donde hace
   // falta montar el pixel.
@@ -107,7 +110,17 @@ export function Layout() {
        * gradiente de este div, debajo de su contenido real.
        */
       className="relative isolate min-h-screen w-full bg-gradient-to-b from-blush-100 via-blush-50 to-blush-50"
+      /*
+       * Alto real del cintillo de anuncios, publicado como variable para que el
+       * nav (que también es fijo) se corra justo eso y no quede tapado. Es la
+       * única fuente del número: si el cintillo cambia de alto se edita
+       * ANUNCIO_ALTO y el nav lo sigue solo. En 0 cuando está cerrado, y ahí el
+       * nav vuelve exactamente a donde estaba.
+       */
+      style={{ '--anuncio-h': anuncio.visible ? ANUNCIO_ALTO : '0px' } as CSSProperties}
     >
+      {anuncio.visible && <AnnouncementBar onClose={anuncio.cerrar} />}
+
       {/*
        * El home tiene el video del hero de fondo solo en su primera pantalla;
        * el resto de sus secciones (y todas las páginas internas) no tienen

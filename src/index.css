@@ -8,6 +8,19 @@
   --animate-drift-a: drift-a 18s ease-in-out infinite;
   --animate-drift-b: drift-b 23s ease-in-out infinite;
   --animate-drift-c: drift-c 20s ease-in-out infinite;
+  /* Brillo que cruza el cintillo de anuncios (ver AnnouncementBar). */
+  --animate-sheen: sheen 5.5s ease-in-out infinite;
+  /* Anillo que late detrás del botón flotante de WhatsApp. */
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+
+  /*
+   * Negro de las bandas de alto contraste (cintillo de beneficios, sección de
+   * la oferta, footer). No es `neutral-900`: contra el fondo blush del sitio,
+   * el gris frío de Tailwind se lee azulado — este es un negro neutro que deja
+   * respirar al rosa de la marca al lado.
+   */
+  --color-ink: #1e1e1e;
+  --color-ink-soft: #2a2426;
 
   /*
    * Fuentes de marca como tokens únicos: `font-display`/`font-sans` quedan
@@ -103,6 +116,43 @@
 }
 
 /*
+ * Brillo diagonal que barre el cintillo de anuncios de punta a punta. El tramo
+ * visible es corto y la pausa larga (el keyframe llega al final del recorrido
+ * en el 60% y se queda quieto el resto) para que se lea como un destello cada
+ * tanto y no como una animación permanente encima del texto.
+ */
+@keyframes sheen {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(340%) skewX(-18deg);
+  }
+}
+
+/*
+ * Anillo del botón flotante de WhatsApp: crece desde el borde del botón y se
+ * apaga. `animate-ping` de Tailwind escala a 2x de golpe y con un botón grande
+ * como el flotante eso invade media pantalla — este llega a 1.35 y se apaga
+ * antes, que es el "pulso sutil" que corresponde a un CTA siempre presente.
+ */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/*
  * Motas de luz que suben despacio detrás del contenido — el eco más liviano
  * del video del hero en páginas que no tienen imagen propia. Cada partícula
  * arranca con un `animation-delay` negativo (ver Layout.tsx) para no verse
@@ -153,6 +203,16 @@
   html {
     font-family: var(--font-sans);
     color: var(--color-neutral-800);
+  }
+
+  /*
+   * Habilita animar hacia/desde `height: auto`, que es lo que necesita el
+   * acordeón del FAQ para desplegarse suave sin medir el contenido con JS (ver
+   * `.faq-item` más abajo). Es progresivo: donde no está soportado, la
+   * propiedad se ignora y el <details> abre de golpe como siempre.
+   */
+  :root {
+    interpolate-size: allow-keywords;
   }
 
   html,
@@ -235,6 +295,32 @@
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
   }
+
+  /*
+   * Despliegue suave del acordeón del FAQ (ver Faq.tsx). Se hace sobre
+   * `::details-content` y no reemplazando el <details> por estado de React: así
+   * el acordeón conserva teclado, foco, Ctrl+F dentro de una respuesta cerrada
+   * y el contenido indexable, que es justo por lo que está construido sobre el
+   * elemento nativo.
+   *
+   * `content-visibility` va en la transición con `allow-discrete` porque el
+   * navegador la conmuta de `hidden` a `visible` al abrir: sin eso el contenido
+   * aparece de golpe en el primer frame y la altura anima sobre algo ya visible.
+   */
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size 340ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 260ms ease 60ms,
+      content-visibility 340ms allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .bg-particle {
       animation: none;
@@ -242,8 +328,13 @@
     }
     .animate-drift-a,
     .animate-drift-b,
-    .animate-drift-c {
+    .animate-drift-c,
+    .animate-sheen,
+    .animate-pulse-ring {
       animation: none;
+    }
+    .faq-item::details-content {
+      transition: none;
     }
   }
 

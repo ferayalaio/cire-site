@@ -60,7 +60,13 @@ export function Nav({ onOpenMenu }: NavProps) {
   const { pathname } = useLocation()
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-5 sm:px-10">
+    /*
+     * `top` sale de `--anuncio-h` (la publica Layout): con el cintillo de
+     * anuncios abierto el nav baja esos 2.5rem, y con el cintillo cerrado la
+     * variable vale 0px y todo queda como antes. El fallback en 0px cubre
+     * cualquier montaje del nav fuera de Layout.
+     */
+    <nav className="fixed inset-x-0 top-[var(--anuncio-h,0px)] z-50 flex items-center justify-between px-6 py-5 transition-[top] duration-300 sm:px-10">
       <Link to="/" className="flex items-center gap-3">
         <img src={LOGO_IMAGE} alt="Cire Depilación" className="h-11 w-11 rounded-full sm:h-12 sm:w-12" />
         <span aria-hidden="true" className="hidden h-7 w-px bg-black/15 sm:block" />
@@ -71,7 +77,10 @@ export function Nav({ onOpenMenu }: NavProps) {
         </span>
       </Link>
 
-      <div className="glass-light fixed left-1/2 top-5 hidden -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-2 md:flex">
+      {/* La pastilla central es `fixed` por su cuenta (no hija del flujo del
+          nav), así que le toca sumar el cintillo a mano: 1.25rem es el `py-5`
+          del nav. */}
+      <div className="glass-light fixed left-1/2 top-[calc(var(--anuncio-h,0px)+1.25rem)] hidden -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-2 transition-[top] duration-300 md:flex">
         {NAV_ITEMS.map((item) => (
           <NavEntry key={item.to} item={item} active={isActive(pathname, item.to)} />
         ))}

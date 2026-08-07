@@ -10,6 +10,10 @@ import type { Sucursal } from '../data/sucursales'
  * dirección real de cada sucursal, que sigue viviendo y validándose en
  * src/data/sucursales.ts). Metepec va en el mismo grupo que las de CDMX a
  * pedido explícito — no por geografía real.
+ *
+ * El campo `region` de cada sucursal sí lleva la entidad real y es el que usa
+ * el bloque de SEO local del home (SucursalesHome.tsx), donde el objetivo es
+ * el opuesto: que "Estado de México" aparezca escrito junto a Metepec.
  */
 const ZONAS: Record<string, string> = {
   polanco: 'Ciudad de México',
