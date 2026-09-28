@@ -69,7 +69,7 @@ export function Footer() {
         <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Cire Depilación</span>
           <Link to="/aviso-de-privacidad" className="transition-colors hover:text-white">
-            Aviso de privacidad
+            Aviso de Privacidad
           </Link>
         </div>
       </div>

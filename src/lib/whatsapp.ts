@@ -161,3 +161,16 @@ export function buildLeadWhatsAppUrl(datos: LeadDatos, sku: string): string {
 
   return `https://wa.me/${resolvePhone()}?text=${encodeURIComponent(partes.join(' '))}`
 }
+
+/* ------------------------------------------------- solicitudes de privacidad */
+
+/*
+ * Link de /aviso-de-privacidad para ejercer derechos ARCO. Va aparte de
+ * `buildWhatsAppUrl` a propósito: no es un lead, así que no lleva sku ni ref
+ * de campaña, y tampoco se reporta a Meta ni a GA4 como contacto.
+ */
+export function buildPrivacyWhatsAppUrl(): string {
+  const mensaje =
+    'Hola, quiero hacer una solicitud sobre mis datos personales (actualización, rectificación o eliminación).'
+  return `https://wa.me/${resolvePhone()}?text=${encodeURIComponent(mensaje)}`
+}
