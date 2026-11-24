@@ -277,6 +277,7 @@ function HeroMobile() {
         className="absolute inset-0 h-full w-full object-cover"
         src={FRONT_VIDEO_MOBILE}
         poster={FRONT_VIDEO_MOBILE_POSTER}
+        eager
       />
 
       {/*
@@ -354,7 +355,7 @@ function HeroDesktop() {
   return (
     <section className="liquid-glass relative h-dvh w-full overflow-hidden bg-black">
       <div className="absolute inset-0">
-        <LoopVideo className="h-full w-full object-cover" src={FRONT_VIDEO} poster={FRONT_VIDEO_POSTER} />
+        <LoopVideo className="h-full w-full object-cover" src={FRONT_VIDEO} poster={FRONT_VIDEO_POSTER} eager />
       </div>
 
       {/* Velo de izquierda a derecha: sólido detrás de la columna de texto,

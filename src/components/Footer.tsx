@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { SUCURSALES } from '../data/sucursales'
 import { REDES } from '../data/marca'
 
 interface SocialIconProps {
@@ -25,6 +26,23 @@ function SocialIcon({ href, label, children }: SocialIconProps) {
   )
 }
 
+function FooterLinks({ titulo, links }: { titulo: string; links: { to: string; label: string }[] }) {
+  return (
+    <nav aria-label={titulo}>
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">{titulo}</p>
+      <ul className="mt-4 space-y-2.5 text-sm">
+        {links.map((link) => (
+          <li key={link.to}>
+            <Link to={link.to} className="text-white/60 transition-colors hover:text-white">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
 /*
  * Footer oscuro (05/ago/26).
  *
@@ -44,6 +62,7 @@ export function Footer() {
       />
 
       <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
+        <div className="grid gap-12 sm:grid-cols-[1.2fr_1fr_1fr]">
         <div className="max-w-xs">
           <p className="text-sm leading-relaxed text-white/60">
             Depilación láser, cera y tratamientos corporales en Ciudad de México y Metepec.
@@ -64,6 +83,32 @@ export function Footer() {
               </svg>
             </SocialIcon>
           </div>
+        </div>
+
+        {/*
+         * Enlaces internos en cada página del sitio. Para Google son la señal
+         * más fuerte de qué páginas importan, y las de sucursal solo recibían
+         * un enlace (desde /ubicaciones). Los textos ancla dicen qué hay del
+         * otro lado ("Depilación láser en Coapa"), no "ver más".
+         */}
+        <FooterLinks
+          titulo="Servicios"
+          links={[
+            { to: '/laser', label: 'Depilación láser' },
+            { to: '/laser/zonas', label: 'Precios por zona' },
+            { to: '/laser/cuerpo-completo', label: 'Láser cuerpo completo' },
+            { to: '/cera', label: 'Depilación con cera' },
+            { to: '/hifu', label: 'HIFU' },
+            { to: '/otros-servicios', label: 'Tratamientos corporales' },
+          ]}
+        />
+        <FooterLinks
+          titulo="Sucursales"
+          links={SUCURSALES.map((sucursal) => ({
+            to: `/ubicaciones/${sucursal.slug}`,
+            label: `Depilación láser en ${sucursal.nombre}`,
+          }))}
+        />
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">

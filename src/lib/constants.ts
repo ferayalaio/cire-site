@@ -48,8 +48,13 @@ export const FULL_BODY_VIDEO_PRINCIPAL_POSTER = '/videos/posters/full-body-princ
 
 export const AVATAR_IMAGE = '/hero/avatar-real.jpg'
 
-/** Logo real de marca (círculo con isotipo de loto + wordmark ya integrados). */
-export const LOGO_IMAGE = '/hero/logo.jpeg'
+/**
+ * Logo real de marca (círculo con isotipo de loto + wordmark ya integrados).
+ * Versión de 160px para el nav, que lo muestra a 48px: el original
+ * (hero/logo.jpeg, 1254px y 70 KB) se precargaba en cada página para nada.
+ * El original sigue en uso como `logo` del JSON-LD, que pide mínimo 112px.
+ */
+export const LOGO_IMAGE = '/hero/logo-160.webp'
 
 export const OVERLAY_IMAGE =
   'https://soft-zoom-63098134.figma.site/_assets/v11/3f10f1876e118f72a396e05a6c2d099569478272.png'

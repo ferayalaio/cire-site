@@ -68,7 +68,7 @@ export function Nav({ onOpenMenu }: NavProps) {
      */
     <nav className="fixed inset-x-0 top-[var(--anuncio-h,0px)] z-50 flex items-center justify-between px-6 py-5 transition-[top] duration-300 sm:px-10">
       <Link to="/" className="flex items-center gap-3">
-        <img src={LOGO_IMAGE} alt="Cire Depilación" className="h-11 w-11 rounded-full sm:h-12 sm:w-12" />
+        <img src={LOGO_IMAGE} alt="Cire Depilación" width={48} height={48} className="h-11 w-11 rounded-full sm:h-12 sm:w-12" />
         <span aria-hidden="true" className="hidden h-7 w-px bg-black/15 sm:block" />
         <span className="hidden text-[10px] font-medium uppercase leading-tight tracking-[0.12em] text-neutral-500 sm:block">
           Depilación

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface LoopVideoProps {
   src: string
@@ -12,6 +12,11 @@ interface LoopVideoProps {
    * public/videos/posters/), así siempre matchea el primer frame real.
    */
   poster?: string
+  /**
+   * Cargar el video apenas monta. Solo para lo que se ve sin hacer scroll
+   * (el hero). El resto espera a estar cerca del viewport, ver abajo.
+   */
+  eager?: boolean
 }
 
 /*
@@ -33,25 +38,57 @@ interface LoopVideoProps {
  * metadata), lo que alarga justo el hueco que `poster` cubre. El swap
  * poster → primer frame lo hace el navegador solo y no se nota como salto
  * porque el poster viene extraído del mismo frame.
+ *
+ * Carga diferida: salvo `eager`, el `src` no se asigna hasta que el video está
+ * a ~300px de entrar en pantalla — mientras tanto se ve el poster (un jpg de
+ * decenas de KB) y no se baja nada del mp4. Sin esto cada página descargaba
+ * todos sus videos (2-5 MB cada uno) de entrada, compitiendo en el celular con
+ * lo que sí se ve arriba y empeorando el LCP. De yapa, un video oculto con
+ * `display: none` (los acentos `hidden md:block` en mobile) nunca intersecta,
+ * así que en el teléfono directamente no se descarga.
  */
-export function LoopVideo({ src, className, poster }: LoopVideoProps) {
+export function LoopVideo({ src, className, poster, eager = false }: LoopVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
+  const [cerca, setCerca] = useState(eager)
+
+  useEffect(() => {
+    if (cerca) return
+    const video = ref.current
+    if (!video) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setCerca(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCerca(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '300px 0px' },
+    )
+    observer.observe(video)
+    return () => observer.disconnect()
+  }, [cerca])
 
   useEffect(() => {
     const video = ref.current
-    if (!video) return
+    if (!video || !cerca) return
     video.muted = true
     video.play().catch(() => {})
-  }, [src])
+  }, [src, cerca])
 
   return (
     <video
       ref={ref}
       className={className}
-      src={src}
+      src={cerca ? src : undefined}
       poster={poster}
-      preload="auto"
-      autoPlay
+      preload={cerca ? 'auto' : 'none'}
+      autoPlay={cerca}
       loop
       muted
       playsInline

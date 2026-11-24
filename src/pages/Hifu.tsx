@@ -276,6 +276,7 @@ export function Hifu() {
                 src={HIFU_VIDEO_MOBILE}
                 poster={HIFU_VIDEO_MOBILE_POSTER}
                 className="h-full w-full object-cover"
+                eager
               />
               <span
                 aria-hidden="true"
