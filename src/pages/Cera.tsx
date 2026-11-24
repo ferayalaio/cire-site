@@ -188,9 +188,9 @@ const MAS_ZONAS_CONTEXT = {
 
 export function Cera() {
   useDocumentMeta({
-    title: 'Depilación con cera italiana',
+    title: 'Depilación con cera en CDMX y Metepec',
     description:
-      'Depilación con cera italiana para quien prefiere resultado inmediato o no es candidata a láser. Zonas, precios y turnos.',
+      'Depilación con cera italiana con resultado inmediato, para quien no es candidata a láser. Precios por zona en sucursales de CDMX y Metepec.',
   })
 
   useEffect(() => {
@@ -200,7 +200,7 @@ export function Cera() {
   return (
     <>
       <PageShell
-        eyebrow="Servicios"
+        eyebrow="Cera italiana"
         title="Depilación con cera"
         intro="Cera italiana, para quien prefiere resultado inmediato o no es candidata a láser."
         media={

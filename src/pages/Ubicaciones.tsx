@@ -35,16 +35,16 @@ function agruparPorZona(sucursales: Sucursal[]): [string, Sucursal[]][] {
 
 export function Ubicaciones() {
   useDocumentMeta({
-    title: 'Sucursales',
+    title: 'Sucursales de depilación láser en CDMX y Metepec',
     description:
-      'Nuestras sucursales entre Ciudad de México y Metepec. Todas atienden con cita: mira dirección y horarios de cada una.',
+      'Cinco sucursales de Cire Depilación: Polanco, Del Valle, Coapa, Oriente y Metepec. Dirección, horarios y mapa de cada una. Atención con cita.',
   })
 
   const grupos = agruparPorZona(SUCURSALES)
 
   return (
     <PageShell
-      eyebrow="Sucursales"
+      eyebrow="Sucursales de depilación láser"
       title="Dónde estamos"
       intro="Cinco sucursales entre Ciudad de México y Metepec. Todas atienden con cita."
     >

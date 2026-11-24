@@ -68,12 +68,6 @@ export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, medi
             </nav>
           )}
 
-          {eyebrow && (
-            <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
-              {eyebrow}
-            </p>
-          )}
-
           {/*
            * Mismo tratamiento que el h1 del hero (Bodoni Moda, mayúsculas,
            * tracking positivo) para que la identidad de marca no se quede solo
@@ -81,13 +75,9 @@ export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, medi
            * fuente. El underline se dibuja después de que entran las palabras,
            * como firma visual de que esta es la página en la que estás.
            */}
-          <AnimatedHeading
-            as="h1"
-            underline
-            className="heading-1 text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl"
-          >
+          <PageHeading eyebrow={eyebrow} className="text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl">
             {title}
-          </AnimatedHeading>
+          </PageHeading>
 
           {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
           {introExtra}
@@ -116,6 +106,40 @@ export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, medi
 
       {children && <div className="mt-14">{children}</div>}
     </main>
+  )
+}
+
+/*
+ * H1 de página con el eyebrow ADENTRO. Se ve igual que antes (la línea chica
+ * rosa arriba del título grande), pero para Google el h1 pasa de "Cuerpo
+ * completo" a "Depilación láser Cuerpo completo": la palabra clave de la
+ * página queda en el h1 sin cambiar el diseño ni esconder texto. Por eso el
+ * eyebrow de cada página tiene que ser la búsqueda que la página ataca, no
+ * una categoría genérica tipo "Servicios".
+ *
+ * El `{' '}` entre los dos spans no se ve (los dos son block) pero evita que
+ * el texto extraído salga pegado: "Depilación láserCuerpo completo".
+ */
+export function PageHeading({
+  eyebrow,
+  className = '',
+  children,
+}: {
+  eyebrow?: string
+  className?: string
+  children: string
+}) {
+  return (
+    <h1>
+      {eyebrow && (
+        <span className="mb-3 block text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
+          {eyebrow}
+        </span>
+      )}{' '}
+      <AnimatedHeading as="span" underline className={`heading-1 block ${className}`}>
+        {children}
+      </AnimatedHeading>
+    </h1>
   )
 }
 

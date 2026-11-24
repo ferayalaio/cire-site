@@ -19,9 +19,9 @@ export function Sucursal() {
 
   // Antes del early return: los hooks no pueden llamarse condicionalmente.
   useDocumentMeta({
-    title: sucursal ? `Sucursal ${sucursal.nombre}` : 'Sucursal no encontrada',
+    title: sucursal ? `Depilación láser en ${sucursal.nombre}` : 'Sucursal no encontrada',
     description: sucursal
-      ? `Dirección, horarios y cómo llegar a la sucursal ${sucursal.nombre} de Cire Depilación.`
+      ? `Depilación láser, cera y HIFU en Cire ${sucursal.nombre}: ${sucursal.direccion}. Horarios, mapa y citas por WhatsApp.`
       : undefined,
     noindex: !sucursal,
   })
@@ -41,7 +41,7 @@ export function Sucursal() {
 
   return (
     <PageShell
-      eyebrow="Sucursal"
+      eyebrow="Depilación láser en"
       title={sucursal.nombre}
       breadcrumbs={[
         { label: 'Inicio', to: '/' },

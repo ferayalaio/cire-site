@@ -7,13 +7,14 @@ import { CIRE_SCULPT_POST_OPERATORIO } from '../data/precios'
 
 export function OtrosServiciosPostOperatorio() {
   useDocumentMeta({
-    title: 'Cire Sculpt Post Operativo — precios',
-    description: 'Precios de Post Op por número de sesiones: drenaje y acompañamiento post-quirúrgico.',
+    title: 'Masaje post operatorio y drenaje: precios',
+    description:
+      'Cire Sculpt Post Op: drenaje y acompañamiento en tu recuperación después de una cirugía estética. Precios por número de sesiones en CDMX y Metepec.',
   })
 
   return (
     <PageShell
-      eyebrow="Otros servicios"
+      eyebrow="Masaje post operatorio"
       title="Cire Sculpt Post Operativo"
       intro="Post Op: drenaje y acompañamiento en tu recuperación, con precio por número de sesiones."
       breadcrumbs={[

@@ -214,9 +214,9 @@ const HOME_CTA_CONTEXT = {
 
 export function Home() {
   useDocumentMeta({
-    title: 'Depilación láser diodo en CDMX y Metepec — Cire Depilación',
+    title: 'Depilación láser en CDMX y Metepec — Cire Depilación',
     description:
-      'Depilación láser de diodo con punta de zafiro, cera italiana y HIFU. 9 años de experiencia y 5 sucursales en CDMX (Polanco, Del Valle, Coapa, Oriente) y Metepec. Agenda tu evaluación por WhatsApp.',
+      'Depilación láser de diodo con punta de zafiro, cera y HIFU. 5 sucursales: Polanco, Del Valle, Coapa, Oriente y Metepec. Agenda tu evaluación por WhatsApp.',
   })
 
   /*

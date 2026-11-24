@@ -222,9 +222,9 @@ function Quote({ children }: { children: string }) {
  */
 export function LaserCuerpoCompleto() {
   useDocumentMeta({
-    title: 'Depilación láser cuerpo completo — Full Body',
+    title: 'Depilación láser cuerpo completo (Full Body)',
     description:
-      'Todas las zonas en una misma sesión de depilación láser. El paquete con mejor precio por área y el que más gente elige.',
+      'Depilación láser de cuerpo completo: todas las zonas en una sola sesión, el paquete con mejor precio por área. Sucursales en CDMX y Metepec.',
   })
 
   useEffect(() => {

@@ -98,16 +98,16 @@ const AGENDAR_CONTEXT = {
 
 export function Laser() {
   useDocumentMeta({
-    title: 'Depilación láser de diodo — Protocolo Láser Expert 8®',
+    title: 'Depilación láser de diodo: zonas, bikini y Full Body',
     description:
-      'Depilación láser de diodo con punta de zafiro. Elige cómo armar tu tratamiento: zona por zona, un nivel de bikini, o Full Body en una sola sesión.',
+      'Depilación láser de diodo con punta de zafiro y Protocolo Láser Expert 8®. Arma tu tratamiento por zona, por nivel de bikini o cuerpo completo.',
   })
 
   return (
     <>
       <PageShell
         eyebrow={MARCA.protocolo}
-        title="Láser de diodo"
+        title="Depilación láser de diodo"
         intro="Elige cómo quieres armar tu tratamiento: zona por zona, un nivel de bikini, o cuerpo completo en una sola sesión."
         media={
           <VideoAccent

@@ -23,9 +23,9 @@ const NIVEL_ACCENTS = [
 
 export function LaserBikini() {
   useDocumentMeta({
-    title: 'Depilación láser de bikini — 4 niveles',
+    title: 'Depilación láser de bikini y brazilian: 4 niveles',
     description:
-      'Los cuatro niveles de bikini en depilación láser, del básico al brazilian, con la cobertura de cada uno.',
+      'Depilación láser de bikini en 4 niveles: básico, sexy, french y brazilian. Qué cubre cada uno y precio del paquete. CDMX y Metepec.',
   })
 
   return (

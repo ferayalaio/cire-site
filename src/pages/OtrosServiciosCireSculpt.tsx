@@ -7,13 +7,14 @@ import { CIRE_SCULPT_ANTICELULITICO } from '../data/precios'
 
 export function OtrosServiciosCireSculpt() {
   useDocumentMeta({
-    title: 'Cire Sculpt Anticelulítico — precios',
-    description: 'Precios de Cire Sculpt Anti por número de sesiones.',
+    title: 'Tratamiento anticelulítico Cire Sculpt: precios',
+    description:
+      'Cire Sculpt, tratamiento anticelulítico: precios por número de sesiones. Sucursales en CDMX y Metepec, agenda tu cita por WhatsApp.',
   })
 
   return (
     <PageShell
-      eyebrow="Otros servicios"
+      eyebrow="Tratamiento anticelulítico"
       title="Cire Sculpt Anticelulítico"
       intro="Cire Sculpt Anti, con precio por número de sesiones."
       breadcrumbs={[

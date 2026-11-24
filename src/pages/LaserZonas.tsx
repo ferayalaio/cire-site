@@ -9,9 +9,9 @@ import { TESTIMONIOS_LASER_ZONAS } from '../data/testimonios'
 
 export function LaserZonas() {
   useDocumentMeta({
-    title: 'Depilación láser: precios por zona',
+    title: 'Precios de depilación láser por zona',
     description:
-      'Cada zona de depilación láser por separado, con precio por sesión y por paquete. Si tratas más de una, los combos casi siempre salen mejor.',
+      'Precio de depilación láser por zona y por paquete de 8 sesiones: axilas, piernas, brazos, rostro, espalda y más. Compara contra los combos.',
   })
 
   return (

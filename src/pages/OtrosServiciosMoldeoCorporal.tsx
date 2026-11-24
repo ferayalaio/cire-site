@@ -15,13 +15,14 @@ const RESULTADOS_REALES = [
 
 export function OtrosServiciosMoldeoCorporal() {
   useDocumentMeta({
-    title: 'Moldeo corporal — Moldeo Cire-Na y Cire Body',
-    description: 'Precios de moldeo corporal por número de sesiones: Moldeo Cire-Na y Cire Body.',
+    title: 'Moldeo corporal: Cire-Na y Cire Body, precios',
+    description:
+      'Moldeo corporal con Moldeo Cire-Na y Cire Body: precios por número de sesiones. Sucursales en CDMX y Metepec, agenda por WhatsApp.',
   })
 
   return (
     <PageShell
-      eyebrow="Otros servicios"
+      eyebrow="Tratamiento corporal"
       title="Moldeo corporal"
       intro="Moldeo Cire-Na y Cire Body, con precio por número de sesiones."
       breadcrumbs={[

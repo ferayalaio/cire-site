@@ -181,8 +181,9 @@ const AGENDAR_CONTEXT = {
 
 export function OtrosServicios() {
   useDocumentMeta({
-    title: 'Otros servicios',
-    description: 'Post-operatorio, Cire Sculpt y moldeo corporal: lo que hacemos además de depilación.',
+    title: 'Tratamientos corporales: moldeo, celulitis y post operatorio',
+    description:
+      'Moldeo corporal, tratamiento anticelulítico Cire Sculpt y masaje post operatorio con drenaje. Precios por número de sesiones en CDMX y Metepec.',
   })
 
   useEffect(() => {
@@ -192,7 +193,7 @@ export function OtrosServicios() {
   return (
     <>
       <PageShell
-        eyebrow="Servicios"
+        eyebrow="Tratamientos corporales"
         title="Otros servicios"
         intro="Lo que hacemos además de depilación: recuperación y moldeado corporal."
       />

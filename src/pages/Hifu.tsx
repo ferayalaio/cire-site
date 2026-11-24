@@ -5,7 +5,7 @@ import { LoopVideo } from '../components/LoopVideo'
 import { VideoAccent } from '../components/VideoAccent'
 import { Reveal, Stagger } from '../components/Reveal'
 import { Section } from '../components/Section'
-import { SectionHeading } from '../components/PageShell'
+import { PageHeading, SectionHeading } from '../components/PageShell'
 import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -214,9 +214,9 @@ function formatRango(desde: number | null, hasta?: number | null): ReactNode {
 
 export function Hifu() {
   useDocumentMeta({
-    title: 'HIFU — Cire Lift Protocol',
+    title: 'HIFU 4D: lifting facial y corporal sin cirugía',
     description:
-      'Lifting sin cirugía con HIFU 4D: reafirma, define y rejuvenece rostro y cuerpo trabajando desde las capas profundas de la piel. Conoce el protocolo, resultados y paquetes.',
+      'HIFU 4D para reafirmar y rejuvenecer rostro y cuerpo sin cirugía, desde las capas profundas de la piel. Protocolo, resultados y paquetes.',
   })
 
   useEffect(() => {
@@ -235,17 +235,9 @@ export function Hifu() {
       {/* ---------------------------------------------------------- Hero --- */}
       <section className="grid items-center gap-14 md:grid-cols-2 md:gap-16">
         <div className="animate-fade-in-up motion-reduce:animate-none">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
-            HIFU 4D · Sin cirugía
-          </p>
-
-          <AnimatedHeading
-            as="h1"
-            underline
-            className="heading-1 text-5xl leading-[1.05] text-neutral-900 sm:text-6xl"
-          >
+          <PageHeading eyebrow="HIFU 4D · Lifting sin cirugía" className="text-5xl leading-[1.05] text-neutral-900 sm:text-6xl">
             Cire Lift Protocol
-          </AnimatedHeading>
+          </PageHeading>
 
           <p className="mt-6 font-display text-2xl leading-snug text-blush-500 sm:text-[1.75rem]">
             Lifting sin cirugía, resultados desde el interior.
