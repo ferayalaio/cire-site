@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { AppRoutes } from './App'
+import { BLOG_POSTS } from './data/blog'
 import { SUCURSALES } from './data/sucursales'
 import { getSsrHead, resetSsrHead, type SsrHead } from './lib/ssr-head'
 
@@ -45,6 +46,8 @@ export const ROUTES: string[] = [
   '/otros-servicios/post-operatorio',
   '/ubicaciones',
   ...SUCURSALES.map((sucursal) => `/ubicaciones/${sucursal.slug}`),
+  '/blog',
+  ...BLOG_POSTS.map((post) => `/blog/${post.slug}`),
   '/aviso-de-privacidad',
 ]
 

@@ -100,6 +100,7 @@ export function Footer() {
             { to: '/cera', label: 'Depilación con cera' },
             { to: '/hifu', label: 'HIFU' },
             { to: '/otros-servicios', label: 'Tratamientos corporales' },
+            { to: '/blog', label: 'Blog' },
           ]}
         />
         <FooterLinks

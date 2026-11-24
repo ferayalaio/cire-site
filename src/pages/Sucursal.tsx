@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
 import { Reveal } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
@@ -6,7 +6,23 @@ import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useSucursalJsonLd } from '../hooks/useJsonLd'
 import { HORARIO, getSucursal, mapsEmbedUrl } from '../data/sucursales'
+import { MARCA } from '../data/marca'
 import { NotFound } from './NotFound'
+
+const SERVICIOS = [
+  { to: '/laser/zonas', label: 'Depilación láser por zona' },
+  { to: '/laser/bikini', label: 'Depilación láser de bikini' },
+  { to: '/laser/cuerpo-completo', label: 'Depilación láser de cuerpo completo' },
+  { to: '/cera', label: 'Depilación con cera italiana' },
+  { to: '/hifu', label: 'HIFU: lifting sin cirugía' },
+  { to: '/otros-servicios', label: 'Moldeo corporal y post operatorio' },
+]
+
+/* "A, B y C", para que la lista de colonias se lea como texto y no como tags. */
+function listaNatural(items: string[]): string {
+  if (items.length <= 1) return items.join('')
+  return `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}`
+}
 
 /*
  * Las cinco sucursales comparten plantilla, así que van por una sola ruta
@@ -19,7 +35,7 @@ export function Sucursal() {
 
   // Antes del early return: los hooks no pueden llamarse condicionalmente.
   useDocumentMeta({
-    title: sucursal ? `Depilación láser en ${sucursal.nombre}` : 'Sucursal no encontrada',
+    title: sucursal ? `Depilación láser en ${sucursal.zonaBusqueda}` : 'Sucursal no encontrada',
     description: sucursal
       ? `Depilación láser, cera y HIFU en Cire ${sucursal.nombre}: ${sucursal.direccion}. Horarios, mapa y citas por WhatsApp.`
       : undefined,
@@ -121,6 +137,46 @@ export function Sucursal() {
             <Placeholder label="Pendiente: carga la dirección en src/data/sucursales.ts para embeber el mapa" />
           )}
         </section>
+      </Reveal>
+
+      {/*
+        Contenido propio de cada sucursal. Sin esto la página eran ~100
+        palabras (dirección + horario) y Google la trata como "delgada"
+        justo donde compite por las búsquedas locales. Todo sale de datos:
+        la zona y las colonias vecinas de sucursales.ts, los servicios de las
+        rutas reales del sitio. Nada inventado sobre la sucursal en sí.
+      */}
+      <Reveal as="section" className="mt-16 grid gap-10 md:grid-cols-2">
+        <div className="space-y-4">
+          <SectionHeading>{`Depilación láser en ${sucursal.nombre}`}</SectionHeading>
+          <p className="leading-relaxed text-neutral-600">
+            Cire {sucursal.nombre} está en {sucursal.alcaldia}. Aquí trabajamos con láser de diodo con punta de
+            zafiro, que enfría la piel en el momento del disparo, y con el {MARCA.protocolo}: un plan de 8
+            sesiones ajustado a tu tipo de piel y vello. La primera cita es una evaluación con una especialista
+            certificada, donde se confirma si eres candidata y se arma tu paquete.
+          </p>
+          <p className="leading-relaxed text-neutral-600">
+            Atendemos a quienes viven o trabajan en {listaNatural(sucursal.cercanas)}. Todas las citas son con
+            agenda previa por WhatsApp.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <SectionHeading>Servicios en esta sucursal</SectionHeading>
+          <ul className="divide-y divide-black/[0.07] rounded-2xl border border-black/[0.07] bg-white">
+            {SERVICIOS.map((servicio) => (
+              <li key={servicio.to}>
+                <Link
+                  to={servicio.to}
+                  className="flex items-center justify-between gap-4 px-6 py-4 text-neutral-900 transition-colors hover:bg-blush-50"
+                >
+                  <span>{servicio.label}</span>
+                  <span aria-hidden="true" className="text-neutral-400">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Reveal>
 
       {sucursal.testimonios && sucursal.testimonios.length > 0 && (

@@ -49,6 +49,23 @@ export interface Sucursal {
   /** Teléfono del listado oficial. Vacío = todavía no se agenda por llamada, solo WhatsApp. */
   telefono?: string
 
+  /**
+   * Cómo se busca esta sucursal en Google: va al <title> ("Depilación láser
+   * en Metepec y Toluca"). Es la zona que la gente escribe, que no siempre es
+   * el nombre interno de la sucursal — nadie busca "depilación Oriente".
+   */
+  zonaBusqueda: string
+
+  /** Alcaldía o municipio, para el texto de la página. */
+  alcaldia: string
+
+  /**
+   * Colonias y zonas vecinas, por geografía (no por dato del negocio). Le dan
+   * a la página contenido propio y la hacen aparecer en búsquedas de la zona
+   * de al lado, que es de donde llega buena parte de la gente.
+   */
+  cercanas: string[]
+
   /** Testimonios parafraseados (no citas literales) para esta sucursal. */
   testimonios?: Testimonio[]
 }
@@ -93,6 +110,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'polanco',
     nombre: 'Polanco',
+    zonaBusqueda: 'Polanco y Anzures',
+    alcaldia: 'Miguel Hidalgo',
+    cercanas: ['Polanco', 'Anzures', 'Nueva Anzures', 'Verónica Anzures', 'Granada', 'Ampliación Granada', 'Cuauhtémoc'],
     region: 'Ciudad de México',
     direccion: 'Gutenberg 194, Anzures, Miguel Hidalgo, 11590 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=3247528200057585679',
@@ -101,6 +121,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'del-valle',
     nombre: 'Del Valle',
+    zonaBusqueda: 'la Del Valle, Benito Juárez',
+    alcaldia: 'Benito Juárez',
+    cercanas: ['Del Valle Centro', 'Del Valle Norte', 'Del Valle Sur', 'Narvarte', 'Nápoles', 'Letrán Valle', 'Portales', 'Xoco'],
     region: 'Ciudad de México',
     direccion:
       'Cda. Dr. José Ignacio Bartolache 1038, Interior 1, Col. Del Valle Centro, Benito Juárez, 03100 CDMX',
@@ -111,6 +134,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'coapa',
     nombre: 'Coapa',
+    zonaBusqueda: 'Coapa, Coyoacán',
+    alcaldia: 'Coyoacán',
+    cercanas: ['Los Girasoles', 'Villa Coapa', 'Prado Coapa', 'Villa Quietud', 'Culhuacán', 'Santa Úrsula', 'Tlalpan'],
     region: 'Ciudad de México',
     direccion:
       'Calz. del Hueso 453, Local 19, primer piso, Col. Los Girasoles, Coapa, Coyoacán, 04920 CDMX',
@@ -121,6 +147,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'oriente',
     nombre: 'Oriente',
+    zonaBusqueda: 'Iztapalapa, Paseos de Churubusco',
+    alcaldia: 'Iztapalapa',
+    cercanas: ['Paseos de Churubusco', 'Iztapalapa', 'Iztacalco', 'Agrícola Oriental', 'Granjas México', 'Unidad Modelo'],
     region: 'Ciudad de México',
     direccion: 'Río Tacámbaro 56-Interior 2, Paseos de Churubusco, Iztapalapa, 09030 CDMX',
     foto: '/sucursales/cire-depilacion-oriente.webp',
@@ -128,6 +157,9 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'metepec',
     nombre: 'Metepec',
+    zonaBusqueda: 'Metepec y Toluca',
+    alcaldia: 'Metepec, Estado de México',
+    cercanas: ['Metepec', 'Toluca', 'San Mateo Atenco', 'Zinacantepec', 'Lerma', 'La Asunción'],
     region: 'Estado de México',
     direccion:
       'C. Adolfo López Mateos 1100-Loc 10-A, La Asunción, 52172 San Salvador Tizatlalli, Méx.',

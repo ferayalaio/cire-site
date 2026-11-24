@@ -1,6 +1,9 @@
 import { AnimatedHeading } from '../components/AnimatedHeading'
 import { LinkCard, PageShell, SectionHeading } from '../components/PageShell'
+import { Faq } from '../components/Faq'
 import { Section } from '../components/Section'
+import { FAQ_LASER } from '../data/faq'
+import { useFaqJsonLd } from '../hooks/useJsonLd'
 import { Stagger } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
 import { VideoAccent } from '../components/VideoAccent'
@@ -102,6 +105,7 @@ export function Laser() {
     description:
       'Depilación láser de diodo con punta de zafiro y Protocolo Láser Expert 8®. Arma tu tratamiento por zona, por nivel de bikini o cuerpo completo.',
   })
+  useFaqJsonLd(FAQ_LASER)
 
   return (
     <>
@@ -232,7 +236,15 @@ export function Laser() {
         <TestimoniosSection testimonios={TESTIMONIOS_LASER} />
       </Section>
 
-      <Section id="agendar">
+      <Section id="preguntas">
+        <Faq
+          items={FAQ_LASER}
+          titulo="Preguntas frecuentes sobre depilación láser"
+          intro="Lo que más nos preguntan antes de empezar. Si tu duda no está aquí, escríbenos por WhatsApp."
+        />
+      </Section>
+
+      <Section id="agendar" tone="alt">
         <WhatsAppSection
           context={AGENDAR_CONTEXT}
           titulo="¿Lo armamos juntas?"

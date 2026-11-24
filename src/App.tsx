@@ -1,6 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { AvisoPrivacidad } from './pages/AvisoPrivacidad'
+import { Blog } from './pages/Blog'
+import { CuantasSesionesLaser } from './pages/blog/CuantasSesionesLaser'
 import { Cera } from './pages/Cera'
 import { Hifu } from './pages/Hifu'
 import { Home } from './pages/Home'
@@ -52,6 +54,11 @@ export function AppRoutes() {
             {/* Una sola ruta paramétrica cubre las cinco sucursales; el slug se
                 valida dentro del componente. */}
             <Route path=":slug" element={<Sucursal />} />
+          </Route>
+
+          <Route path="blog">
+            <Route index element={<Blog />} />
+            <Route path="cuantas-sesiones-depilacion-laser" element={<CuantasSesionesLaser />} />
           </Route>
 
           <Route path="aviso-de-privacidad" element={<AvisoPrivacidad />} />

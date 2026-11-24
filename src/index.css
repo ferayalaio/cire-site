@@ -276,6 +276,57 @@
    * y en táctil la barra no se usa para arrastrar; el scroll sigue siendo
    * scroll real, así que teclado y lectores de pantalla lo recorren igual.
    */
+  /*
+   * Cuerpo de los artículos del blog (ver ArticleShell). Clases sobre
+   * etiquetas y no utilidades por elemento: el artículo se escribe como HTML
+   * plano (h2, p, ul) y hereda la tipografía de acá.
+   */
+  .article-body {
+    color: var(--color-neutral-600);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .article-body > * + * {
+    margin-top: 1.25rem;
+  }
+  .article-body h2 {
+    margin-top: 2.75rem;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: var(--color-neutral-900);
+  }
+  .article-body ul,
+  .article-body ol {
+    padding-left: 1.25rem;
+  }
+  .article-body ul {
+    list-style: disc;
+  }
+  .article-body ol {
+    list-style: decimal;
+  }
+  .article-body li + li {
+    margin-top: 0.5rem;
+  }
+  .article-body strong {
+    color: var(--color-neutral-900);
+    font-weight: 600;
+  }
+  .article-body a {
+    color: var(--color-neutral-900);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .article-body a:hover {
+    color: var(--color-blush-500);
+  }
+  .article-body .resumen {
+    border-radius: 1rem;
+    border: 1px solid var(--color-blush-200);
+    background: var(--color-blush-50);
+    padding: 1.25rem 1.5rem;
+  }
+
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;

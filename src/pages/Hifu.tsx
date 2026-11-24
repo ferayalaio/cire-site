@@ -9,6 +9,7 @@ import { PageHeading, SectionHeading } from '../components/PageShell'
 import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { useFaqJsonLd } from '../hooks/useJsonLd'
 import {
   HIFU_VIDEO_MOBILE,
   HIFU_VIDEO_MOBILE_POSTER,
@@ -151,24 +152,60 @@ const DIFERENCIADORES = [
   { key: 'seguimiento', Icon: CalendarIcon, text: 'Te acompañamos con seguimiento real de tu evolución.' },
 ]
 
+/*
+ * Respuestas tomadas del manual oficial de CIRE LIFT · HIFU 4D (nov/26). Se
+ * emiten también como FAQPage (useFaqJsonLd), así que siguen sus reglas: nada
+ * de "indoloro", nada de resultados garantizados, y lo que depende de la
+ * persona se dice así.
+ */
 const PREGUNTAS_HIFU = [
   {
-    key: 'caro',
-    pregunta: '¿Está caro?',
+    key: 'duele',
+    pregunta: '¿El HIFU duele?',
     respuesta:
-      'Más que una sesión, es una inversión en un resultado diseñado para tu rostro: por eso el protocolo incluye seguimiento, no solo el HIFU.',
+      'Puede sentirse calor localizado, pequeños piquetes, presión u hormigueo durante la sesión. La sensación depende de tu sensibilidad y de la zona que trabajemos. Es un procedimiento no quirúrgico y no requiere incisiones.',
   },
   {
-    key: 'pensarlo',
-    pregunta: 'Lo voy a pensar',
+    key: 'resultados',
+    pregunta: '¿Cuándo se ven los resultados?',
     respuesta:
-      'Es válido — solo ten en cuenta que entre más pronto se estimula el colágeno, mejores resultados se logran. No hay urgencia artificial, pero sí una ventaja real en empezar antes.',
+      'Algunas personas perciben cambios iniciales después de la sesión y durante los siguientes 21 días. Como el HIFU estimula la remodelación natural del colágeno, el resultado sigue desarrollándose de forma progresiva en las semanas y meses posteriores.',
+  },
+  {
+    key: 'duracion',
+    pregunta: '¿Cuánto duran los resultados?',
+    respuesta:
+      'Como referencia, alrededor de 6 meses, y en algunos casos de prevención hasta 12 meses. Depende de tu edad, la condición de tu piel, tus hábitos y los cuidados posteriores.',
+  },
+  {
+    key: 'sesiones',
+    pregunta: '¿Cuántas sesiones necesito?',
+    respuesta:
+      'Nuestro protocolo contempla como referencia un máximo de 2 sesiones al año, y no todas las personas necesitan las dos. La cantidad se define en tu valoración, según tu piel y lo que quieres trabajar.',
+  },
+  {
+    key: 'zonas',
+    pregunta: '¿Se puede hacer en rostro y cuerpo?',
+    respuesta:
+      'Sí. CIRE LIFT · HIFU 4D se aplica en rostro y cuello, y en zonas corporales como abdomen, espalda baja, brazos, muslos y glúteos. La zona y la profundidad de trabajo se determinan en la valoración.',
+  },
+  {
+    key: 'recuperacion',
+    pregunta: '¿Hay tiempo de recuperación?',
+    respuesta:
+      'Por lo general puedes retomar tus actividades el mismo día. Después de la sesión puede haber enrojecimiento, sensibilidad, inflamación ligera u hormigueo temporal.',
+  },
+  {
+    key: 'valoracion',
+    pregunta: '¿Quién necesita una valoración especial?',
+    respuesta:
+      'Si estás embarazada, tienes marcapasos o implantes en la zona, diabetes, lupus u otra condición médica, tomas medicamentos o te aplicaste bótox, ácido hialurónico o hilos tensores recientemente, coméntalo antes de agendar. Nuestro equipo revisa tu caso antes de confirmar el tratamiento.',
   },
   {
     key: 'funciona',
     pregunta: '¿Sí funciona?',
     respuesta:
-      'Sí funciona. Pero lo importante no es si funciona en general, sino si es ideal para tu piel — por eso siempre empezamos con una valoración antes de recomendarte nada.',
+      'El HIFU cuenta con evidencia clínica para favorecer la firmeza y el efecto lifting en determinados pacientes. Lo importante es si es ideal para tu piel: por eso siempre empezamos con una valoración sin costo antes de recomendarte nada.',
   },
 ]
 
@@ -218,6 +255,7 @@ export function Hifu() {
     description:
       'HIFU 4D para reafirmar y rejuvenecer rostro y cuerpo sin cirugía, desde las capas profundas de la piel. Protocolo, resultados y paquetes.',
   })
+  useFaqJsonLd(PREGUNTAS_HIFU)
 
   useEffect(() => {
     trackViewContent({ nombre: 'Cire Lift Protocol — HIFU 4D', categoria: 'HIFU', sku: 'hifu' })
@@ -455,7 +493,7 @@ export function Hifu() {
 
       {/* ------------------------------------------------------- FAQ ------- */}
       <Section tone="alt">
-        <SectionHeading>Antes de decidir</SectionHeading>
+        <SectionHeading>Preguntas frecuentes sobre HIFU</SectionHeading>
 
         <div className="mt-8 grid gap-6 md:grid-cols-[1fr_240px]">
           <Stagger className="space-y-4" step={90}>

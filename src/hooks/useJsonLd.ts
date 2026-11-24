@@ -4,6 +4,7 @@ import type { FaqItem } from '../data/faq'
 import { SUCURSALES } from '../data/sucursales'
 import { MARCA, REDES } from '../data/marca'
 import type { Sucursal } from '../data/sucursales'
+import type { BlogPost } from '../data/blog'
 import { SITE_URL, absoluteUrl } from '../lib/site'
 import { IS_SERVER, addSsrJsonLd } from '../lib/ssr-head'
 
@@ -156,6 +157,32 @@ export function useFaqJsonLd(items: FaqItem[]): void {
         name: item.pregunta,
         acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
       })),
+    }),
+  )
+}
+
+/*
+ * Artículo del blog. El autor es la marca (no hay una persona firmando), y el
+ * publisher apunta a la misma entidad del home vía @id, así Google lo conecta
+ * con el negocio y sus sucursales.
+ */
+export function useArticleJsonLd(post: BlogPost): void {
+  const url = absoluteUrl(`/blog/${post.slug}`)
+  useJsonLd(
+    'article',
+    JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.titulo,
+      description: post.descripcion,
+      datePublished: post.fecha,
+      dateModified: post.actualizado,
+      inLanguage: 'es-MX',
+      mainEntityOfPage: url,
+      url,
+      image: `${SITE_URL}/og-image.jpg`,
+      author: { '@type': 'Organization', name: MARCA.nombre, url: `${SITE_URL}/` },
+      publisher: { '@id': `${SITE_URL}/#organizacion` },
     }),
   )
 }

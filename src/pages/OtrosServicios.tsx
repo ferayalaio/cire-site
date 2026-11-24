@@ -10,6 +10,9 @@ import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { trackViewContent } from '../lib/analytics'
 import type { OtroServicio } from '../data/precios'
 import { OTROS_SERVICIOS, formatPrecio } from '../data/precios'
+import { Faq } from '../components/Faq'
+import { FAQ_CORPORAL } from '../data/faq'
+import { useFaqJsonLd } from '../hooks/useJsonLd'
 import { TESTIMONIOS_OTROS_SERVICIOS } from '../data/testimonios'
 
 interface IconProps {
@@ -185,6 +188,7 @@ export function OtrosServicios() {
     description:
       'Moldeo corporal, tratamiento anticelulítico Cire Sculpt y masaje post operatorio con drenaje. Precios por número de sesiones en CDMX y Metepec.',
   })
+  useFaqJsonLd(FAQ_CORPORAL)
 
   useEffect(() => {
     trackViewContent({ nombre: 'Otros servicios', categoria: 'Corporal', sku: 'otros-servicios' })
@@ -246,7 +250,11 @@ export function OtrosServicios() {
         <TestimoniosSection testimonios={TESTIMONIOS_OTROS_SERVICIOS} />
       </Section>
 
-      <Section id="agendar" tone="alt">
+      <Section id="preguntas" tone="alt">
+        <Faq items={FAQ_CORPORAL} titulo="Preguntas frecuentes sobre tratamientos corporales" />
+      </Section>
+
+      <Section id="agendar">
         <SectionHeading>¿Lo armamos juntas?</SectionHeading>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
           Cuéntanos qué servicio te interesa y te confirmamos disponibilidad por WhatsApp.
