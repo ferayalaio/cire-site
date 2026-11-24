@@ -85,8 +85,8 @@ const BENEFICIOS = [
 // Fotos reales de sesión (no antes/después clínico: mostramos el trato y el
 // equipo en acción, que es lo que sí tenemos). Viven en public/resultados-reales/.
 const RESULTADOS_REALES = [
-  { src: '/resultados-reales/resultado-piernas.png', alt: 'Sesión de láser diodo en piernas' },
-  { src: '/resultados-reales/resultado-axila.png', alt: 'Sesión de láser diodo en axila' },
+  { src: '/resultados-reales/resultado-depilacion-laser-piernas.webp', alt: 'Sesión de láser diodo en piernas' },
+  { src: '/resultados-reales/resultado-depilacion-laser-axila.webp', alt: 'Sesión de láser diodo en axila' },
 ]
 
 const AGENDAR_CONTEXT = {

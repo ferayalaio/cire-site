@@ -6,6 +6,7 @@ export function NotFound() {
   useDocumentMeta({
     title: 'Página no encontrada',
     description: 'El enlace puede estar viejo o mal escrito.',
+    noindex: true,
   })
 
   return (

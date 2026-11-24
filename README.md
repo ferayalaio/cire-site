@@ -188,26 +188,40 @@ que salió del navegador en lugar de contar dos.
 ### SEO
 
 `src/hooks/useDocumentMeta.ts` le pone a cada ruta su `<title>`, su
-`description`, sus `og:*` y su `<link rel=canonical>`. **Toda página nueva
-tiene que llamarlo.**
+`description`, sus `og:*`/`twitter:*` y su `<link rel=canonical>`. **Toda página
+nueva tiene que llamarlo.** El dominio canónico es fijo (`SITE_URL` en
+`src/lib/site.ts`): aunque el sitio se abra desde `cire-site.vercel.app` o una
+preview, el canonical apunta a `https://ciredepilacion.com`.
 
-Como los precios son abiertos y viven en HTML real (nunca en una imagen o un
-video), cada zona/sucursal es una página indexable con su propio título — es
-la base de lo que después va a mostrar Google Search Console.
+**Prerender.** `npm run build` genera un HTML estático por ruta
+(`scripts/prerender.mjs`): el contenido, el título, la descripción, el
+canonical, el Open Graph y el JSON-LD de cada página ya vienen en la respuesta
+del servidor. Lo lee Google sin ejecutar JS y lo lee el preview de WhatsApp.
+En el navegador React vuelve a renderizar todo encima (no se hidrata).
 
-**Límite conocido:** Googlebot ejecuta JS y lee lo que escribe el hook, pero
-los scrapers de preview de links (el de WhatsApp entre ellos) **no**. Una
-página de servicio compartida por chat muestra el título del `index.html`, no
-el suyo. Arreglarlo requiere prerender o SSR — decisión aparte, no está hecho.
+El mismo script escribe `dist/sitemap.xml` y `dist/robots.txt`. **Si agregás
+una ruta en `App.tsx`, agregala también a `ROUTES` en `src/entry-server.tsx`**;
+si no, queda sin HTML propio (da 404 al entrar directo) y fuera del sitemap.
+
+**JSON-LD** (`src/hooks/useJsonLd.ts`): `HealthAndBeautyBusiness` con las 5
+sucursales en el home, uno por sucursal en `/ubicaciones/:slug`,
+`BreadcrumbList` en toda página con migas (sale solo de `PageShell`) y
+`FAQPage` donde hay FAQ.
+
+**404 real.** Ya no hay rewrite "todo → index.html": una URL inexistente
+devuelve `dist/404.html` con status 404 y `noindex`. Los links viejos de
+`/paquetes/*` redirigen con 308 desde `vercel.json`.
+
+`cire-site.vercel.app` sale con `X-Robots-Tag: noindex` para que Google no lo
+indexe como copia del dominio.
 
 ---
 
 ## Desplegar en Vercel
 
-`vercel.json` ya está en el repo con el rewrite que manda todas las rutas a
-`index.html`. **Sin eso, entrar directo a `/laser/cuerpo-completo` (o recargar
-ahí) da 404**, porque Vercel busca un archivo en esa carpeta y no existe — el
-router es del lado del cliente.
+`vercel.json` usa `cleanUrls`: `/laser/cuerpo-completo` se sirve desde el
+`laser/cuerpo-completo.html` que genera el prerender. Una ruta que no esté en
+`ROUTES` (ver SEO, arriba) da 404 al entrar directo.
 
 ### Opción A — desde el dashboard (recomendada)
 

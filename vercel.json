@@ -1,10 +1,146 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/paquetes",
+      "destination": "/laser",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-cuerpo-completo",
+      "destination": "/laser/cuerpo-completo",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-bikini-clasico",
+      "destination": "/laser/bikini",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-bikini-frances",
+      "destination": "/laser/bikini",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-bikini-brasileno",
+      "destination": "/laser/bikini",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-bikini-completo",
+      "destination": "/laser/bikini",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-axilas",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-piernas-completas",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-media-pierna",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-brazos",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-rostro",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/laser-espalda",
+      "destination": "/laser/zonas",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/cera",
+      "destination": "/cera",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/hifu",
+      "destination": "/hifu",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/post-operatorio",
+      "destination": "/otros-servicios",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/cire-sculpt",
+      "destination": "/otros-servicios",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/aparatologia",
+      "destination": "/otros-servicios",
+      "permanent": true
+    },
+    {
+      "source": "/paquetes/:slug",
+      "destination": "/laser",
+      "permanent": true
+    },
+    {
+      "source": "/ubicacion",
+      "destination": "/ubicaciones",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "cire-site.vercel.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/tipografias(.html)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ]
 }

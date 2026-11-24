@@ -4,6 +4,7 @@ import { Reveal } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
 import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { useSucursalJsonLd } from '../hooks/useJsonLd'
 import { HORARIO, getSucursal, mapsEmbedUrl } from '../data/sucursales'
 import { NotFound } from './NotFound'
 
@@ -22,7 +23,9 @@ export function Sucursal() {
     description: sucursal
       ? `Dirección, horarios y cómo llegar a la sucursal ${sucursal.nombre} de Cire Depilación.`
       : undefined,
+    noindex: !sucursal,
   })
+  useSucursalJsonLd(sucursal)
 
   /*
    * Deja registrada esta sucursal como "la que se está mirando" en la visita.

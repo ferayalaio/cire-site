@@ -17,9 +17,13 @@ import { PaqueteRedirect } from './pages/PaqueteRedirect'
 import { Sucursal } from './pages/Sucursal'
 import { Ubicaciones } from './pages/Ubicaciones'
 
-function App() {
+/*
+ * El árbol de rutas va separado del router para poder montarlo con dos routers
+ * distintos: BrowserRouter en el navegador (App, abajo) y StaticRouter en el
+ * prerender (entry-server.tsx).
+ */
+export function AppRoutes() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
@@ -67,6 +71,13 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   )
 }

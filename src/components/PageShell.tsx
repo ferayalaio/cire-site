@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatedHeading } from './AnimatedHeading'
 import { Reveal } from './Reveal'
 import { PROMO_ACTIVA } from '../data/precios'
+import { useBreadcrumbJsonLd } from '../hooks/useJsonLd'
 
 interface Crumb {
   label: string
@@ -39,6 +40,10 @@ interface PageShellProps {
  * quedaba a 4px del breadcrumb en celular en vez de tener aire.
  */
 export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, media, children }: PageShellProps) {
+  // Las migas visibles también salen como BreadcrumbList: Google las muestra
+  // en el resultado en lugar de la URL cruda.
+  useBreadcrumbJsonLd(breadcrumbs, title)
+
   return (
     <main className="mx-auto max-w-6xl px-6 pt-[calc(8rem+var(--anuncio-h,0px))] sm:px-10 sm:pt-[calc(10rem+var(--anuncio-h,0px))]">
       <div className={media ? 'grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14' : undefined}>

@@ -1,7 +1,11 @@
 import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import type { FaqItem } from '../data/faq'
 import { SUCURSALES } from '../data/sucursales'
-import { MARCA } from '../data/marca'
+import { MARCA, REDES } from '../data/marca'
+import type { Sucursal } from '../data/sucursales'
+import { SITE_URL, absoluteUrl } from '../lib/site'
+import { IS_SERVER, addSsrJsonLd } from '../lib/ssr-head'
 
 /*
  * Structured data (JSON-LD).
@@ -11,10 +15,9 @@ import { MARCA } from '../data/marca'
  * habilita los resultados enriquecidos — el desplegable de preguntas debajo
  * del resultado, y la ficha del negocio con sus sucursales.
  *
- * Googlebot ejecuta JS, así que lee lo que se inyecta acá igual que lee el
- * title. Vale la misma advertencia que en useDocumentMeta: un scraper que no
- * ejecuta JS no lo ve, y la solución de fondo (prerender/SSR) sigue anotada en
- * el README.
+ * Igual que useDocumentMeta, en el prerender deja el bloque en el colector
+ * (lib/ssr-head.ts) para que salga en el HTML estático de la ruta; en el
+ * navegador lo inyecta desde un efecto.
  *
  * REGLA DURA: acá solo entra información que también está visible en la
  * página. Marcar como structured data algo que la persona no puede leer —o un
@@ -32,8 +35,18 @@ const SCRIPT_ID_PREFIX = 'jsonld-'
  * Comparado como string, el efecto corre solo cuando el contenido cambia.
  */
 function useJsonLd(id: string, json: string): void {
+  // String vacío = "esta página no lleva este bloque" (sin migas, sucursal
+  // inexistente). Mantiene el hook incondicional, como piden las reglas de hooks.
+  if (IS_SERVER && json) addSsrJsonLd(id, json)
+
   useEffect(() => {
     const elementId = `${SCRIPT_ID_PREFIX}${id}`
+
+    // El prerender ya dejó este mismo bloque en el HTML. Se reemplaza en vez
+    // de duplicarlo, así Google no ve dos veces la misma entidad.
+    document.getElementById(elementId)?.remove()
+    if (!json) return
+
     const script = document.createElement('script')
     script.type = 'application/ld+json'
     script.id = elementId
@@ -57,31 +70,78 @@ function useJsonLd(id: string, json: string): void {
  */
 const HORARIO_SCHEMA = ['Mo-Fr 10:00-20:00', 'Sa 09:00-16:00']
 
+function sucursalSchema(sucursal: Sucursal) {
+  return {
+    '@type': 'HealthAndBeautyBusiness',
+    '@id': `${absoluteUrl(`/ubicaciones/${sucursal.slug}`)}#negocio`,
+    name: `${MARCA.nombre} ${sucursal.nombre}`,
+    image: sucursal.foto ? `${SITE_URL}${sucursal.foto}` : `${SITE_URL}/og-image.jpg`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: sucursal.direccion,
+      addressRegion: sucursal.region,
+      addressCountry: 'MX',
+    },
+    url: absoluteUrl(`/ubicaciones/${sucursal.slug}`),
+    parentOrganization: { '@id': `${SITE_URL}/#organizacion` },
+    ...(sucursal.telefono ? { telephone: sucursal.telefono } : {}),
+    ...(sucursal.mapsUrl ? { hasMap: sucursal.mapsUrl } : {}),
+    openingHours: HORARIO_SCHEMA,
+  }
+}
+
 export function useLocalBusinessJsonLd(): void {
   useJsonLd(
     'local-business',
     JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'HealthAndBeautyBusiness',
+      '@id': `${SITE_URL}/#organizacion`,
       name: MARCA.nombre,
       description: `Depilación láser de diodo con punta de zafiro, cera italiana y HIFU. ${MARCA.cantidadSucursales} sucursales en Ciudad de México y Metepec.`,
-      url: window.location.origin,
+      url: `${SITE_URL}/`,
+      logo: `${SITE_URL}/hero/logo.jpeg`,
+      image: `${SITE_URL}/og-image.jpg`,
+      sameAs: Object.values(REDES),
       areaServed: ['Ciudad de México', 'Estado de México'],
-      location: SUCURSALES.map((sucursal) => ({
-        '@type': 'HealthAndBeautyBusiness',
-        name: `${MARCA.nombre} ${sucursal.nombre}`,
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: sucursal.direccion,
-          addressRegion: sucursal.region,
-          addressCountry: 'MX',
-        },
-        url: `${window.location.origin}/ubicaciones/${sucursal.slug}`,
-        ...(sucursal.telefono ? { telephone: sucursal.telefono } : {}),
-        ...(sucursal.mapsUrl ? { hasMap: sucursal.mapsUrl } : {}),
-        openingHours: HORARIO_SCHEMA,
-      })),
+      location: SUCURSALES.map(sucursalSchema),
     }),
+  )
+}
+
+/*
+ * Ficha propia de cada sucursal. Es la que puede emparejarse con su perfil de
+ * Google Business: misma dirección y teléfono, escritos igual (NAP).
+ */
+export function useSucursalJsonLd(sucursal: Sucursal | undefined): void {
+  useJsonLd(
+    'sucursal',
+    sucursal ? JSON.stringify({ '@context': 'https://schema.org', ...sucursalSchema(sucursal) }) : '',
+  )
+}
+
+/*
+ * Migas de pan. Las mismas que se ven arriba del h1 (PageShell), más la página
+ * actual al final, que en pantalla no es link pero en el schema sí va.
+ */
+export function useBreadcrumbJsonLd(crumbs: { label: string; to: string }[] | undefined, current: string): void {
+  const { pathname } = useLocation()
+  const items = crumbs && crumbs.length > 0 ? [...crumbs, { label: current, to: pathname }] : []
+
+  useJsonLd(
+    'breadcrumb',
+    items.length > 0
+      ? JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: items.map((crumb, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: crumb.label,
+            item: absoluteUrl(crumb.to),
+          })),
+        })
+      : '',
   )
 }
 

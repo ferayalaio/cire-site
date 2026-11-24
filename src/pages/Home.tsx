@@ -201,7 +201,7 @@ const TRATAMIENTOS: Tratamiento[] = [
     badge: 'Recuperación y moldeado',
     title: 'Otros servicios',
     description: 'Post-operatorio, Cire Sculpt y moldeo corporal.',
-    imagen: '/resultados-reales/resultado-moldeo-1.png',
+    imagen: '/resultados-reales/resultado-moldeo-corporal-abdomen.webp',
   },
 ]
 

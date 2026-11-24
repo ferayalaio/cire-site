@@ -9,8 +9,8 @@ import { MOLDEO_CORPORAL } from '../data/precios'
 // public/resultados-reales/, mismo criterio que /laser: sesión real, no
 // antes/después clínico.
 const RESULTADOS_REALES = [
-  { src: '/resultados-reales/resultado-moldeo-1.png', alt: 'Sesión de moldeo corporal en abdomen' },
-  { src: '/resultados-reales/resultado-moldeo-2.png', alt: 'Aplicación de cabezal de radiofrecuencia en abdomen' },
+  { src: '/resultados-reales/resultado-moldeo-corporal-abdomen.webp', alt: 'Sesión de moldeo corporal en abdomen' },
+  { src: '/resultados-reales/resultado-moldeo-corporal-radiofrecuencia.webp', alt: 'Aplicación de cabezal de radiofrecuencia en abdomen' },
 ]
 
 export function OtrosServiciosMoldeoCorporal() {
