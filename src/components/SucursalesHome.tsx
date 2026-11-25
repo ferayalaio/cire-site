@@ -1,58 +1,55 @@
-import { useRef, useState } from 'react'
-import type { KeyboardEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { KeyboardEvent, PointerEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { Sucursal } from '../data/sucursales'
-import { HORARIO, REGION_SIGLA, SUCURSALES, mapsEmbedUrl } from '../data/sucursales'
+import { HORARIO, REGION_SIGLA, SUCURSALES } from '../data/sucursales'
 import { SectionHeading } from './PageShell'
-import { Reveal } from './Reveal'
-import { WhatsAppCTA } from './WhatsAppCTA'
+import { AgendarCTA } from './WhatsAppCTA'
+import { ImagenPendiente } from './ImagenPendiente'
 
 /*
  * Bloque de SEO local del home (05/ago/26).
  *
- * Existe porque hasta ahora las cinco sucursales solo aparecían en
- * /ubicaciones: el home —que es la página que concentra los enlaces y el
- * tráfico de marca— no nombraba ni una zona. Para una búsqueda del tipo
+ * Existe porque las cinco sucursales solo aparecían en /ubicaciones: el home
+ * —que concentra enlaces y tráfico de marca— no nombraba ni una zona. Para
  * "depilación láser Polanco" eso es dejar la pelea sin jugar.
  *
- * Tres decisiones que sostienen para qué está:
- *
- * - Los nombres de zona y las entidades ("Ciudad de México", "Estado de
- *   México") van como texto real, no dentro de una imagen ni detrás de un
- *   acordeón cerrado: es literalmente lo que se está tratando de posicionar.
- *   La insignia muestra la sigla (CDMX / EDOMEX) porque es lo que se escanea,
- *   y arrastra el nombre completo en un `sr-only` (ver REGION_SIGLA).
- * - La dirección va completa, tal cual el listado oficial (ver la nota de
- *   src/data/sucursales.ts). Una dirección parafraseada para que "se vea
- *   breve" es una dirección que no coincide con la ficha de Google Business, y
- *   esa coincidencia exacta es parte de lo que se está buscando.
- * - Cada tarjeta lleva su propio CTA a WhatsApp con `sucursal` e `intencion:
- *   'agendar'`, así el mensaje ya sale con la sucursal escrita (ver
- *   whatsapp.ts) y el clic queda desglosado por sucursal en Meta y GA4.
+ * - Nombres de zona y entidades ("Ciudad de México", "Estado de México") van
+ *   como texto real. La insignia muestra la sigla y arrastra el nombre
+ *   completo en `sr-only` (ver REGION_SIGLA).
+ * - La dirección va completa, tal cual el listado oficial (ver
+ *   src/data/sucursales.ts): tiene que coincidir con la ficha de Google.
+ * - Cada sucursal lleva su propio CTA con `sucursal` e `intencion: 'agendar'`.
  *
  * ---------------------------------------------------------------------------
- * REDISEÑO A PESTAÑAS (05/ago/26)
+ * REDISEÑO A PANELES VERTICALES (25/nov/26)
  * ---------------------------------------------------------------------------
- * Antes eran cinco tarjetas: un riel horizontal en celular y una grilla de 2-3
- * columnas en escritorio. Cinco tarjetas parejas obligan a leer las cinco para
- * encontrar la propia, que es exactamente el trabajo que esta sección tendría
- * que ahorrar — nadie viene a comparar sucursales, viene a ver si hay una
- * cerca. Con pestañas la elección es un clic sobre el nombre de la zona (que es
- * el dato que la persona ya trae en la cabeza) y la tarjeta muestra UNA
- * sucursal con todo: dirección, horarios, mapa embebido y su botón de agendar.
+ * Reemplaza las pestañas + mapa embebido. Cinco paneles de foto en fila: uno
+ * abierto, los otros cuatro angostos con el nombre en vertical. Pasar el
+ * cursor (o tocar, o llegar con Tab) abre ese panel y cierra el anterior; al
+ * salir del bloque queda abierto el último, no vuelve al primero.
  *
- * Los cinco paneles se renderizan SIEMPRE y los inactivos se ocultan con el
- * atributo `hidden`, en vez de montar solo el activo. No es un detalle de
- * implementación: las cinco direcciones y los cinco nombres de zona son el
- * contenido que este bloque existe para posicionar, y con render condicional el
- * HTML solo tendría uno. El único que sí es condicional es el <iframe> del mapa
- * — son 5 mapas de Google, no aportan nada al crawler y cargarlos todos de una
- * es exactamente lo que no se quiere en el medio del home.
+ * El movimiento es una transición de `flex-grow` con curva de salida larga
+ * (no width en px), así el que se abre y el que se cierra se reparten el
+ * espacio en el mismo cuadro y nunca hay salto. El contenido del panel abierto
+ * tiene ancho FIJO y está anclado abajo a la izquierda: mientras el panel
+ * crece, el texto no se re-acomoda, solo se va descubriendo — eso es lo que
+ * hace que se sienta fluido y no "elástico".
+ *
+ * En celular es el mismo acordeón pero en columna (crece la altura).
+ *
+ * El contenido de los cinco paneles está SIEMPRE en el HTML (los cerrados lo
+ * tienen con opacidad 0 e `inert`), por la misma razón de SEO de arriba: las
+ * cinco direcciones son lo que este bloque posiciona.
+ *
+ * El mapa embebido salió del home: cinco iframes de Google en medio de la
+ * página no compensaban. "Ver mapa" lleva a Google Maps o a la página de la
+ * sucursal, que sí lo embebe.
  */
 
 function PinIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-blush-500" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0" aria-hidden="true">
       <path
         d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"
         stroke="currentColor"
@@ -66,7 +63,7 @@ function PinIcon() {
 
 function ClockIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-blush-500" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0" aria-hidden="true">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.4" />
       <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -89,14 +86,11 @@ function MapIcon() {
 
 /*
  * "Ver mapa" apunta al link oficial de Google Maps cuando existe, y cae en la
- * página de la sucursal cuando no (Oriente todavía no tiene `mapsUrl`): esa
- * página embebe el mapa por dirección con `mapsEmbedUrl`, así que el botón
- * cumple lo que promete en las cinco. El que sale del sitio abre en pestaña
- * nueva; el interno navega como cualquier link del router.
+ * página de la sucursal cuando no (esa página embebe el mapa por dirección).
  */
 function BotonMapa({ sucursal }: { sucursal: Sucursal }) {
   const clase =
-    'inline-flex items-center justify-center gap-1.5 rounded-full border border-black/15 px-4 py-2.5 text-xs font-medium text-neutral-700 transition-colors duration-200 hover:border-blush-400 hover:text-neutral-900'
+    'inline-flex min-h-12 items-center justify-center gap-1.5 rounded-btn border border-white/40 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-200 hover:border-white hover:bg-white/10'
 
   if (sucursal.mapsUrl) {
     return (
@@ -121,223 +115,255 @@ function BotonMapa({ sucursal }: { sucursal: Sucursal }) {
   )
 }
 
+/* Curva de salida larga: arranca rápido y se asienta despacio. */
+const EASE = 'ease-[cubic-bezier(0.22,1,0.36,1)]'
+
+/*
+ * Respaldo mientras falta la foto (hoy Polanco): un degradado de marca en vez
+ * de la tarjeta blanca "Imagen pendiente", que en un panel oscuro con texto
+ * blanco encima se vería roto. En desarrollo se marca igual.
+ */
+function RespaldoFoto() {
+  return (
+    <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_20%_0%,var(--color-morado-700),var(--color-ink)_70%)]">
+      {import.meta.env.DEV && (
+        <span className="absolute right-3 top-3 rounded bg-white/15 px-2 py-1 text-[11px] text-white/80">
+          Foto pendiente
+        </span>
+      )}
+    </div>
+  )
+}
+
 interface PanelProps {
   sucursal: Sucursal
   activo: boolean
-  tabId: string
-  panelId: string
+  /** `inmediato` salta la espera de intención de hover (clic, foco). */
+  onAbrir: (inmediato?: boolean) => void
 }
 
-function PanelSucursal({ sucursal, activo, tabId, panelId }: PanelProps) {
-  const embed = mapsEmbedUrl(sucursal)
+function PanelSucursal({ sucursal, activo, onAbrir }: PanelProps) {
+  const sigla = REGION_SIGLA[sucursal.region]
+
+  function alEntrar(event: PointerEvent<HTMLElement>) {
+    // Solo mouse/lápiz: en touch el `pointerenter` llega junto con el tap y
+    // abriría el panel antes de que la persona decida.
+    if (event.pointerType !== 'touch') onAbrir()
+  }
 
   return (
-    <div
-      id={panelId}
-      role="tabpanel"
-      aria-labelledby={tabId}
-      hidden={!activo}
-      /*
-       * `animate-fade-in-up` con `key` implícito por el remontaje no aplica acá
-       * (el nodo vive siempre), así que la entrada se dispara por clase solo
-       * cuando el panel está activo: al cambiar de pestaña el navegador
-       * reinicia la animación porque el elemento pasa de `display:none` a
-       * visible.
-       */
-      className={activo ? 'animate-fade-in-up motion-reduce:animate-none' : undefined}
+    <article
+      id={`sucursal-${sucursal.slug}`}
+      onPointerEnter={alEntrar}
+      onFocus={() => onAbrir(true)}
+      className={`group relative min-h-0 min-w-0 overflow-hidden rounded-media bg-ink transition-[flex] duration-700 motion-reduce:transition-none ${EASE} ${
+        activo ? 'flex-[1_1_4rem] lg:flex-[1_1_4.75rem]' : 'flex-[0_0_4rem] cursor-pointer lg:flex-[0_0_4.75rem]'
+      }`}
     >
-      <div className="grid gap-0 overflow-hidden rounded-3xl border border-black/[0.07] bg-white shadow-[0_25px_60px_-35px_rgba(166,94,109,0.5)] lg:grid-cols-[1fr_1.1fr]">
-        <div className="p-6 sm:p-8">
-          <span className="inline-flex w-fit items-center rounded-full bg-blush-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-blush-600">
-            {REGION_SIGLA[sucursal.region]}
-            <span className="sr-only"> — {sucursal.region}</span>
+      {/*
+       * Foto: el collage del flyer oficial (fachada + dos interiores, 892×629).
+       * En escritorio llena el panel; abierto se centra para que entren las
+       * tres fotos, cerrado se corre a la izquierda para que la franja muestre
+       * la fachada y no el margen rosa entre fotos. En celular va completo
+       * arriba del panel, con la info debajo, porque un panel vertical
+       * recortaría el collage a una sola foto.
+       */}
+      <div
+        className={`absolute inset-x-0 top-0 aspect-[892/629] transition-transform duration-[1200ms] motion-reduce:transition-none lg:inset-0 lg:aspect-auto ${EASE} ${
+          activo ? 'scale-100' : 'scale-110'
+        }`}
+      >
+        <ImagenPendiente
+          ruta={`sucursales/${sucursal.slug}.jpg`}
+          proporcion="892:629"
+          claseProporcion="h-full w-full"
+          alt={`Fachada e interiores de CIRE ${sucursal.nombre}`}
+          sizes="(min-width: 1024px) 44rem, 100vw"
+          imgClassName={`transition-[object-position] duration-700 motion-reduce:transition-none ${EASE} ${
+            activo ? 'object-left lg:object-center' : 'object-left'
+          }`}
+          respaldo={<RespaldoFoto />}
+        />
+        {/* Fundido del collage hacia la info (solo celular). */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink to-transparent lg:hidden" />
+      </div>
+
+      {/* Velo: más denso en los cerrados para que el abierto mande. */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 bg-ink transition-opacity duration-700 ${activo ? 'opacity-0' : 'opacity-45 group-hover:opacity-30'}`}
+      />
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 hidden bg-gradient-to-t from-ink/95 via-ink/45 to-transparent transition-opacity duration-700 lg:block ${
+          activo ? 'opacity-100' : 'opacity-60'
+        }`}
+      />
+
+      {/*
+       * Disparador del panel cerrado: cubre todo el panel, así el toque en
+       * celular y el Enter con teclado abren. Lleva el nombre en vertical
+       * (horizontal en celular). Cuando el panel está abierto se retira del
+       * orden de foco para que Tab siga a los botones de adentro.
+       */}
+      <button
+        type="button"
+        onClick={() => onAbrir(true)}
+        aria-expanded={activo}
+        aria-controls={`sucursal-${sucursal.slug}-info`}
+        tabIndex={activo ? -1 : 0}
+        className={`absolute inset-0 flex items-center px-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blush-300 lg:items-end lg:justify-center lg:px-0 lg:pb-5 ${
+          activo ? 'pointer-events-none' : ''
+        }`}
+      >
+        <span
+          className={`flex items-center gap-3 transition-[opacity,transform] duration-500 ${EASE} lg:[writing-mode:vertical-rl] lg:rotate-180 ${
+            activo ? 'translate-y-2 opacity-0' : 'opacity-100 delay-200'
+          }`}
+        >
+          <span className="font-display text-xl font-medium tracking-tight text-white">{sucursal.nombre}</span>
+          <span className="text-[11px] font-semibold tracking-[0.14em] text-white/70">{sigla}</span>
+        </span>
+      </button>
+
+      {/*
+       * Contenido del panel abierto. Ancho fijo en escritorio (ver nota de
+       * arriba) y entrada escalonada: aparece cuando el panel ya ganó la mayor
+       * parte de su espacio, y al cerrarse se va de inmediato.
+       */}
+      <div
+        id={`sucursal-${sucursal.slug}-info`}
+        inert={!activo}
+        className={`absolute inset-x-0 bottom-0 p-5 text-white transition-[opacity,transform] motion-reduce:transition-none sm:p-8 lg:right-auto lg:w-[30rem] ${EASE} ${
+          activo ? 'translate-y-0 opacity-100 delay-300 duration-700' : 'translate-y-4 opacity-0 duration-200'
+        }`}
+      >
+        <span className="inline-flex rounded-full border border-white/30 px-3 py-1 text-[11px] font-semibold tracking-[0.14em]">
+          {sigla}
+          <span className="sr-only"> — {sucursal.region}</span>
+        </span>
+
+        <h3 className="mt-3 font-display text-4xl leading-none tracking-tight sm:text-5xl">{sucursal.nombre}</h3>
+
+        <div className="mt-5 flex items-start gap-2.5 text-white/85">
+          <span className="mt-0.5">
+            <PinIcon />
           </span>
-
-          {/* h3 y no un <span>: da la jerarquía correcta debajo del h2 del
-              bloque, que es lo que lee un crawler cuando arma el listado de
-              zonas de la página. */}
-          <h3 className="mt-3 text-3xl leading-tight text-neutral-900">{sucursal.nombre}</h3>
-
-          {/* Sin line-clamp: una dirección cortada a mitad no sirve ni para
-              llegar ni para que coincida con la ficha de Google. */}
-          <div className="mt-5 flex items-start gap-2.5">
-            <span className="mt-0.5">
-              <PinIcon />
-            </span>
-            <address className="text-sm not-italic leading-relaxed text-neutral-600">
-              {sucursal.direccion || 'Agenda y te confirmamos la dirección exacta por WhatsApp.'}
-            </address>
-          </div>
-
-          {/* Los horarios ahora van dentro de la tarjeta y no solo en el
-              párrafo de arriba: es la segunda pregunta después de "¿dónde
-              está?", y tenerla acá evita el viaje a /ubicaciones. */}
-          <div className="mt-4 flex items-start gap-2.5">
-            <span className="mt-0.5">
-              <ClockIcon />
-            </span>
-            <dl className="text-sm leading-relaxed text-neutral-600">
-              {HORARIO.map((horario) => (
-                <div key={horario.dias} className="flex flex-wrap gap-x-2">
-                  <dt className="text-neutral-500">{horario.dias}</dt>
-                  <dd className="font-medium text-neutral-900">{horario.horas}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          {sucursal.telefono && (
-            <p className="mt-4 text-sm text-neutral-500">
-              Tel.{' '}
-              <a
-                href={`tel:${sucursal.telefono.replace(/\s/g, '')}`}
-                className="font-medium text-neutral-900 underline-offset-4 hover:underline"
-              >
-                {sucursal.telefono}
-              </a>
-            </p>
-          )}
-
-          {/* Los dos botones en una fila de altura pareja, el principal
-              primero en el orden de lectura y de foco: "ver mapa" es una
-              salida del embudo, "agendar" es el objetivo del bloque. */}
-          <div className="mt-7 flex flex-wrap items-center gap-2">
-            <WhatsAppCTA
-              className="px-5! py-3!"
-              context={{
-                sku: `sucursal-${sucursal.slug}`,
-                nombre: `una cita en ${sucursal.nombre}`,
-                categoria: 'sucursal',
-                placement: 'card',
-                sucursal: sucursal.slug,
-                intencion: 'agendar',
-              }}
-            >
-              Agendar cita aquí
-            </WhatsAppCTA>
-
-            <BotonMapa sucursal={sucursal} />
-          </div>
+          <address className="text-sm not-italic leading-relaxed">
+            {sucursal.direccion || 'Agenda y te confirmamos la dirección exacta por WhatsApp.'}
+          </address>
         </div>
 
-        {/*
-         * El mapa solo se pide cuando la pestaña está activa: cinco iframes de
-         * Google Maps montados a la vez son cinco requests de terceros y un
-         * golpe de layout en medio del home.
-         *
-         * `min-h` en vez de una relación de aspecto fija: en escritorio la
-         * columna del mapa iguala la altura de la de datos, y en celular queda
-         * un mapa de 15rem que se ve sin empujar los botones fuera de pantalla.
-         */}
-        <div className="relative min-h-[15rem] bg-blush-50 lg:min-h-[22rem]">
-          {activo && embed ? (
-            <iframe
-              key={sucursal.slug}
-              title={`Mapa de Cire ${sucursal.nombre}`}
-              src={embed}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center p-6 text-center text-sm text-neutral-400">
-              Te compartimos la ubicación exacta por WhatsApp.
-            </div>
-          )}
+        {/* En celular el horario ya está en el párrafo de arriba y no cabe
+            junto al collage; queda en el HTML igual. */}
+        <div className="mt-3 hidden items-start gap-2.5 text-white/85 lg:flex">
+          <span className="mt-0.5">
+            <ClockIcon />
+          </span>
+          <dl className="text-sm leading-relaxed">
+            {HORARIO.map((horario) => (
+              <div key={horario.dias} className="flex flex-wrap gap-x-2">
+                <dt>{horario.dias}</dt>
+                <dd className="font-medium text-white">{horario.horas}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        {sucursal.telefono && (
+          <p className="mt-3 text-sm text-white/85">
+            Tel.{' '}
+            <a
+              href={`tel:${sucursal.telefono.replace(/\s/g, '')}`}
+              className="font-medium text-white underline-offset-4 hover:underline"
+            >
+              {sucursal.telefono}
+            </a>
+          </p>
+        )}
+
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <AgendarCTA
+            variant="secondary"
+            className="border-white! px-5!"
+            context={{
+              sku: `sucursal-${sucursal.slug}`,
+              nombre: `una cita en ${sucursal.nombre}`,
+              categoria: 'sucursal',
+              placement: 'card',
+              sucursal: sucursal.slug,
+              intencion: 'agendar',
+            }}
+          >
+            Agendar cita aquí
+          </AgendarCTA>
+          <BotonMapa sucursal={sucursal} />
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
 export function SucursalesHome() {
   const [activo, setActivo] = useState(SUCURSALES[0].slug)
-  const tabsRef = useRef<HTMLDivElement>(null)
+  const pendiente = useRef<number | undefined>(undefined)
 
   /*
-   * Flechas izquierda/derecha entre pestañas, que es lo que espera cualquiera
-   * que llegue con teclado a un `role="tablist"`. Sin esto las cinco pestañas
-   * quedan en el orden de tabulación una por una y el patrón ARIA queda a
-   * medias: declarado como tablist pero navegándose como cinco botones.
-   *
-   * El foco se mueve al botón nuevo a mano porque `tabIndex` es -1 en las
-   * pestañas inactivas (el patrón de "un solo tab stop" para todo el grupo).
+   * Intención de hover: si el cursor solo cruza un panel camino a otro, no lo
+   * abre. 90 ms no se percibe como retraso pero evita el parpadeo de abrir y
+   * cerrar tres paneles en un barrido.
    */
+  function abrir(slug: string, inmediato = false) {
+    window.clearTimeout(pendiente.current)
+    if (inmediato) {
+      setActivo(slug)
+      return
+    }
+    pendiente.current = window.setTimeout(() => setActivo(slug), 90)
+  }
+
+  useEffect(() => () => window.clearTimeout(pendiente.current), [])
+
+  /* Flechas entre paneles para quien llega con teclado. */
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const paso = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0
-    if (paso === 0) return
+    const adelante = event.key === 'ArrowRight' || event.key === 'ArrowDown'
+    const atras = event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+    if (!adelante && !atras) return
 
     event.preventDefault()
     const indice = SUCURSALES.findIndex((sucursal) => sucursal.slug === activo)
+    const paso = adelante ? 1 : -1
     const siguiente = SUCURSALES[(indice + paso + SUCURSALES.length) % SUCURSALES.length]
-
-    setActivo(siguiente.slug)
-    tabsRef.current?.querySelector<HTMLButtonElement>(`#tab-${siguiente.slug}`)?.focus()
+    abrir(siguiente.slug, true)
+    // Foco al primer control del panel nuevo (el botón de agendar), cuando ya
+    // dejó de ser `inert`.
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>(`#sucursal-${siguiente.slug}-info a`)?.focus({ preventScroll: true }),
+    )
   }
 
   return (
     <div>
       <SectionHeading>Encuentra tu Cire más cercana</SectionHeading>
-      <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
+      <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
         Cinco sucursales entre Ciudad de México y el Estado de México: Polanco, Del Valle, Coapa, Oriente y
-        Metepec. Todas atienden con cita — {HORARIO.map((h) => `${h.dias} ${h.horas}`).join(' · ')}.
+        Metepec. Todas atienden con cita — {HORARIO.map((h) => `${h.dias} ${h.horas}`).join(' y ')}.
       </p>
 
-      {/*
-       * Riel de pestañas: `-mx-6 px-6` cancela el padding de Section para que
-       * en un teléfono la fila llegue al borde de la pantalla y la última
-       * pestaña asome, en vez de wrappear a una segunda fila corta.
-       */}
       <div
-        ref={tabsRef}
-        role="tablist"
-        aria-label="Sucursales"
         onKeyDown={handleKeyDown}
-        className="no-scrollbar -mx-6 mt-9 flex snap-x gap-2 overflow-x-auto px-6 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+        onPointerLeave={() => window.clearTimeout(pendiente.current)}
+        className="mt-10 flex h-[calc(40.5rem_+_(100vw_-_3rem)_*_0.705)] flex-col gap-2 sm:h-[calc(40.5rem_+_(100vw_-_5rem)_*_0.705)] lg:h-[34rem] lg:flex-row lg:gap-3"
       >
-        {SUCURSALES.map((sucursal) => {
-          const seleccionada = sucursal.slug === activo
-          return (
-            <button
-              key={sucursal.slug}
-              id={`tab-${sucursal.slug}`}
-              type="button"
-              role="tab"
-              aria-selected={seleccionada}
-              aria-controls={`panel-${sucursal.slug}`}
-              tabIndex={seleccionada ? 0 : -1}
-              onClick={() => setActivo(sucursal.slug)}
-              className={`shrink-0 snap-start rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blush-400 focus-visible:ring-offset-2 ${
-                seleccionada
-                  ? 'border-neutral-900 bg-neutral-900 text-white shadow-[0_12px_30px_-15px_rgba(30,30,30,0.8)]'
-                  : 'border-black/10 bg-white text-neutral-600 hover:border-blush-300 hover:text-neutral-900'
-              }`}
-            >
-              {sucursal.nombre}
-            </button>
-          )
-        })}
-      </div>
-
-      <Reveal className="mt-6">
         {SUCURSALES.map((sucursal) => (
           <PanelSucursal
             key={sucursal.slug}
             sucursal={sucursal}
             activo={sucursal.slug === activo}
-            tabId={`tab-${sucursal.slug}`}
-            panelId={`panel-${sucursal.slug}`}
+            onAbrir={(inmediato) => abrir(sucursal.slug, inmediato || sucursal.slug === activo)}
           />
         ))}
-      </Reveal>
-
-      <Link
-        to="/ubicaciones"
-        className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-neutral-900 hover:text-blush-600"
-      >
-        Ver todas las sucursales con mapa y horarios
-        <span aria-hidden="true">→</span>
-      </Link>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { PageShell } from '../components/PageShell'
-import { Reveal } from '../components/Reveal'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { COFEPRIS, MARCA } from '../data/marca'
 import { getSucursal } from '../data/sucursales'
@@ -125,32 +124,29 @@ export function AvisoPrivacidad() {
 
   return (
     <PageShell
-      eyebrow="Legal"
       title="Aviso de Privacidad"
       intro="En nuestro centro de depilación láser diodo, la privacidad y protección de tus datos personales es una prioridad. Este Aviso de Privacidad explica cómo recopilamos, utilizamos y protegemos la información que nos proporcionas a través de nuestras campañas digitales, formularios y sitio web."
     >
       <div className="max-w-3xl pb-24">
-        <p className="text-sm text-neutral-500">
-          <span className="font-medium text-neutral-900">Última actualización:</span> {ULTIMA_ACTUALIZACION}
+        <p className="text-[15px] text-neutral-600">
+          <span className="font-semibold text-ink">Última actualización:</span> {ULTIMA_ACTUALIZACION}
         </p>
 
-        <div className="mt-8 divide-y divide-black/[0.07] rounded-2xl border border-black/[0.07] bg-white/80 px-6 sm:px-10">
+        <div className="mt-8 divide-y divide-black/[0.08] rounded-2xl bg-white px-6 ring-1 ring-black/[0.06] sm:px-10">
           {APARTADOS.map((apartado, index) => (
-            <Reveal key={apartado.titulo}>
-              <section className="py-8 sm:py-10">
-                <h2 className="flex items-baseline gap-4 text-2xl text-neutral-900 sm:text-[1.7rem]">
-                  <span className="font-display text-base text-blush-500 tabular-nums">
+            <section key={apartado.titulo} className="py-8 sm:py-10">
+                <h2 className="flex items-baseline gap-4 text-2xl text-ink sm:text-[1.7rem]">
+                  <span className="text-base font-semibold text-morado-700 tabular-nums">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   {apartado.titulo}
                 </h2>
-                <div className="mt-4 space-y-3 leading-relaxed text-neutral-600">{apartado.contenido}</div>
-              </section>
-            </Reveal>
+                <div className="mt-4 max-w-[65ch] space-y-3 text-[16px] leading-relaxed text-neutral-700">{apartado.contenido}</div>
+            </section>
           ))}
         </div>
 
-        <p className="mt-10 text-sm leading-relaxed text-neutral-500">{COFEPRIS}</p>
+        <p className="mt-10 text-[15px] leading-relaxed text-neutral-600">{COFEPRIS}</p>
       </div>
     </PageShell>
   )

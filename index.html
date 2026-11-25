@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#fbf1f2" />
+    <meta name="theme-color" content="#fdfbfa" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
@@ -31,9 +31,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bodoni+Moda:opsz,wght@6..96,400..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Jost:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Hero del home: con reduced-motion o ahorro de datos se marca antes del
+      primer pintado y el hero queda estático, sin videos. Si no, en el home
+      se oculta el logo de la nav: arranca grande en el hero y viaja hacia arriba.
+      Ver src/components/HeroScroll.tsx.
+    -->
+    <script>
+      try{var c=navigator.connection;if(matchMedia('(prefers-reduced-motion: reduce)').matches||(c&&c.saveData))document.documentElement.classList.add('hero-estatico');else if(location.pathname==='/')document.documentElement.classList.add('logo-en-hero')}catch(e){}
+    </script>
   </head>
   <body>
     <div id="root"></div>

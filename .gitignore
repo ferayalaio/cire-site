@@ -26,3 +26,9 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Variantes generadas por scripts/imagenes.mjs
+public/images/_opt
+
+# Videos fuente del hero (HDR, 17 MB): solo sirven para regenerar public/hero/
+public/hero/fuente/

@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import type { WhatsAppClickContext } from '../lib/analytics'
-import { trackWhatsAppClick } from '../lib/analytics'
+import { trackAgendarClick, trackWhatsAppClick } from '../lib/analytics'
+import { agendarUrl } from '../lib/site'
 import { buildWhatsAppUrl } from '../lib/whatsapp'
 import { rememberSucursal } from '../lib/sucursal-context'
 import { SectionHeading } from './PageShell'
@@ -25,32 +26,39 @@ import { VideoAccent } from './VideoAccent'
  *   página. Con la pestaña actual viva, el evento sale completo.
  */
 
-type Variant = 'primary' | 'secondary' | 'floating'
+type Variant = 'primary' | 'secondary' | 'floating' | 'link'
 
 interface WhatsAppCTAProps {
   context: WhatsAppClickContext
   children?: ReactNode
   variant?: Variant
   className?: string
+  /** Nombre accesible cuando el texto visible se repite ("Cotizar" en cada fila de precios). */
+  ariaLabel?: string
 }
 
+/*
+ * Un solo lenguaje de botón en todo el sitio (rediseño nov/26): rectángulo de
+ * esquinas suaves, tinta sólida, sin escalar al pasar el mouse. `link` es la
+ * versión de texto para las filas de precio, donde un botón lleno por fila
+ * convertiría la lista en una pared de botones.
+ */
 const BASE =
-  'inline-flex items-center justify-center gap-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]'
+  'inline-flex items-center justify-center gap-2.5 rounded-btn font-semibold transition-colors duration-200'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: `${BASE} bg-neutral-900 px-6 py-3.5 text-white hover:bg-neutral-700`,
-  secondary: `${BASE} border border-black/15 px-6 py-3.5 text-neutral-900 hover:border-black/40`,
-  // Más grande que primary/secondary a propósito: es el único CTA presente en
-  // TODAS las rutas, así que le conviene pesar más que uno de sección.
-  floating: `${BASE} bg-neutral-900 px-8 py-5 text-lg text-white shadow-lg shadow-blush-900/30 hover:bg-neutral-700`,
+  primary: `${BASE} min-h-12 bg-ink px-6 py-3 text-[15px] text-white hover:bg-blush-900`,
+  secondary: `${BASE} min-h-12 border border-ink/20 bg-white px-6 py-3 text-[15px] text-ink hover:border-ink/50`,
+  // Presente en todas las rutas: discreto en tamaño, pero siempre a un toque.
+  floating: `${BASE} h-12 bg-ink px-5 text-[15px] text-white shadow-[0_12px_30px_-12px_rgba(43,27,30,0.6)] hover:bg-blush-900`,
+  link: 'inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink',
 }
 
-// Más grande en floating para que el glifo escale junto con el padding y el
-// texto de arriba, en vez de quedar chico dentro de una pastilla más grande.
 const GLYPH_SIZE: Record<Variant, string> = {
-  primary: 'h-4 w-4',
-  secondary: 'h-4 w-4',
-  floating: 'h-6 w-6',
+  primary: 'h-[18px] w-[18px]',
+  secondary: 'h-[18px] w-[18px]',
+  floating: 'h-5 w-5',
+  link: 'h-4 w-4',
 }
 
 function WhatsAppGlyph({ className = 'h-4 w-4' }: { className?: string }) {
@@ -66,6 +74,7 @@ export function WhatsAppCTA({
   children,
   variant = 'primary',
   className = '',
+  ariaLabel,
 }: WhatsAppCTAProps) {
   return (
     <a
@@ -73,10 +82,60 @@ export function WhatsAppCTA({
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => trackWhatsAppClick(context)}
+      aria-label={
+        ariaLabel ??
+        // Los enlaces de fila repiten el mismo texto ("Cotizar") en cada fila:
+        // sin esto, un lector de pantalla escucha "Cotizar" diez veces.
+        (variant === 'link' && typeof children === 'string' ? `${children}: ${context.nombre}` : undefined)
+      }
       className={`${VARIANTS[variant]} ${className}`}
     >
       <WhatsAppGlyph className={GLYPH_SIZE[variant]} />
       {children ?? 'Escríbenos por WhatsApp'}
+    </a>
+  )
+}
+
+function CalendarGlyph({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={`${className} shrink-0`} aria-hidden="true">
+      <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4 10h16M8.5 3.5v3.5M15.5 3.5v3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+/*
+ * Botón a la agenda en línea (nov/26). Mismo lenguaje visual que WhatsAppCTA
+ * (las mismas variantes) para que el sitio siga teniendo un solo tipo de
+ * botón; cambia el destino, el ícono y el evento que se mide.
+ *
+ * Abre en pestaña nueva por la misma razón que WhatsApp: el evento de Meta se
+ * manda de forma asíncrona y una navegación en la misma pestaña puede
+ * cancelarlo antes de que salga.
+ */
+export function AgendarCTA({
+  context,
+  children,
+  variant = 'primary',
+  className = '',
+  ariaLabel,
+}: WhatsAppCTAProps) {
+  return (
+    <a
+      // Con sucursal en el contexto (home, /ubicaciones, página de sucursal)
+      // va directo a la agenda de esa sucursal; sin ella, a la general.
+      href={agendarUrl(context.sucursal)}
+      target="_blank"
+      rel="noopener"
+      onClick={() => trackAgendarClick(context)}
+      aria-label={
+        ariaLabel ?? (variant === 'link' && typeof children === 'string' ? `${children}: ${context.nombre}` : undefined)
+      }
+      className={`${VARIANTS[variant]} ${className}`}
+    >
+      <CalendarGlyph className={GLYPH_SIZE[variant]} />
+      {children ?? 'Agendar cita'}
     </a>
   )
 }
@@ -92,7 +151,7 @@ interface WhatsAppSectionProps {
   titulo?: string
   texto?: string
   children?: ReactNode
-  /** Ancla para el scroll contextual del nav (ver RUTAS_CON_AGENDAR en lib/nav.ts). */
+  /** Ancla del bloque de cierre; el botón flotante se oculta mientras está a la vista. */
   id?: string
   /** Clip opcional de referencia para llenar el espacio libre a la derecha (solo desktop). Sin esto, la tarjeta queda igual que siempre. */
   videoSrc?: string
@@ -100,6 +159,8 @@ interface WhatsAppSectionProps {
   videoPoster?: string
   /** Leyenda opcional sobre el video (ver VideoAccent) — sin esto, el clip va sin texto encima. */
   videoCaption?: { tag: string; title: string }
+  /** `agendar` manda el botón a la agenda en línea en vez de a WhatsApp. */
+  accion?: 'whatsapp' | 'agendar'
 }
 
 export function WhatsAppSection({
@@ -111,19 +172,21 @@ export function WhatsAppSection({
   videoSrc,
   videoPoster,
   videoCaption,
+  accion = 'whatsapp',
 }: WhatsAppSectionProps) {
+  const Boton = accion === 'agendar' ? AgendarCTA : WhatsAppCTA
   return (
     <section
       id={id}
-      className={`mt-16 rounded-2xl border border-blush-200 bg-blush-100/80 px-6 py-10 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)] backdrop-blur-sm sm:px-10 ${videoSrc ? 'sm:flex sm:items-center sm:justify-between sm:gap-8' : ''} ${id ? 'scroll-anchor' : ''}`}
+      className={`mt-20 rounded-3xl bg-blush-100 px-6 py-12 sm:mt-28 sm:px-12 sm:py-16 ${videoSrc ? 'sm:flex sm:items-center sm:justify-between sm:gap-8' : ''} ${id ? 'scroll-anchor' : ''}`}
     >
       <div className={videoSrc ? 'sm:max-w-xl' : undefined}>
         <SectionHeading>{titulo ?? '¿Lo armamos juntas?'}</SectionHeading>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
+        <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-blush-900/85">
           {texto ?? 'Cuéntanos qué zona te interesa y te pasamos precios y disponibilidad.'}
         </p>
         <div className="mt-7">
-          <WhatsAppCTA context={{ ...context, placement: 'seccion' }}>{children}</WhatsAppCTA>
+          <Boton context={{ ...context, placement: 'seccion' }}>{children}</Boton>
         </div>
       </div>
       {videoSrc && (
@@ -268,38 +331,44 @@ function contextForPath(pathname: string, sucursalSlug: string | undefined): Wha
 }
 
 /*
- * `true` mientras la sección `#agendar` ocupa la franja inferior del viewport
- * — justo la esquina donde vive el botón flotante.
+ * `true` mientras una sección que ya trae su propio CTA a WhatsApp ocupa la
+ * pantalla: el hero del home (`#inicio`) arriba y el cierre (`#agendar`)
+ * abajo. Ahí el flotante solo competiría con el botón de la sección y le
+ * taparía texto en celular.
  *
- * Existe porque esa sección ahora tiene un formulario (ver LeadForm.tsx) y en
- * celular su botón de envío queda debajo del flotante: dos targets táctiles
- * pisados, y el que gana no es el que la persona quiso tocar. De paso resuelve
- * algo que ya molestaba antes: en la única sección que ya tiene su propio CTA
- * a WhatsApp, el flotante no aporta nada y compite consigo mismo.
- *
- * El `rootMargin` negativo arriba es lo que hace que dispare solo cuando la
- * sección llega abajo, y no apenas asoma por el borde inferior de la pantalla.
+ * `#agendar` usa un `rootMargin` negativo arriba para disparar solo cuando la
+ * sección llega a la franja inferior (donde vive el botón); `#inicio` cuenta
+ * mientras siga ocupando la parte alta de la pantalla.
  */
-function useAgendarEnZonaDelBoton(pathname: string): boolean {
-  const [enZona, setEnZona] = useState(false)
+function useSeccionConCtaVisible(pathname: string): boolean {
+  const [visibles, setVisibles] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
-    setEnZona(false)
+    setVisibles({})
+    if (typeof IntersectionObserver === 'undefined') return
 
-    // No todas las rutas tienen bloque `#agendar` (ver RUTAS_CON_AGENDAR en
-    // lib/nav.ts); en esas el botón se comporta como siempre.
-    const node = document.getElementById('agendar')
-    if (!node || typeof IntersectionObserver === 'undefined') return
+    const objetivos = [
+      { id: 'agendar', rootMargin: '-60% 0px 0px 0px' },
+      { id: 'inicio', rootMargin: '0px 0px -45% 0px' },
+    ]
 
-    const observer = new IntersectionObserver(([entry]) => setEnZona(entry.isIntersecting), {
-      rootMargin: '-60% 0px 0px 0px',
+    const observers = objetivos.flatMap(({ id, rootMargin }) => {
+      // No todas las rutas tienen estas secciones; en esas el botón se
+      // comporta como siempre.
+      const node = document.getElementById(id)
+      if (!node) return []
+      const observer = new IntersectionObserver(
+        ([entry]) => setVisibles((prev) => ({ ...prev, [id]: entry.isIntersecting })),
+        { rootMargin },
+      )
+      observer.observe(node)
+      return [observer]
     })
 
-    observer.observe(node)
-    return () => observer.disconnect()
+    return () => observers.forEach((observer) => observer.disconnect())
   }, [pathname])
 
-  return enZona
+  return Object.values(visibles).some(Boolean)
 }
 
 /*
@@ -317,46 +386,24 @@ export function WhatsAppFloating() {
   // se necesita para no leer sucursal fuera de esa ruta.
   const { slug } = useParams<{ slug: string }>()
 
-  const oculto = useAgendarEnZonaDelBoton(pathname)
+  const oculto = useSeccionConCtaVisible(pathname)
 
   return (
     /*
      * Se esconde con opacity + pointer-events y no desmontando el nodo: así la
      * salida y la entrada son un fade y no un parpadeo, y `inert` se encarga de
      * que mientras está invisible tampoco lo alcancen el teclado ni un lector
-     * de pantalla (sin eso quedaría un link enfocable encima del formulario).
+     * de pantalla.
      */
     <div
       inert={oculto ? true : undefined}
-      className={`fixed bottom-5 right-5 z-40 transition-opacity duration-300 sm:bottom-7 sm:right-7 ${
+      className={`fixed bottom-4 right-4 z-40 transition-opacity duration-300 sm:bottom-6 sm:right-6 ${
         oculto ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      {/*
-       * El anillo que late detrás del botón (ver `pulse-ring` en index.css).
-       * Es la única animación permanente del sitio y está puesta con criterio:
-       * el flotante está siempre ahí y por eso mismo el ojo lo deja de ver a
-       * los dos scrolls: el pulso lo devuelve a la periferia sin moverlo de
-       * lugar ni taparle nada al contenido.
-       *
-       * Va en un hermano absoluto y no en el propio botón: animar el botón
-       * significa escalar el texto y el glifo con él. `inset-0` lo calca sobre
-       * el CTA, así que el anillo sale exactamente del borde de la pastilla
-       * sin que haya que replicar su tamaño a mano.
-       */}
-      <span className="relative block">
-        <span
-          aria-hidden="true"
-          className="animate-pulse-ring pointer-events-none absolute inset-0 rounded-full bg-blush-400 motion-reduce:hidden"
-        />
-        <WhatsAppCTA
-          context={contextForPath(pathname, slug)}
-          variant="floating"
-          className="relative"
-        >
-          WhatsApp
-        </WhatsAppCTA>
-      </span>
+      <WhatsAppCTA context={contextForPath(pathname, slug)} variant="floating">
+        WhatsApp
+      </WhatsAppCTA>
     </div>
   )
 }

@@ -35,14 +35,13 @@ export function ArticleShell({
 
   return (
     <PageShell
-      eyebrow={post.categoria}
       title={post.titulo}
       breadcrumbs={[
         { label: 'Inicio', to: '/' },
         { label: 'Blog', to: '/blog' },
       ]}
     >
-      <p className="-mt-6 text-sm text-neutral-400">
+      <p className="-mt-6 text-[14px] text-neutral-600">
         Por el equipo de especialistas de {MARCA.nombre} · {MARCA.anosExperiencia} años de experiencia ·{' '}
         <time dateTime={post.fecha}>{formatFecha(post.fecha)}</time> · {post.minutos} min de lectura
       </p>

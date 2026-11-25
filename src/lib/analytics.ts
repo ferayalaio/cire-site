@@ -282,6 +282,52 @@ export function trackWhatsAppClick(context: WhatsAppClickContext): string {
   return eventID
 }
 
+/*
+ * Clic a la agenda en línea (/agendar, nov/26). Mismo contexto que WhatsApp
+ * para poder comparar canales, pero con evento propio: `Schedule` es el
+ * evento estándar de Meta para citas (Ads Manager puede optimizar por él) y
+ * en GA4 va como `generate_lead` con method `agendar`.
+ */
+export function trackAgendarClick(context: WhatsAppClickContext): string {
+  const attribution = getAttribution()
+  const params: Record<string, unknown> = {
+    content_name: context.nombre,
+    content_category: context.categoria,
+    content_ids: [context.sku],
+    content_type: 'product',
+    cire_sku: context.sku,
+    cire_placement: context.placement,
+    cire_path: window.location.pathname,
+    ...(context.sucursal ? { cire_sucursal: context.sucursal } : {}),
+    ...(attribution.utm_campaign ? { cire_campaign: attribution.utm_campaign } : {}),
+    ...(attribution.ad_id ? { cire_ad_id: attribution.ad_id } : {}),
+    ...(context.valor !== undefined ? { value: context.valor, currency: 'MXN' } : {}),
+  }
+
+  const eventID = newEventId('ag')
+  if (import.meta.env.DEV) {
+    console.info('[analytics] AgendarClick', eventID, params)
+  }
+
+  if (isReady()) {
+    window.fbq?.('track', 'Schedule', params, { eventID })
+    window.fbq?.('trackCustom', 'AgendarClick', params, { eventID })
+  } else {
+    warnMissingId()
+  }
+
+  ga4Lead({
+    item_id: context.sku,
+    item_name: context.nombre,
+    item_category: context.categoria,
+    method: 'agendar',
+    value: context.valor,
+    sucursal: context.sucursal,
+  })
+
+  return eventID
+}
+
 export function getLastWhatsAppEventId(): string | undefined {
   return lastWhatsAppEventId
 }

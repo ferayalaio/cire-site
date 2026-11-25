@@ -1,0 +1,206 @@
+{
+  "diagramas/cuerpo-completo.jpg": {
+    "w": 1080,
+    "h": 1440,
+    "anchos": [
+      480,
+      800,
+      1080
+    ],
+    "base": "/images/_opt/diagramas/cuerpo-completo"
+  },
+  "sesiones/1-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/1-poster"
+  },
+  "sesiones/2-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/2-poster"
+  },
+  "sesiones/3-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/3-poster"
+  },
+  "sesiones/4-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/4-poster"
+  },
+  "sesiones/5-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/5-poster"
+  },
+  "sesiones/6-poster.jpg": {
+    "w": 540,
+    "h": 960,
+    "anchos": [
+      480,
+      540
+    ],
+    "base": "/images/_opt/sesiones/6-poster"
+  },
+  "sucursales/coapa.jpg": {
+    "w": 892,
+    "h": 629,
+    "anchos": [
+      480,
+      800,
+      892
+    ],
+    "base": "/images/_opt/sucursales/coapa"
+  },
+  "sucursales/del-valle.jpg": {
+    "w": 892,
+    "h": 629,
+    "anchos": [
+      480,
+      800,
+      892
+    ],
+    "base": "/images/_opt/sucursales/del-valle"
+  },
+  "sucursales/metepec.jpg": {
+    "w": 892,
+    "h": 561,
+    "anchos": [
+      480,
+      800,
+      892
+    ],
+    "base": "/images/_opt/sucursales/metepec"
+  },
+  "sucursales/oriente.jpg": {
+    "w": 892,
+    "h": 629,
+    "anchos": [
+      480,
+      800,
+      892
+    ],
+    "base": "/images/_opt/sucursales/oriente"
+  },
+  "sucursales/polanco.jpg": {
+    "w": 892,
+    "h": 629,
+    "anchos": [
+      480,
+      800,
+      892
+    ],
+    "base": "/images/_opt/sucursales/polanco"
+  },
+  "zonas/axilas.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/axilas"
+  },
+  "zonas/bigote.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/bigote"
+  },
+  "zonas/bikini.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/bikini"
+  },
+  "zonas/brazos-completos.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/brazos-completos"
+  },
+  "zonas/espalda-completa.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/espalda-completa"
+  },
+  "zonas/medias-piernas-abajo.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/medias-piernas-abajo"
+  },
+  "zonas/medias-piernas-arriba.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/medias-piernas-arriba"
+  },
+  "zonas/piernas-completas.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/piernas-completas"
+  },
+  "zonas/rostro-completo.jpg": {
+    "w": 1792,
+    "h": 2240,
+    "anchos": [
+      480,
+      800,
+      1200
+    ],
+    "base": "/images/_opt/zonas/rostro-completo"
+  }
+}

@@ -9,19 +9,15 @@ interface SectionProps {
 
 const TONES: Record<NonNullable<SectionProps['tone']>, string> = {
   default: '',
-  alt: 'bg-blush-50/60',
-  /*
-   * Banda de alto contraste, para el bloque de la oferta (ver Home.tsx).
-   * `isolate` le da stacking context propio para que el resplandor blush de
-   * abajo (que va en `-z-0` relativo a esta sección) no se compare contra el
-   * fondo ambiental del Layout y termine pintado detrás de él.
-   */
-  dark: 'isolate bg-ink text-white',
+  /* Rosa satinado: máximo dos bandas por página, nunca dos seguidas. */
+  alt: 'bg-rosa-satin',
+  /* Ciruela: UNA sección oscura por página (en el home, "¿Duele?"). */
+  dark: 'bg-ciruela text-hueso',
 }
 
 /*
  * Wrapper de cada bloque de una landing (Beneficios, Precios, Reseñas,
- * Agendar...). El padding vertical es a propósito generoso (96/128/144px):
+ * Agendar...). El padding vertical es a propósito generoso (80px, 112px desde sm):
  * es lo que hace que la página se sienta como un scroll con ritmo y no como
  * todo comprimido en una pantalla. `tone="alt"` alterna un fondo tintado
  * para que el ojo note el cambio de sección al hacer scroll, sin depender
@@ -38,17 +34,7 @@ const TONES: Record<NonNullable<SectionProps['tone']>, string> = {
  */
 export function Section({ id, tone = 'default', className = '', children }: SectionProps) {
   return (
-    <section id={id} className={`scroll-anchor relative py-24 sm:py-32 lg:py-36 ${TONES[tone]} ${className}`}>
-      {/* Resplandor blush sobre el negro: es lo que ata la banda oscura a la
-          paleta de la marca en vez de dejarla como un rectángulo negro pegado
-          encima de una página rosa. */}
-      {tone === 'dark' && (
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-blush-500/25 blur-3xl" />
-          <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-blush-400/20 blur-3xl" />
-        </div>
-      )}
-
+    <section id={id} className={`scroll-anchor relative py-20 sm:py-28 ${TONES[tone]} ${className}`}>
       <div className="mx-auto max-w-6xl px-6 sm:px-10">{children}</div>
     </section>
   )

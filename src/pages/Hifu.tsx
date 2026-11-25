@@ -1,13 +1,10 @@
-import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { AnimatedHeading } from '../components/AnimatedHeading'
+import { Faq } from '../components/Faq'
 import { LoopVideo } from '../components/LoopVideo'
-import { VideoAccent } from '../components/VideoAccent'
-import { Reveal, Stagger } from '../components/Reveal'
-import { Section } from '../components/Section'
 import { PageHeading, SectionHeading } from '../components/PageShell'
 import { TestimoniosSection } from '../components/Testimonios'
-import { WhatsAppCTA, WhatsAppSection } from '../components/WhatsAppCTA'
+import { VideoAccent } from '../components/VideoAccent'
+import { AgendarCTA, WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useFaqJsonLd } from '../hooks/useJsonLd'
 import {
@@ -21,121 +18,40 @@ import {
   HIFU_VIDEO_REFERENCIA_3_POSTER,
 } from '../lib/constants'
 import { trackViewContent } from '../lib/analytics'
-import { HIFU_PROTOCOLOS, formatPrecio } from '../data/precios'
+import { HIFU_PROTOCOLOS, PROMO_ACTIVA, formatPrecio } from '../data/precios'
+import type { PaqueteConSesiones } from '../data/precios'
 import { TESTIMONIOS_HIFU } from '../data/testimonios'
 
-/* -------------------------------------------------------------------------- */
-/* Iconos — mismo trazo fino (viewBox 24, stroke 1.4-1.6) que el resto del    */
-/* sitio, propios de esta página porque los de Hero.tsx no están exportados. */
-/* -------------------------------------------------------------------------- */
-
-interface IconProps {
-  className?: string
-}
-
-function ArrowUpRightIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
-      <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function LayersIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M12 3.5l8 4.3-8 4.3-8-4.3 8-4.3Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M4 12l8 4.3 8-4.3M4 16.2l8 4.3 8-4.3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function ZapIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M13 3 6 13.5h5L11 21l7-10.5h-5L13 3Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function SparkleIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12 2.5c.4 3.6 1.2 6 2.6 7.4 1.4 1.4 3.8 2.2 7.4 2.6-3.6.4-6 1.2-7.4 2.6-1.4 1.4-2.2 3.8-2.6 7.4-.4-3.6-1.2-6-2.6-7.4-1.4-1.4-3.8-2.2-7.4-2.6 3.6-.4 6-1.2 7.4-2.6 1.4-1.4 2.2-3.8 2.6-7.4Z" />
-    </svg>
-  )
-}
-
-function SearchIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <circle cx="10.5" cy="10.5" r="6" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M15.2 15.2 20 20" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function TargetIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.4" />
-      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.4" />
-      <circle cx="12" cy="12" r="0.75" fill="currentColor" />
-    </svg>
-  )
-}
-
-function BlendIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <circle cx="9.5" cy="12" r="6" stroke="currentColor" strokeWidth="1.4" />
-      <circle cx="14.5" cy="12" r="6" stroke="currentColor" strokeWidth="1.4" />
-    </svg>
-  )
-}
-
-function CalendarIcon({ className = 'h-5 w-5' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M4 9.5h16M8 3.5v3M16 3.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function CheckIcon({ className = 'h-4 w-4' }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
+/*
+ * HIFU 4D (rediseño nov/26). Mismo esqueleto que /laser/cuerpo-completo:
+ * encabezado, precio inmediatamente después, y cierre en la oferta. Arma su
+ * propio encabezado (no PageShell) porque el h1 y el texto de apoyo son
+ * propios, pero copia su espaciado y tipografía.
+ *
+ * Todo número sale de HIFU_PROTOCOLOS (data/precios.ts). El paquete
+ * `destacado` (Cire Lift 2 Sesiones) es la tarjeta rosa; el resto va en una
+ * lista agrupada por línea de tratamiento.
+ */
 
 /* -------------------------------------------------------------------------- */
-/* Contenido — copy propio de esta página, no datos de negocio (eso vive en   */
-/* src/data/precios.ts). Mismo patrón que TRUST/STEPS en Hero.tsx.            */
+/* Contenido: copy propio de esta página, no datos de negocio.                */
 /* -------------------------------------------------------------------------- */
-
-const PREOCUPACIONES = ['Pérdida de firmeza', 'Papada', 'Rostro menos definido']
 
 const COMO_FUNCIONA = [
   {
-    key: 'smas',
-    title: 'Llegamos a donde importa',
-    Icon: LayersIcon,
-    text: 'Usamos HIFU 4D — ultrasonido focalizado de alta intensidad — que alcanza la capa SMAS: la misma que se trabaja en un lifting quirúrgico, pero sin cirugía ni postoperatorio.',
+    termino: 'Llegamos a donde importa',
+    valor:
+      'Usamos HIFU 4D (ultrasonido focalizado de alta intensidad), que alcanza la capa SMAS: la misma que se trabaja en un lifting quirúrgico, pero sin cirugía ni postoperatorio.',
   },
   {
-    key: 'tensor',
-    title: 'Firmeza desde el primer día',
-    Icon: ZapIcon,
-    text: 'El calor del ultrasonido contrae las fibras de colágeno al instante, dando una sensación de firmeza y tensión ya desde la primera sesión.',
+    termino: 'Firmeza desde el primer día',
+    valor:
+      'El calor del ultrasonido contrae las fibras de colágeno al instante, dando una sensación de firmeza y tensión ya desde la primera sesión.',
   },
   {
-    key: 'colageno',
-    title: 'Tu piel sigue trabajando después',
-    Icon: SparkleIcon,
-    text: 'En las semanas siguientes, tu piel produce colágeno y elastina nuevos. La firmeza y la definición siguen mejorando poco a poco, sin que tengas que hacer nada más.',
+    termino: 'Tu piel sigue trabajando después',
+    valor:
+      'En las semanas siguientes, tu piel produce colágeno y elastina nuevos. La firmeza y la definición siguen mejorando poco a poco, sin que tengas que hacer nada más.',
   },
 ]
 
@@ -146,94 +62,63 @@ const TIMELINE = [
 ]
 
 const DIFERENCIADORES = [
-  { key: 'evaluacion', Icon: SearchIcon, text: 'Evaluamos tu piel y tu grado de flacidez antes de empezar.' },
-  { key: 'personalizacion', Icon: TargetIcon, text: 'Personalizamos las zonas y la profundidad de cada disparo.' },
-  { key: 'combinacion', Icon: BlendIcon, text: 'Combinamos tecnologías — HIFU, radiofrecuencia y faciales — cuando tu piel lo pide.' },
-  { key: 'seguimiento', Icon: CalendarIcon, text: 'Te acompañamos con seguimiento real de tu evolución.' },
+  { termino: 'Evaluación', valor: 'Evaluamos tu piel y tu grado de flacidez antes de empezar.' },
+  { termino: 'Personalización', valor: 'Personalizamos las zonas y la profundidad de cada disparo.' },
+  {
+    termino: 'Combinación',
+    valor: 'Combinamos tecnologías (HIFU, radiofrecuencia y faciales) cuando tu piel lo pide.',
+  },
+  { termino: 'Seguimiento', valor: 'Te acompañamos con seguimiento real de tu evolución.' },
 ]
 
 /*
- * Respuestas tomadas del manual oficial de CIRE LIFT · HIFU 4D (nov/26). Se
+ * Respuestas tomadas del manual oficial de CIRE LIFT HIFU 4D (nov/26). Se
  * emiten también como FAQPage (useFaqJsonLd), así que siguen sus reglas: nada
  * de "indoloro", nada de resultados garantizados, y lo que depende de la
  * persona se dice así.
  */
 const PREGUNTAS_HIFU = [
   {
-    key: 'duele',
     pregunta: '¿El HIFU duele?',
     respuesta:
       'Puede sentirse calor localizado, pequeños piquetes, presión u hormigueo durante la sesión. La sensación depende de tu sensibilidad y de la zona que trabajemos. Es un procedimiento no quirúrgico y no requiere incisiones.',
   },
   {
-    key: 'resultados',
     pregunta: '¿Cuándo se ven los resultados?',
     respuesta:
       'Algunas personas perciben cambios iniciales después de la sesión y durante los siguientes 21 días. Como el HIFU estimula la remodelación natural del colágeno, el resultado sigue desarrollándose de forma progresiva en las semanas y meses posteriores.',
   },
   {
-    key: 'duracion',
     pregunta: '¿Cuánto duran los resultados?',
     respuesta:
       'Como referencia, alrededor de 6 meses, y en algunos casos de prevención hasta 12 meses. Depende de tu edad, la condición de tu piel, tus hábitos y los cuidados posteriores.',
   },
   {
-    key: 'sesiones',
     pregunta: '¿Cuántas sesiones necesito?',
     respuesta:
       'Nuestro protocolo contempla como referencia un máximo de 2 sesiones al año, y no todas las personas necesitan las dos. La cantidad se define en tu valoración, según tu piel y lo que quieres trabajar.',
   },
   {
-    key: 'zonas',
     pregunta: '¿Se puede hacer en rostro y cuerpo?',
     respuesta:
-      'Sí. CIRE LIFT · HIFU 4D se aplica en rostro y cuello, y en zonas corporales como abdomen, espalda baja, brazos, muslos y glúteos. La zona y la profundidad de trabajo se determinan en la valoración.',
+      'Sí. CIRE LIFT HIFU 4D se aplica en rostro y cuello, y en zonas corporales como abdomen, espalda baja, brazos, muslos y glúteos. La zona y la profundidad de trabajo se determinan en la valoración.',
   },
   {
-    key: 'recuperacion',
     pregunta: '¿Hay tiempo de recuperación?',
     respuesta:
       'Por lo general puedes retomar tus actividades el mismo día. Después de la sesión puede haber enrojecimiento, sensibilidad, inflamación ligera u hormigueo temporal.',
   },
   {
-    key: 'valoracion',
     pregunta: '¿Quién necesita una valoración especial?',
     respuesta:
       'Si estás embarazada, tienes marcapasos o implantes en la zona, diabetes, lupus u otra condición médica, tomas medicamentos o te aplicaste bótox, ácido hialurónico o hilos tensores recientemente, coméntalo antes de agendar. Nuestro equipo revisa tu caso antes de confirmar el tratamiento.',
   },
   {
-    key: 'funciona',
     pregunta: '¿Sí funciona?',
     respuesta:
       'El HIFU cuenta con evidencia clínica para favorecer la firmeza y el efecto lifting en determinados pacientes. Lo importante es si es ideal para tu piel: por eso siempre empezamos con una valoración sin costo antes de recomendarte nada.',
   },
 ]
-
-/* Frases clave — dispersas como acentos de diseño, no todas juntas. */
-const QUOTES = [
-  'Tu piel trabajando desde adentro',
-  'No es magia… es colágeno activándose',
-  'Resultados progresivos, no artificiales',
-  'Efecto firmeza, no relleno',
-  'Lifting sin cambiar tu expresión',
-]
-
-/*
- * Frase-acento entre secciones. Ahora vive *entre* dos `<Section>` (cada una
- * con su propio py-24/32/36), no dentro de un `<main>` con padding propio —
- * por eso ya no trae su propio margen vertical (antes sí, para no depender
- * de que alguien más lo pusiera): el espacio lo aportan las secciones a los
- * lados, y duplicar acá volvía a dejar huecos enormes. Sí necesita su propio
- * padding horizontal, porque al ser un elemento de nivel superior (no un hijo
- * del contenedor `max-w-6xl` de una Section) no hereda ninguno.
- */
-function Quote({ children }: { children: string }) {
-  return (
-    <Reveal className="mx-auto max-w-xl px-6 text-center sm:px-10">
-      <p className="font-display text-xl leading-[1.6] text-blush-500 sm:text-2xl">&ldquo;{children}&rdquo;</p>
-    </Reveal>
-  )
-}
 
 const HERO_CTA_CONTEXT = {
   sku: 'hifu-hero',
@@ -242,12 +127,121 @@ const HERO_CTA_CONTEXT = {
   articulo: 'el',
 } as const
 
-function formatRango(desde: number | null, hasta?: number | null): ReactNode {
+/* -------------------------------------------------------------------------- */
+/* Precios                                                                    */
+/* -------------------------------------------------------------------------- */
+
+function formatRango(desde: number | null, hasta?: number | null): string {
   const min = formatPrecio(desde)
   const max = hasta ? formatPrecio(hasta) : undefined
-  if (!min) return <span className="text-neutral-300">Precio pendiente</span>
+  if (!min) return 'Precio por WhatsApp'
   return max ? `${min}–${max}` : min
 }
+
+/** "Skin Renew (3 sesiones)" y "Cire Lift 1 Sesión" → "Skin Renew", "Cire Lift". */
+function nombreLinea(nombre: string): string {
+  return nombre.replace(/\s*\(.*\)$/, '').replace(/\s+\d+\s+sesi(ó|o)n(es)?$/i, '')
+}
+
+/** El resumen de varias líneas todavía es un "Pendiente: …" interno; no se publica. */
+function resumenPublico(resumen: string): string | null {
+  return resumen.startsWith('Pendiente') ? null : resumen
+}
+
+/** Paquetes no destacados, agrupados por línea en el orden del tarifario. */
+function agruparPorLinea(paquetes: PaqueteConSesiones[]) {
+  const grupos: { linea: string; paquetes: PaqueteConSesiones[] }[] = []
+  for (const paquete of paquetes) {
+    const linea = nombreLinea(paquete.nombre)
+    const grupo = grupos.find((g) => g.linea === linea)
+    if (grupo) grupo.paquetes.push(paquete)
+    else grupos.push({ linea, paquetes: [paquete] })
+  }
+  return grupos
+}
+
+function contextoPaquete(paquete: PaqueteConSesiones) {
+  return {
+    sku: paquete.slug,
+    nombre: paquete.nombre,
+    categoria: 'hifu',
+    placement: 'card' as const,
+    valor: paquete.precioDesde ?? undefined,
+  }
+}
+
+const DESTACADO = HIFU_PROTOCOLOS.find((p) => p.destacado) ?? HIFU_PROTOCOLOS[0]
+const GRUPOS = agruparPorLinea(HIFU_PROTOCOLOS.filter((p) => p !== DESTACADO))
+
+function Precios() {
+  if (!DESTACADO) return null
+
+  return (
+    <section id="precios" className="scroll-anchor">
+      <SectionHeading>Elige cómo empezar</SectionHeading>
+      <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+        Desde una sola sesión para conocer el efecto, hasta un protocolo completo pensado para resultados que se
+        sostienen.
+      </p>
+
+      <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-8">
+        <article className="rounded-2xl bg-blush-100 p-6 sm:p-8">
+          <h3 className="text-2xl text-ink">{DESTACADO.nombre}</h3>
+          <p className="mt-1 text-[15px] text-blush-900/80">
+            {DESTACADO.incluye[0] ?? DESTACADO.duracion}. El más popular.
+          </p>
+
+          <p className="mt-6 text-[3rem] font-semibold leading-none tracking-[-0.03em] text-ink tabular-nums">
+            {formatRango(DESTACADO.precioDesde, DESTACADO.precioHasta)}
+          </p>
+          {resumenPublico(DESTACADO.resumen) && (
+            <p className="mt-4 max-w-[48ch] text-[17px] leading-relaxed text-blush-900/85">{DESTACADO.resumen}</p>
+          )}
+
+          <AgendarCTA context={contextoPaquete(DESTACADO)} className="mt-8 w-full sm:w-auto">
+            Agenda tu valoración
+          </AgendarCTA>
+        </article>
+
+        <div className="rounded-2xl bg-white p-6 ring-1 ring-black/[0.06] sm:p-8">
+          <h3 className="text-2xl text-ink">Todos los paquetes</h3>
+          <p className="mt-1 text-[15px] text-neutral-600">HIFU 4D y tratamientos faciales, por número de sesiones</p>
+
+          <div className="mt-2">
+            {GRUPOS.map((grupo) => (
+              <div key={grupo.linea} className="mt-6">
+                <h4 className="text-[17px] font-semibold text-ink">{grupo.linea}</h4>
+                <ul className="mt-1 divide-y divide-black/[0.08] border-t border-black/[0.08]">
+                  {grupo.paquetes.map((paquete) => {
+                    const resumen = resumenPublico(paquete.resumen)
+                    return (
+                      <li key={paquete.slug} className="flex items-center gap-4 py-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[17px] text-ink">{paquete.duracion}</p>
+                          {resumen && <p className="text-[14px] leading-snug text-neutral-600">{resumen}</p>}
+                        </div>
+                        <p className="text-right text-[17px] font-semibold text-ink tabular-nums">
+                          {formatRango(paquete.precioDesde, paquete.precioHasta)}
+                        </p>
+                        <AgendarCTA variant="link" context={contextoPaquete(paquete)}>
+                          Agendar
+                        </AgendarCTA>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Página                                                                     */
+/* -------------------------------------------------------------------------- */
 
 export function Hifu() {
   useDocumentMeta({
@@ -262,270 +256,154 @@ export function Hifu() {
   }, [])
 
   return (
-    <>
-      {/*
-        Solo el hero vive en `<main>` con su propio `max-w-6xl` — igual que
-        PageShell en el resto del sitio. Sin padding inferior propio: la
-        `Section` que sigue ya aporta su espacio superior (py-24/32/36); si el
-        `<main>` también sumara el suyo, el hueco quedaba doble.
-      */}
-      <main className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+    <main className="mx-auto max-w-6xl px-6 pt-[calc(6.5rem+var(--anuncio-h,0px))] sm:px-10 sm:pt-[calc(8.5rem+var(--anuncio-h,0px))]">
       {/* ---------------------------------------------------------- Hero --- */}
-      <section className="grid items-center gap-14 md:grid-cols-2 md:gap-16">
-        <div className="animate-fade-in-up motion-reduce:animate-none">
-          <PageHeading eyebrow="HIFU 4D · Lifting sin cirugía" className="text-5xl leading-[1.05] text-neutral-900 sm:text-6xl">
-            Cire Lift Protocol
-          </PageHeading>
-
-          <p className="mt-6 font-display text-2xl leading-snug text-blush-500 sm:text-[1.75rem]">
+      <div className="grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14">
+        <div>
+          <PageHeading>HIFU 4D: Cire Lift Protocol</PageHeading>
+          <p className="mt-5 max-w-[60ch] text-[17px] font-semibold leading-relaxed text-ink sm:text-lg">
             Lifting sin cirugía, resultados desde el interior.
           </p>
-
-          <div className="mt-6 max-w-lg rounded-2xl border border-black/[0.07] bg-white p-6 shadow-[0_25px_50px_-32px_rgba(166,94,109,0.35)]">
-            <p className="text-base leading-relaxed text-neutral-500">
-              Un tratamiento diseñado para reafirmar, definir y rejuvenecer tu rostro y cuerpo trabajando
-              desde las capas profundas de la piel. No buscamos un efecto de un día: buscamos que tu piel
-              cambie desde adentro, con un resultado natural que se nota más con cada semana.
-            </p>
-          </div>
-
-          <div className="mt-8">
-            <WhatsAppCTA context={{ ...HERO_CTA_CONTEXT, placement: 'hero' }}>
-              Agenda tu valoración
-              <span className="ml-1 flex h-7 w-7 items-center justify-center rounded-full border border-blush-200 bg-blush-50 text-blush-900">
-                <ArrowUpRightIcon />
-              </span>
-            </WhatsAppCTA>
-          </div>
-        </div>
-
-        {/*
-          Tarjeta vertical tipo "phone frame" para el clip 9:16: el video es
-          corto y vertical, así que va contenido en una tarjeta con object-cover
-          en vez de estirarlo como fondo horizontal. `liquid-glass` agrega el
-          mismo marco de vidrio que el resto de los videos, tallado justo
-          adentro del bisel oscuro de 6px (border-neutral-900) — no lo
-          reemplaza, la utilidad de Tailwind gana por capa de cascada.
-        */}
-        <div className="animate-fade-in-up motion-reduce:animate-none [animation-delay:150ms]">
-          <div className="relative mx-auto w-full max-w-[300px]">
-            <div className="liquid-glass relative aspect-[9/16] rounded-[2.25rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-[0_35px_70px_-30px_rgba(166,94,109,0.45)]">
-              <LoopVideo
-                src={HIFU_VIDEO_MOBILE}
-                poster={HIFU_VIDEO_MOBILE_POSTER}
-                className="h-full w-full object-cover"
-                eager
-              />
-              <span
-                aria-hidden="true"
-                className="absolute left-1/2 top-2 h-1.5 w-14 -translate-x-1/2 rounded-full bg-neutral-900/80"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-      </main>
-
-      <Quote>{QUOTES[0]}</Quote>
-
-      {/* ------------------------------------------------- Problema ------- */}
-      <Section>
-        <Reveal className="grid gap-8 md:grid-cols-[1fr_300px] md:items-center">
-        <div className="space-y-5">
-          <SectionHeading>¿Te reconoces en esto?</SectionHeading>
-          <p className="max-w-2xl text-base leading-relaxed text-neutral-500">
-            Muchas de nuestras clientas llegan notando lo mismo: pérdida de firmeza, un poco de papada, un
-            rostro que ya no se ve tan definido como antes. No buscan un cambio drástico — buscan una
-            solución natural, progresiva y segura, que respete su rostro en vez de transformarlo.
+          <p className="mt-3 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+            Un tratamiento diseñado para reafirmar, definir y rejuvenecer tu rostro y cuerpo trabajando desde las capas
+            profundas de la piel. No buscamos un efecto de un día: buscamos que tu piel cambie desde adentro, con un
+            resultado natural que se nota más con cada semana.
           </p>
-          <div className="flex flex-wrap gap-3">
-            {PREOCUPACIONES.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-black/[0.07] bg-white px-4 py-2 text-sm text-neutral-600"
-              >
-                {item}
-              </span>
-            ))}
+
+          <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+            <AgendarCTA context={{ ...HERO_CTA_CONTEXT, placement: 'hero' }} className="w-full sm:w-auto">
+              Agenda tu valoración
+            </AgendarCTA>
+            <a
+              href="#precios"
+              className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
+            >
+              Ver precios
+            </a>
           </div>
+        </div>
+
+        {/* Clip vertical real de una sesión; solo desde md, igual que el
+            acento de PageShell, para que en el celular el precio llegue antes. */}
+        <div className="hidden overflow-hidden rounded-2xl bg-blush-100 md:block">
+          <LoopVideo
+            src={HIFU_VIDEO_MOBILE}
+            poster={HIFU_VIDEO_MOBILE_POSTER}
+            eager
+            className="aspect-[4/5] w-full object-cover"
+          />
+        </div>
+      </div>
+
+      {PROMO_ACTIVA && (
+        <div className="mt-10 rounded-2xl bg-blush-100 px-6 py-4">
+          <p className="text-[15px] text-blush-900/85">
+            <span className="font-semibold text-ink">{PROMO_ACTIVA.nombre}:</span> {PROMO_ACTIVA.detalle}
+          </p>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------- Precios --- */}
+      <div className="mt-14">
+        <Precios />
+      </div>
+
+      {/* ------------------------------------------------------ Problema --- */}
+      <section className="mt-20 grid gap-10 sm:mt-28 md:grid-cols-[1fr_360px] md:items-center lg:gap-16">
+        <div>
+          <SectionHeading>¿Te reconoces en esto?</SectionHeading>
+          <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+            Muchas de nuestras clientas llegan notando lo mismo: pérdida de firmeza, un poco de papada, un rostro que ya
+            no se ve tan definido como antes. No buscan un cambio drástico: buscan una solución natural, progresiva y
+            segura, que respete su rostro en vez de transformarlo.
+          </p>
         </div>
         <VideoAccent
           src={HIFU_VIDEO_REFERENCIA_1}
           poster={HIFU_VIDEO_REFERENCIA_1_POSTER}
-          caption={{ tag: 'Sesión real', title: 'Cire Lift Protocol en acción' }}
-          className="h-64 w-full sm:h-80 md:h-96"
+          className="aspect-[4/3] w-full md:aspect-[4/5]"
         />
-        </Reveal>
-      </Section>
+      </section>
 
-      <Quote>{QUOTES[1]}</Quote>
-
-      {/* ---------------------------------------------- Cómo funciona ----- */}
-      <Section id="beneficios" tone="alt">
-        <SectionHeading>Cómo funciona</SectionHeading>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
-          Sin sonar a laboratorio: así es como tu piel va cambiando, paso a paso.
-        </p>
-
-        <Stagger className="mt-8 grid gap-5 md:grid-cols-3" step={90}>
-          {COMO_FUNCIONA.map(({ key, title, Icon, text }) => (
-            <div key={key} className="rounded-2xl border border-black/[0.07] bg-white p-6">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blush-100 text-blush-600">
-                <Icon />
-              </span>
-              <p className="mt-4 text-base font-medium text-neutral-900">{title}</p>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-500">{text}</p>
-            </div>
-          ))}
-        </Stagger>
-
-        <div className="relative mt-12">
-          <div aria-hidden="true" className="absolute inset-x-0 top-[13px] hidden h-px bg-blush-200 sm:block" />
-          <Stagger className="relative grid gap-6 sm:grid-cols-3" step={100}>
-            {TIMELINE.map((stop) => (
-              <div key={stop.label} className="flex items-start gap-3 sm:flex-col sm:items-center sm:text-center">
-                <span className="mt-1 h-3 w-3 shrink-0 rounded-full border-2 border-blush-500 bg-white sm:mt-0" />
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-blush-500">{stop.label}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-500">{stop.text}</p>
-                </div>
+      {/* ------------------------------------------------- Cómo funciona --- */}
+      <section id="beneficios" className="scroll-anchor mt-20 sm:mt-28">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          <div>
+            <SectionHeading>Cómo funciona</SectionHeading>
+            <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+              Sin sonar a laboratorio: así es como tu piel va cambiando, paso a paso.
+            </p>
+          </div>
+          <dl className="divide-y divide-black/[0.08] border-y border-black/[0.08]">
+            {COMO_FUNCIONA.map((paso) => (
+              <div key={paso.termino} className="grid gap-1 py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
+                <dt className="text-[15px] font-semibold text-morado-700">{paso.termino}</dt>
+                <dd className="text-[17px] leading-snug text-ink">{paso.valor}</dd>
               </div>
             ))}
-          </Stagger>
-        </div>
-      </Section>
-
-      <Quote>{QUOTES[2]}</Quote>
-
-      {/* --------------------------------------------- Diferenciador ------ */}
-      <Section>
-        <Reveal className="rounded-3xl border border-blush-200 bg-gradient-to-br from-blush-50 to-white px-6 py-10 shadow-[0_35px_80px_-40px_rgba(166,94,109,0.4)] sm:px-12 sm:py-14">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-blush-500">El diferenciador</p>
-        <AnimatedHeading as="h2" className="mt-3 text-3xl leading-tight text-neutral-900 sm:text-4xl">
-          No es solo una sesión de HIFU… es un protocolo diseñado según tu piel.
-        </AnimatedHeading>
-
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {DIFERENCIADORES.map(({ key, Icon, text }) => (
-            <div key={key} className="flex items-start gap-4">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-blush-600 shadow-[0_10px_25px_-12px_rgba(166,94,109,0.35)]">
-                <Icon />
-              </span>
-              <p className="pt-2 text-sm leading-relaxed text-neutral-600">{text}</p>
-            </div>
-          ))}
+          </dl>
         </div>
 
-        <p className="mt-10 max-w-2xl border-t border-blush-200 pt-6 text-sm leading-relaxed text-neutral-500">
-          Eso es lo que nos separa de una clínica fría con sesiones genéricas: acá no hay dos protocolos
-          iguales, porque no hay dos rostros iguales.
-        </p>
-        </Reveal>
-      </Section>
+        <h3 className="mt-14 text-2xl text-ink">Qué esperar con el tiempo</h3>
+        <ol className="mt-6 grid gap-6 sm:grid-cols-3 sm:gap-8">
+          {TIMELINE.map((etapa) => (
+            <li key={etapa.label} className="border-t border-black/[0.08] pt-4">
+              <p className="text-[15px] font-semibold text-morado-700 tabular-nums">{etapa.label}</p>
+              <p className="mt-1.5 text-[17px] leading-snug text-ink">{etapa.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      <Quote>{QUOTES[3]}</Quote>
-
-      {/* ------------------------------------------------- Paquetes -------- */}
-      <Section id="precios" tone="alt">
-        <SectionHeading>Elige cómo empezar</SectionHeading>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">
-          Desde una sola sesión para conocer el efecto, hasta un protocolo completo pensado para
-          resultados que se sostienen.
-        </p>
-
-        <Stagger className="mt-10 grid gap-6 md:grid-cols-3" step={90}>
-          {HIFU_PROTOCOLOS.map((paquete) => (
-            <div
-              key={paquete.slug}
-              className={`flex flex-col rounded-3xl border bg-white p-7 transition-all duration-300 ${
-                paquete.destacado
-                  ? 'border-blush-300 shadow-[0_35px_70px_-30px_rgba(166,94,109,0.45)] md:-translate-y-3'
-                  : 'border-black/[0.07] hover:-translate-y-1 hover:border-blush-300 hover:shadow-[0_20px_45px_-20px_rgba(166,94,109,0.35)]'
-              }`}
-            >
-              {paquete.destacado && (
-                <span className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-blush-500 px-3 py-1 text-xs font-medium text-white">
-                  Más popular
-                </span>
-              )}
-
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-blush-500">{paquete.duracion}</p>
-              <h3 className="mt-2 text-2xl text-neutral-900">{paquete.nombre}</h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-500">{paquete.resumen}</p>
-
-              <p className="mt-6 text-3xl text-neutral-900">
-                {formatRango(paquete.precioDesde, paquete.precioHasta)}
-              </p>
-
-              <ul className="mt-5 space-y-2.5">
-                {paquete.incluye.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-neutral-600">
-                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blush-500" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <WhatsAppCTA
-                variant={paquete.destacado ? 'primary' : 'secondary'}
-                className="mt-7 w-full"
-                context={{
-                  sku: paquete.slug,
-                  nombre: paquete.nombre,
-                  categoria: 'hifu',
-                  placement: 'card',
-                  valor: paquete.precioDesde ?? undefined,
-                }}
-              >
-                Agenda tu valoración
-              </WhatsAppCTA>
+      {/* ------------------------------------------------- Diferenciador --- */}
+      <section className="mt-20 grid gap-10 sm:mt-28 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+        <div>
+          <SectionHeading>No es solo una sesión de HIFU… es un protocolo diseñado según tu piel.</SectionHeading>
+          <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+            Eso es lo que nos separa de una clínica fría con sesiones genéricas: acá no hay dos protocolos iguales,
+            porque no hay dos rostros iguales.
+          </p>
+        </div>
+        <dl className="divide-y divide-black/[0.08] border-y border-black/[0.08]">
+          {DIFERENCIADORES.map((item) => (
+            <div key={item.termino} className="grid gap-1 py-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
+              <dt className="text-[15px] font-semibold text-morado-700">{item.termino}</dt>
+              <dd className="text-[17px] leading-snug text-ink">{item.valor}</dd>
             </div>
           ))}
-        </Stagger>
-      </Section>
+        </dl>
+      </section>
 
-      {/* Reseñas: ya no necesita su propio salto — lo aporta la Section. */}
-      <Section id="resenas">
+      {/* ------------------------------------------------------- Reseñas --- */}
+      <section id="resenas" className="scroll-anchor mt-20 sm:mt-28">
         <TestimoniosSection testimonios={TESTIMONIOS_HIFU} />
-      </Section>
+      </section>
 
-      <Quote>{QUOTES[4]}</Quote>
+      {/* ----------------------------------------------------------- FAQ --- */}
+      <section className="mt-20 grid gap-10 sm:mt-28 lg:grid-cols-[1fr_280px] lg:gap-16">
+        <Faq items={PREGUNTAS_HIFU} titulo="Preguntas frecuentes sobre HIFU" />
+        <VideoAccent
+          src={HIFU_VIDEO_REFERENCIA_2}
+          poster={HIFU_VIDEO_REFERENCIA_2_POSTER}
+          className="hidden aspect-[3/4] w-full lg:mt-24 lg:block"
+        />
+      </section>
 
-      {/* ------------------------------------------------------- FAQ ------- */}
-      <Section tone="alt">
-        <SectionHeading>Preguntas frecuentes sobre HIFU</SectionHeading>
+      {/* ----------------------------------------------------- CTA final --- */}
+      <WhatsAppSection
+        id="agendar"
+        accion="agendar"
+        context={{ sku: 'hifu-cta-final', nombre: 'el Cire Lift Protocol', categoria: 'hifu', articulo: 'el' }}
+        titulo="Empecemos con una valoración"
+        texto="Ahí analizamos tu piel y te decimos exactamente qué zonas conviene trabajar, cómo, y qué resultado puedes esperar."
+        videoSrc={HIFU_VIDEO_REFERENCIA_3}
+        videoPoster={HIFU_VIDEO_REFERENCIA_3_POSTER}
+        videoCaption={{ tag: 'HIFU 4D', title: 'Firmeza desde la primera sesión' }}
+      >
+        Agenda tu valoración
+      </WhatsAppSection>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-[1fr_240px]">
-          <Stagger className="space-y-4" step={90}>
-            {PREGUNTAS_HIFU.map((item) => (
-              <div key={item.key} className="rounded-2xl border border-black/[0.07] bg-white p-6">
-                <p className="text-lg font-medium text-neutral-900">{item.pregunta}</p>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-500">{item.respuesta}</p>
-              </div>
-            ))}
-          </Stagger>
-          <VideoAccent
-            src={HIFU_VIDEO_REFERENCIA_2}
-            poster={HIFU_VIDEO_REFERENCIA_2_POSTER}
-            caption={{ tag: 'Sin cirugía', title: 'Resultado natural y progresivo' }}
-            className="hidden h-full min-h-[300px] md:block"
-          />
-        </div>
-      </Section>
-
-      {/* ---------------------------------------------------- CTA final --- */}
-      <Section id="agendar">
-        <WhatsAppSection
-          context={{ sku: 'hifu-cta-final', nombre: 'el Cire Lift Protocol', categoria: 'hifu', articulo: 'el' }}
-          titulo="Empecemos con una valoración"
-          texto="Ahí analizamos tu piel y te decimos exactamente qué zonas conviene trabajar, cómo, y qué resultado puedes esperar."
-          videoSrc={HIFU_VIDEO_REFERENCIA_3}
-          videoPoster={HIFU_VIDEO_REFERENCIA_3_POSTER}
-          videoCaption={{ tag: 'HIFU 4D', title: 'Firmeza desde la primera sesión' }}
-        >
-          Agenda tu valoración
-        </WhatsAppSection>
-      </Section>
-    </>
+      <div className="h-20 sm:h-28" aria-hidden="true" />
+    </main>
   )
 }

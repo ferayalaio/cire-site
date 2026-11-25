@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-24T12:00:00Z",
+  "title": "Design System: Cire Depilación",
+  "extensions": {
+    "colorMeta": {
+      "blush-50": {
+        "role": "primary",
+        "displayName": "Blush Wash",
+        "tonalRamp": [
+          "#6b2450",
+          "#a32a57",
+          "#d6457a",
+          "#f77fa3",
+          "#feaac1",
+          "#fcc8d8",
+          "#fbd3e0",
+          "#fde9f0"
+        ]
+      },
+      "blush-100": {
+        "role": "primary",
+        "displayName": "Dusty Blush",
+        "tonalRamp": [
+          "#6b2450",
+          "#a32a57",
+          "#d6457a",
+          "#f77fa3",
+          "#feaac1",
+          "#fcc8d8",
+          "#fbd3e0",
+          "#fde9f0"
+        ]
+      },
+      "blush-200": {
+        "role": "primary",
+        "displayName": "Selection Rose"
+      },
+      "blush-300": {
+        "role": "primary",
+        "displayName": "Tab Rose"
+      },
+      "blush-400": {
+        "role": "primary",
+        "displayName": "Ring Rose"
+      },
+      "blush-500": {
+        "role": "primary",
+        "displayName": "Rose Focus"
+      },
+      "blush-600": {
+        "role": "primary",
+        "displayName": "Deep Rose"
+      },
+      "blush-900": {
+        "role": "primary",
+        "displayName": "Oxblood"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "#4a1838",
+          "#2f2f2f",
+          "#404040",
+          "#525252",
+          "#737373",
+          "#a3a3a3",
+          "#d4d4d4",
+          "#f5f5f5"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "tonalRamp": [
+          "#2a2426",
+          "#5a5153",
+          "#8a8183",
+          "#b5aeaf",
+          "#d8d2d2",
+          "#ece7e6",
+          "#f6f2f1",
+          "#fdfbfa"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White"
+      },
+      "text-body": {
+        "role": "neutral",
+        "displayName": "Body Graphite"
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted Graphite"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page H1 only. 2.5rem mobile, 3.25rem sm, 3.75rem lg; balanced; sentence case."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section H2. 1.875rem mobile, 2.5rem from sm."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card headings."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "The featured price, tabular figures."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Leads and answers, max 60ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, text links, definition terms."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Secondary lines under row titles and authors."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-action",
+        "value": "0 12px 30px -12px rgba(43,27,30,0.6)",
+        "purpose": "Fixed WhatsApp button only."
+      },
+      {
+        "name": "dropdown",
+        "value": "0 18px 40px -20px rgba(43,27,30,0.35)",
+        "purpose": "Nav dropdown panel."
+      },
+      {
+        "name": "drawer",
+        "value": "-20px 0 60px -15px rgba(0,0,0,0.35)",
+        "purpose": "Mobile menu panel."
+      },
+      {
+        "name": "card-ring",
+        "value": "0 0 0 1px rgba(0,0,0,0.06)",
+        "purpose": "Outline of white in-flow cards; a hairline, not elevation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Route fade and FAQ accordion."
+      },
+      {
+        "name": "route-in",
+        "value": "opacity 200ms",
+        "purpose": "Page enter fade."
+      },
+      {
+        "name": "route-out",
+        "value": "opacity 120ms",
+        "purpose": "Page exit fade."
+      },
+      {
+        "name": "state",
+        "value": "color 200ms",
+        "purpose": "Button, link and tab state changes. No scale."
+      },
+      {
+        "name": "accordion",
+        "value": "block-size 340ms, opacity 260ms 60ms",
+        "purpose": "FAQ answer open."
+      },
+      {
+        "name": "reveal-policy",
+        "value": "visible by default",
+        "purpose": "No scroll reveals: content is always visible. Only the route fade and accordion move, all instant under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "400px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ],
+    "photoGrade": {
+      "filter": "colortemperature=12000:mix=0.8,eq=saturation=0.78:brightness=0.04:contrast=1.03",
+      "purpose": "One shared grade for every home raster (hero video, session strip, treatment thumbnails).",
+      "heroObjectPosition": "50% 35%",
+      "sessionCrop": "3:4"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The only filled button: every WhatsApp action.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z\"/></svg>Cotizar por WhatsApp</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px 24px; border-radius: 8px; background: var(--color-ink, #1e1e1e); color: #fff; font: 600 15px/1.2 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; text-decoration: none; transition: background-color 200ms; } .ds-btn-primary:hover { background: var(--color-blush-900, #3d1d22); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-blush-500, #a65e6d); outline-offset: 3px; }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "button",
+      "refersTo": "link-action",
+      "description": "Every secondary action, and the per-row WhatsApp 'link' variant.",
+      "html": "<a class=\"ds-link\" href=\"#\">Ver precios <svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: #1e1e1e; font: 600 15px/1.2 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; text-decoration: underline; text-decoration-color: rgba(30,30,30,0.25); text-underline-offset: 4px; transition: text-decoration-color 200ms; } .ds-link:hover { text-decoration-color: #1e1e1e; } .ds-link:focus-visible { outline: 2px solid #a65e6d; outline-offset: 3px; }"
+    },
+    {
+      "name": "Featured Offer Card",
+      "kind": "card",
+      "refersTo": "card-featured",
+      "description": "The one primary offer in a block: blush-100 field with a tabular price.",
+      "html": "<article class=\"ds-card-featured\"><h3>Full Body</h3><p class=\"ds-meta\">Cuerpo completo · 8 sesiones</p><p class=\"ds-price\">$10,500</p></article>",
+      "css": ".ds-card-featured { background: #f3dee1; border-radius: 16px; padding: 28px; color: #1e1e1e; font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; } .ds-card-featured h3 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; } .ds-card-featured .ds-meta { margin: 4px 0 0; font-size: 15px; color: rgba(61,29,34,0.8); } .ds-card-featured .ds-price { margin: 24px 0 0; font-size: 3rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Price List Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "White card with a hairline ring and hairline-divided rows.",
+      "html": "<div class=\"ds-card\"><h3>Por zona</h3><ul><li><span><b>Axilas</b><small>8 sesiones</small></span><span class=\"ds-row-price\">$1,990</span><a href=\"#\">Cotizar</a></li><li><span><b>Rostro completo</b><small>8 sesiones</small></span><span class=\"ds-row-price\">$2,790</span><a href=\"#\">Cotizar</a></li></ul></div>",
+      "css": ".ds-card { background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); color: #1e1e1e; font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; } .ds-card h3 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; } .ds-card ul { list-style: none; margin: 16px 0 0; padding: 0; } .ds-card li { display: flex; align-items: center; gap: 16px; padding: 16px 0; } .ds-card li + li { border-top: 1px solid rgba(0,0,0,0.08); } .ds-card li > span:first-child { flex: 1; } .ds-card b { display: block; font-size: 17px; font-weight: 600; } .ds-card small { display: block; font-size: 14px; color: #525252; } .ds-row-price { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; } .ds-card a { color: #1e1e1e; font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(30,30,30,0.25); text-underline-offset: 4px; } .ds-card a:hover { text-decoration-color: #1e1e1e; }"
+    },
+    {
+      "name": "Closing Offer Field",
+      "kind": "card",
+      "refersTo": "offer-field",
+      "description": "One per page: blush-100 field at 24px radius holding the offer and the standard ink button.",
+      "html": "<section class=\"ds-offer\"><h2>10% en tu primera sesión o evaluación sin costo</h2><p>Escríbenos por WhatsApp y te agendamos en la sucursal más cercana.</p><a class=\"ds-offer-btn\" href=\"#\">Agendar por WhatsApp</a></section>",
+      "css": ".ds-offer { background: #f3dee1; border-radius: 24px; padding: 48px 24px; color: #1e1e1e; font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; } .ds-offer h2 { margin: 0; font-size: 1.875rem; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; } .ds-offer p { margin: 16px 0 0; max-width: 52ch; font-size: 17px; line-height: 1.625; color: rgba(61,29,34,0.85); } .ds-offer-btn { display: inline-flex; align-items: center; min-height: 48px; margin-top: 32px; padding: 12px 24px; border-radius: 8px; background: #1e1e1e; color: #fff; font-size: 15px; font-weight: 600; text-decoration: none; transition: background-color 200ms; } .ds-offer-btn:hover { background: #3d1d22; } .ds-offer-btn:focus-visible { outline: 2px solid #a65e6d; outline-offset: 3px; }"
+    },
+    {
+      "name": "Branch Tabs",
+      "kind": "chip",
+      "refersTo": "tab",
+      "description": "Rectangular selector; selected tab is solid ink.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" aria-selected=\"true\">Polanco</button><button class=\"ds-tab\" aria-selected=\"false\">Del Valle</button><button class=\"ds-tab\" aria-selected=\"false\">Metepec</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 8px; flex-wrap: wrap; } .ds-tab { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: #fff; color: #525252; font: 500 14px/1.2 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; cursor: pointer; transition: border-color 200ms, color 200ms; } .ds-tab:hover { border-color: #d9a0a9; color: #171717; } .ds-tab[aria-selected=true] { background: #1e1e1e; border-color: #1e1e1e; color: #fff; } .ds-tab:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #c27e8a; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "nav-bar",
+      "description": "Sticky paper bar with hairline, muted links and a compact ink action.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-brand\">Cire Depilación</span><span class=\"ds-links\"><a href=\"#\" aria-current=\"page\">Láser</a><a href=\"#\">Cera</a><a href=\"#\">Sucursales</a></span><a class=\"ds-nav-cta\" href=\"#\">Agendar</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 64px; padding: 0 24px; background: rgba(253,251,250,0.95); border-bottom: 1px solid rgba(0,0,0,0.06); font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; } .ds-brand { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: #1e1e1e; } .ds-links { display: flex; gap: 4px; } .ds-links a { padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; text-decoration: none; transition: color 200ms; } .ds-links a:hover, .ds-links a[aria-current] { color: #1e1e1e; } .ds-nav-cta { padding: 10px 16px; border-radius: 8px; background: #1e1e1e; color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; transition: background-color 200ms; } .ds-nav-cta:hover { background: #3d1d22; }"
+    },
+    {
+      "name": "Definition List",
+      "kind": "custom",
+      "description": "Hairline-ruled facts with Deep Rose terms (protocol block).",
+      "html": "<dl class=\"ds-dl\"><div><dt>Protocolo</dt><dd>Laser Expert 8</dd></div><div><dt>Tecnología</dt><dd>Láser diodo con punta de zafiro</dd></div></dl>",
+      "css": ".ds-dl { margin: 0; border-top: 1px solid rgba(0,0,0,0.08); border-bottom: 1px solid rgba(0,0,0,0.08); font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; } .ds-dl > div { display: grid; grid-template-columns: 9rem 1fr; gap: 24px; padding: 20px 0; } .ds-dl > div + div { border-top: 1px solid rgba(0,0,0,0.08); } .ds-dl dt { font-size: 15px; font-weight: 600; color: #82454f; } .ds-dl dd { margin: 0; font-size: 17px; line-height: 1.375; color: #1e1e1e; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Clinic",
+    "overview": "The category standard of a premium aesthetic clinic, executed at full craft. A warm white ground, near-black ink, and one dusty pink that belongs to the brand's own cabins and light. Nothing performs: no atmosphere, no effects, no decoration that a real clinic would not have on its walls. Confidence comes from real photographs of Cire's cabins and specialists, exact prices set in tabular figures, and generous, even spacing.\n\nDensity is calm and editorial: one idea per section, a solid headline, one line of support, then the content (a price list, a definition list, three photos, three reviews). The single action everywhere is WhatsApp, and it always looks the same: a solid ink rectangle with soft corners. Everything secondary is an underlined text link.\n\nThis system replaces an earlier look (blush gradients, Bodoni display, liquid glass, drifting light, sheens and pulsing rings). That look is rejected as a whole.",
+    "keyCharacteristics": [
+      "Warm white paper, near-black ink, one dusty pink scale; no other hue.",
+      "One sans family (Hanken Grotesk) carrying every role through weight and size.",
+      "Flat surfaces separated by hairlines and tinted bands, not shadows.",
+      "Small radii on controls (8px), medium on cards and photos (16px); no pill buttons.",
+      "Real Cire frames only, one color grade, 3:4 crops.",
+      "Content is visible by default; motion is short and functional."
+    ],
+    "rules": [
+      {
+        "name": "The Two Hue Rule",
+        "body": "Only the brand's two hues: the pink family (bands, the featured field) and orchid purple (promotions band, alternating tiles, morado-700 for checks, labels and icons). Both from Cire's flyers and the owner's favorites; saturated fuchsia and turquoise stay in the ads.",
+        "section": "Only the brand's two hues: the pink family (bands, the featured field) and orchid purple (promotions band, alternating tiles, morado-700 for checks, labels and icons). Both from Cire's flyers and the owner's favorites; saturated fuchsia and turquoise stay in the ads."
+      },
+      {
+        "name": "The Featured Field Rule",
+        "body": "blush-100 as a card fill is reserved for the single primary offer in a block. Every other card is white with a hairline ring. Two pink cards side by side means neither is featured. The closing offer field is the same color at page scale: one per page, and it holds the standard ink button.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat Pink Rule",
+        "body": "Blush is always a flat fill. No gradients, no gradient text, no tinted glows.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Price Rule",
+        "body": "Every price is set with tabular figures and right-aligned in lists. A missing price reads \"Precio por WhatsApp\"; never invent a number.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Kicker Rule",
+        "body": "A section starts with its headline. No eyebrow, overline, uppercase tag or numbered label above it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Even Rhythm Rule",
+        "body": "Every content section uses the same vertical padding. Change of section is signalled by the blush-50 band, not by bigger gaps.",
+        "section": "layout"
+      },
+      {
+        "name": "The Earned Shadow Rule",
+        "body": "A shadow means the element floats over content (fixed button, dropdown, drawer). Cards in the page flow never carry one.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Solid Nav Rule",
+        "body": "The sticky nav is paper at 95% with a light backdrop blur and a 6% hairline; it is the only blurred surface. No translucent glass panels anywhere else.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Pill Rule",
+        "body": "Buttons and tabs are rectangles with an 8px radius. Pill shapes are not used for actions, tags or chips.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Real Frame Rule",
+        "body": "No stock, no illustration, no AI imagery, and nothing presented as a before/after unless it is a real comparison of a client.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do use the solid ink button for every WhatsApp action and an underlined text link for everything secondary.",
+      "Do reserve blush-100 card fill for the single featured offer in a block; every other card is white with a 6% ring.",
+      "Do set prices in tabular figures and fall back to \"Precio por WhatsApp\" when a price is missing.",
+      "Do separate list rows and card regions with 8% black hairlines.",
+      "Do alternate sections between paper and blush-50 at the same vertical padding (80px, 112px from sm).",
+      "Do use only real Cire frames with the shared grade, cropped 3:4 for photo rows.",
+      "Do keep all content visible; no scroll-triggered entrances."
+    ],
+    "donts": [
+      "Don't use gradient text or blush gradients of any kind.",
+      "Don't use glass panels, frosted cards, blobs, drifting glows, particles or sheens.",
+      "Don't put an eyebrow, kicker or uppercase tag above a headline.",
+      "Don't use pill-shaped buttons, tags or chips.",
+      "Don't add pulse rings, ping animations or hover scaling to buttons.",
+      "Don't add a second accent hue or a second type family.",
+      "Don't give in-flow cards a shadow."
+    ]
+  }
+}

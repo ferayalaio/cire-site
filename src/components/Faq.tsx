@@ -1,6 +1,5 @@
 import type { FaqItem } from '../data/faq'
 import { SectionHeading } from './PageShell'
-import { Stagger } from './Reveal'
 
 /*
  * Acordeón de preguntas frecuentes (ver el contenido y su criterio en
@@ -51,7 +50,7 @@ interface FaqProps {
  */
 function PlusIcon() {
   return (
-    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blush-50 text-blush-500 transition-colors duration-300 group-open:bg-blush-500 group-open:text-white group-hover:bg-blush-100 group-open:group-hover:bg-blush-600">
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blush-50 text-blush-600 transition-colors duration-300 group-open:bg-ink group-open:text-white group-hover:bg-blush-100">
       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
         <path d="M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
         <path
@@ -72,13 +71,13 @@ export function Faq({ items, titulo, intro }: FaqProps) {
   return (
     <div>
       <SectionHeading>{titulo ?? 'Preguntas frecuentes'}</SectionHeading>
-      {intro && <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-500">{intro}</p>}
+      {intro && <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">{intro}</p>}
 
-      <Stagger className="mt-10 max-w-3xl space-y-3" step={60}>
+      <div className="mt-10 max-w-3xl divide-y divide-linea border-y border-linea">
         {items.map((item) => (
           <details
             key={item.pregunta}
-            className="faq-item group rounded-2xl border border-black/[0.07] bg-white px-5 transition-all duration-200 open:border-blush-200 open:shadow-[0_20px_45px_-30px_rgba(166,94,109,0.55)] hover:border-blush-300 sm:px-6"
+            className="faq-item group"
           >
             {/* `list-none` + `::-webkit-details-marker` apagado: sin eso queda
                 el triángulo del navegador al lado del ícono propio.
@@ -87,19 +86,19 @@ export function Faq({ items, titulo, intro }: FaqProps) {
                 del navegador: el outline por defecto rodea al <summary>, que
                 es ancho y cuadrado, y se sale de las esquinas redondeadas de
                 la tarjeta. */}
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl py-5 text-left text-base font-medium text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blush-300 [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left text-[17px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
               <span className="leading-snug">{item.pregunta}</span>
               <PlusIcon />
             </summary>
             {/* El separador solo aparece con la tarjeta abierta: es lo que
                 despega la respuesta de la pregunta cuando las dos están a la
                 vista, y cerrada no tendría nada que separar. */}
-            <p className="border-t border-blush-100 pb-6 pt-4 text-sm leading-relaxed text-neutral-500">
+            <p className="max-w-[65ch] pb-6 text-base leading-relaxed text-neutral-700">
               {item.respuesta}
             </p>
           </details>
         ))}
-      </Stagger>
+      </div>
     </div>
   )
 }

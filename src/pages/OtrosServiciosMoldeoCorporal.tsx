@@ -1,17 +1,32 @@
-import { PageShell, SectionHeading } from '../components/PageShell'
-import { PaqueteCards } from '../components/PaqueteCards'
-import { Reveal, Stagger } from '../components/Reveal'
+import { Faq } from '../components/Faq'
+import { PageShell } from '../components/PageShell'
 import { WhatsAppSection } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { MOLDEO_CORPORAL } from '../data/precios'
+import { FAQ_CORPORAL } from '../data/faq'
+import { CatalogoSesiones, FOTO_CORPORAL } from '../components/CatalogoSesiones'
 
-// Fotos reales de sesión (radiofrecuencia/cavitación en abdomen). Viven en
-// public/resultados-reales/, mismo criterio que /laser: sesión real, no
-// antes/después clínico.
-const RESULTADOS_REALES = [
-  { src: '/resultados-reales/resultado-moldeo-corporal-abdomen.webp', alt: 'Sesión de moldeo corporal en abdomen' },
-  { src: '/resultados-reales/resultado-moldeo-corporal-radiofrecuencia.webp', alt: 'Aplicación de cabezal de radiofrecuencia en abdomen' },
-]
+/*
+ * Antes esta página mostraba dos fotos de public/resultados-reales/ bajo
+ * "Resultados reales". No son comparativas de clientas (ver PRODUCT.md), así
+ * que se reemplazan por la foto de cabina corregida de /sesion/, sin
+ * presentarla como resultado.
+ */
+
+const CTA_CONTEXT = {
+  sku: 'moldeo-corporal',
+  nombre: 'moldeo corporal',
+  categoria: 'otros',
+  articulo: 'el',
+} as const
+
+/* Las dos preguntas del FAQ corporal que ayudan a elegir entre Cire-Na y Cire Body. */
+const PREGUNTAS = FAQ_CORPORAL.filter((item) =>
+  [
+    '¿Qué diferencia hay entre Moldeo Cire-Na y Cire Body?',
+    '¿Los tratamientos corporales sirven para bajar de peso?',
+  ].includes(item.pregunta),
+)
 
 export function OtrosServiciosMoldeoCorporal() {
   useDocumentMeta({
@@ -22,7 +37,6 @@ export function OtrosServiciosMoldeoCorporal() {
 
   return (
     <PageShell
-      eyebrow="Tratamiento corporal"
       title="Moldeo corporal"
       intro="Moldeo Cire-Na y Cire Body, con precio por número de sesiones."
       breadcrumbs={[
@@ -30,38 +44,36 @@ export function OtrosServiciosMoldeoCorporal() {
         { label: 'Otros servicios', to: '/otros-servicios' },
       ]}
     >
-      <Reveal className="space-y-6">
-        <SectionHeading>Precios</SectionHeading>
-        <PaqueteCards paquetes={MOLDEO_CORPORAL} categoria="otros" />
-      </Reveal>
+      <CatalogoSesiones
+        titulo="Moldeo corporal"
+        paquetes={MOLDEO_CORPORAL}
+        categoria="otros"
+        context={CTA_CONTEXT}
+        ctaLabel="Consultar por WhatsApp"
+      />
 
-      <Reveal className="mt-16 space-y-6">
-        <SectionHeading>Resultados reales</SectionHeading>
-        <Stagger className="grid max-w-2xl grid-cols-2 gap-6" step={90}>
-          {RESULTADOS_REALES.map(({ src, alt }) => (
-            <div
-              key={src}
-              className="group aspect-[3/4] overflow-hidden rounded-2xl border border-blush-200 shadow-[0_25px_60px_-30px_rgba(166,94,109,0.4)]"
-            >
-              <img
-                src={src}
-                alt={alt}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-          ))}
-        </Stagger>
-      </Reveal>
+      <section className="mt-20 grid gap-10 sm:mt-28 md:grid-cols-[0.8fr_1.2fr] md:items-start lg:gap-16">
+        <img
+          src={FOTO_CORPORAL.src}
+          alt={FOTO_CORPORAL.alt}
+          loading="lazy"
+          width={480}
+          height={640}
+          className="aspect-[4/3] w-full rounded-2xl object-cover object-[50%_62%] md:aspect-[3/4] md:max-w-sm"
+        />
+        <Faq items={PREGUNTAS} titulo="¿Cuál elijo?" />
+      </section>
 
       <WhatsAppSection
         id="agendar"
-        context={{ sku: 'moldeo-corporal', nombre: 'moldeo corporal', categoria: 'otros', articulo: 'el' }}
+        context={CTA_CONTEXT}
         titulo="¿No sabes cuál te conviene?"
         texto="Cuéntanos qué buscas y te ayudamos a elegir entre Moldeo Cire-Na y Cire Body."
       >
         Consultar por WhatsApp
       </WhatsAppSection>
+
+      <div className="h-20 sm:h-28" aria-hidden="true" />
     </PageShell>
   )
 }

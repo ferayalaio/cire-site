@@ -12,6 +12,32 @@
  */
 export const SITE_URL = 'https://ciredepilacion.com'
 
+/*
+ * Sistema de agenda en línea (nov/26). Vive en el mismo dominio pero NO es
+ * parte de esta app: se enlaza con un <a> normal, nunca con <Link> de React
+ * Router (eso renderizaría el 404 propio del sitio en lugar del sistema).
+ */
+export const AGENDAR_URL = `${SITE_URL}/agendar`
+
+/*
+ * Agenda directa por sucursal (nov/26): /agendar/<sucursal> abre la agenda ya
+ * en esa sucursal. El slug de la agenda no siempre es el del sitio (Del Valle
+ * es `delvalle` allá y `del-valle` acá), por eso va explícito y no derivado.
+ * Una sucursal que no esté aquí cae en la agenda general.
+ */
+const AGENDA_SUCURSAL: Record<string, string> = {
+  polanco: 'polanco',
+  'del-valle': 'delvalle',
+  coapa: 'coapa',
+  oriente: 'oriente',
+  metepec: 'metepec',
+}
+
+export function agendarUrl(sucursal?: string): string {
+  const destino = sucursal ? AGENDA_SUCURSAL[sucursal] : undefined
+  return destino ? `${AGENDAR_URL}/${destino}` : AGENDAR_URL
+}
+
 export const SITE_NAME = 'Cire Depilación'
 
 /** 1200×630, en `public/`. Es la miniatura de WhatsApp, Facebook y X. */

@@ -19,7 +19,7 @@ function SocialIcon({ href, label, children }: SocialIconProps) {
       target="_blank"
       rel="noreferrer"
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/60 transition-colors hover:border-blush-300 hover:bg-white/5 hover:text-white"
+      className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/15 text-white/75 transition-colors hover:border-white/40 hover:text-white"
     >
       {children}
     </a>
@@ -29,11 +29,11 @@ function SocialIcon({ href, label, children }: SocialIconProps) {
 function FooterLinks({ titulo, links }: { titulo: string; links: { to: string; label: string }[] }) {
   return (
     <nav aria-label={titulo}>
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">{titulo}</p>
+      <p className="text-sm font-semibold text-white">{titulo}</p>
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((link) => (
           <li key={link.to}>
-            <Link to={link.to} className="text-white/60 transition-colors hover:text-white">
+            <Link to={link.to} className="text-white/70 transition-colors hover:text-white">
               {link.label}
             </Link>
           </li>
@@ -54,17 +54,12 @@ function FooterLinks({ titulo, links }: { titulo: string; links: { to: string; l
  */
 export function Footer() {
   return (
-    <footer className="relative isolate overflow-hidden bg-ink text-white">
-      {/* Mismo resplandor que las otras bandas oscuras, ver Section.tsx. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-72 w-[40rem] -translate-x-1/2 rounded-full bg-blush-500/20 blur-3xl"
-      />
-
+    <footer className="bg-ink text-white">
       <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
         <div className="grid gap-12 sm:grid-cols-[1.2fr_1fr_1fr]">
         <div className="max-w-xs">
-          <p className="text-sm leading-relaxed text-white/60">
+          <p className="text-[15px] font-semibold text-white">Cire Depilación</p>
+          <p className="mt-2 text-sm leading-relaxed text-white/70">
             Depilación láser, cera y tratamientos corporales en Ciudad de México y Metepec.
           </p>
 
@@ -112,7 +107,7 @@ export function Footer() {
         />
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/65 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Cire Depilación</span>
           <Link to="/aviso-de-privacidad" className="transition-colors hover:text-white">
             Aviso de Privacidad

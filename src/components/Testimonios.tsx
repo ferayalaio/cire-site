@@ -2,7 +2,6 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from
 import type { Testimonio } from '../data/sucursales'
 import { GOOGLE_REVIEWS } from '../data/marca'
 import { SectionHeading } from './PageShell'
-import { Reveal, Stagger } from './Reveal'
 
 interface TestimoniosSectionProps {
   testimonios: Testimonio[]
@@ -16,24 +15,6 @@ interface TestimoniosSectionProps {
    * contenido que ya está a la vista.
    */
   carrusel?: boolean
-}
-
-/*
- * Fallback para el puñado de reseñas cuya cuenta de Google no tiene foto de
- * perfil (Google les pone su propio ícono de inicial-en-círculo). Cuando el
- * testimonio trae `avatarSrc` se usa la foto real recortada de la reseña.
- */
-const AVATAR_TONES = [
-  'bg-blush-100 text-blush-600',
-  'bg-blush-200 text-blush-700',
-  'bg-blush-300 text-blush-900',
-  'bg-blush-400 text-blush-900',
-]
-
-function avatarTono(autor: string): string {
-  let hash = 0
-  for (let i = 0; i < autor.length; i++) hash = (hash * 31 + autor.charCodeAt(i)) % AVATAR_TONES.length
-  return AVATAR_TONES[hash]
 }
 
 /*
@@ -95,7 +76,7 @@ function GoogleGlyph() {
  */
 function InsigniaGoogle() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.07] bg-neutral-50 px-2.5 py-1 text-[11px] font-medium text-neutral-500">
+    <span className="inline-flex items-center gap-1.5 text-[14px] text-neutral-600">
       <GoogleGlyph />
       {GOOGLE_REVIEWS.insignia}
     </span>
@@ -178,7 +159,7 @@ function Cita({ texto, ancha }: CitaProps) {
 
   return (
     <div className={`mt-4 ${ancha ? 'max-w-2xl' : ''}`}>
-      <blockquote className="relative text-neutral-600">
+      <blockquote className="relative text-[16px] text-neutral-800">
         <p ref={ref} id={id} className={`leading-relaxed ${abierto ? '' : 'line-clamp-3'}`}>
           {texto}
         </p>
@@ -205,7 +186,7 @@ function Cita({ texto, ancha }: CitaProps) {
           onClick={() => setAbierto((previo) => !previo)}
           aria-expanded={abierto}
           aria-controls={id}
-          className="mt-2 text-xs font-medium text-blush-600 underline-offset-4 transition-colors hover:text-blush-900 hover:underline"
+          className="mt-2 min-h-11 text-[14px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
         >
           {abierto ? 'Leer menos' : 'Leer más'}
         </button>
@@ -226,39 +207,33 @@ function Cita({ texto, ancha }: CitaProps) {
 function TarjetaTestimonio({ testimonio, ancha }: { testimonio: Testimonio; ancha: boolean }) {
   return (
     <figure
-      className={`flex h-full flex-col rounded-2xl border border-black/[0.07] bg-white transition-all duration-300 hover:border-blush-200 hover:shadow-[0_25px_50px_-30px_rgba(166,94,109,0.5)] ${
-        ancha ? 'p-8 sm:p-10' : 'p-6'
-      }`}
+      className={`flex h-full flex-col rounded-2xl bg-white ring-1 ring-black/[0.06] ${ancha ? 'p-7 sm:p-9' : 'p-6 sm:p-7'}`}
     >
       {/* Las estrellas van arriba de todo, antes del nombre: es lo que
           se lee de un vistazo al escanear la sección, y abajo del texto
           (donde estaban) llegaban después de la decisión de leer o no. */}
       <Estrellas className={ancha ? 'h-5 w-5' : 'h-4.5 w-4.5'} />
 
-      <div className="mt-3 flex items-center gap-3">
-        {testimonio.avatarSrc ? (
-          <img
-            src={testimonio.avatarSrc}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-blush-100"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ring-2 ring-blush-100 ${avatarTono(testimonio.autor)}`}
-          >
-            {testimonio.autor.charAt(0).toUpperCase()}
-          </span>
-        )}
+      {/*
+       * Iniciales y no la foto de perfil: las miniaturas de Google recortadas
+       * se leían como manchas. Sin etiqueta de sucursal: el reparto de reseñas
+       * por sucursal se hizo a criterio (ver testimonios.ts) y no es
+       * verificable, así que no se muestra como dato.
+       */}
+      <div className="mt-4 flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blush-100 text-[14px] font-semibold text-blush-900"
+        >
+          {testimonio.autor
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((parte) => parte.charAt(0))
+            .join('')
+            .toUpperCase()}
+        </span>
         <figcaption className="min-w-0">
-          <p className="truncate font-medium text-neutral-900">{testimonio.autor}</p>
-          {testimonio.sucursal && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-blush-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-blush-600">
-              {testimonio.sucursal}
-            </span>
-          )}
+          <p className="truncate text-[15px] font-semibold text-ink">{testimonio.autor}</p>
         </figcaption>
       </div>
 
@@ -496,20 +471,17 @@ export function TestimoniosSection({ testimonios, titulo, carrusel }: Testimonio
        * tarjeta: el promedio es del negocio, no de la reseña, y repetirlo tres
        * veces lo hace leer como decoración en lugar de como un dato.
        */}
-      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Estrellas />
-        <p className="text-sm text-neutral-500">
-          <strong className="font-semibold text-neutral-900">
-            {GOOGLE_REVIEWS.promedio}/{GOOGLE_REVIEWS.escala}
-          </strong>{' '}
-          en {GOOGLE_REVIEWS.fuente}
-        </p>
-      </div>
+      {/* Sin promedio: el 4.9 de GOOGLE_REVIEWS sigue sin verificar contra el
+          perfil real (ver marca.ts), y un número que cualquiera contrasta en
+          Maps no se muestra hasta confirmarlo. */}
+      <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
+        Reseñas reales publicadas en Google Maps.
+      </p>
 
       {esUnaSola ? (
-        <Reveal className="mt-8">
+        <div className="mt-8">
           <TarjetaTestimonio testimonio={testimonios[0]} ancha />
-        </Reveal>
+        </div>
       ) : usarCarrusel ? (
         <Carrusel testimonios={testimonios} />
       ) : (
@@ -522,11 +494,11 @@ export function TestimoniosSection({ testimonios, titulo, carrusel }: Testimonio
          * Reveal.tsx): es el ítem del grid, así que sin estirarlo a él la
          * tarjeta no tiene contra qué crecer.
          */
-        <Stagger className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 [&>div]:h-full">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {testimonios.map((testimonio) => (
             <TarjetaTestimonio key={testimonio.autor} testimonio={testimonio} ancha={false} />
           ))}
-        </Stagger>
+        </div>
       )}
     </div>
   )

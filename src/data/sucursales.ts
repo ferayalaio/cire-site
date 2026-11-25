@@ -116,6 +116,7 @@ export const SUCURSALES: Sucursal[] = [
     region: 'Ciudad de México',
     direccion: 'Gutenberg 194, Anzures, Miguel Hidalgo, 11590 CDMX',
     mapsUrl: 'https://maps.google.com/?cid=3247528200057585679',
+    telefono: '+52 55 2309 6546',
     foto: '/sucursales/cire-depilacion-polanco.webp',
   },
   {
@@ -147,11 +148,13 @@ export const SUCURSALES: Sucursal[] = [
   {
     slug: 'oriente',
     nombre: 'Oriente',
-    zonaBusqueda: 'Iztapalapa, Paseos de Churubusco',
-    alcaldia: 'Iztapalapa',
-    cercanas: ['Paseos de Churubusco', 'Iztapalapa', 'Iztacalco', 'Agrícola Oriental', 'Granjas México', 'Unidad Modelo'],
+    // Se mudó en nov/26 de Río Tacámbaro 56 (Iztapalapa) a Plaza Patio Santino.
+    zonaBusqueda: 'Agrícola Oriental, Iztacalco',
+    alcaldia: 'Iztacalco',
+    cercanas: ['Agrícola Oriental', 'Agrícola Pantitlán', 'Pantitlán', 'Granjas México', 'Gabriel Ramos Millán', 'Paseos de Churubusco', 'Iztapalapa'],
     region: 'Ciudad de México',
-    direccion: 'Río Tacámbaro 56-Interior 2, Paseos de Churubusco, Iztapalapa, 09030 CDMX',
+    direccion: 'Plaza Patio Santino, Planta Alta, Av. Sur 8 #277, Agrícola Oriental, Iztacalco, 08500 CDMX',
+    telefono: '+52 55 4768 1165',
     foto: '/sucursales/cire-depilacion-oriente.webp',
   },
   {
@@ -165,6 +168,7 @@ export const SUCURSALES: Sucursal[] = [
       'C. Adolfo López Mateos 1100-Loc 10-A, La Asunción, 52172 San Salvador Tizatlalli, Méx.',
     mapsUrl: 'https://maps.app.goo.gl/RJXpuQuSgiNSU6iR8',
     mapsQuery: '19.2679641,-99.5746308',
+    telefono: '+52 722 326 0878',
     foto: '/sucursales/cire-depilacion-metepec.webp',
   },
 ]

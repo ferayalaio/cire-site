@@ -2,70 +2,86 @@
 
 @theme {
   --breakpoint-xs: 400px;
-  --animate-slide-in-left: slide-in-left 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-slide-in-right: slide-in-right 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-drift-a: drift-a 18s ease-in-out infinite;
-  --animate-drift-b: drift-b 23s ease-in-out infinite;
-  --animate-drift-c: drift-c 20s ease-in-out infinite;
-  /* Brillo que cruza el cintillo de anuncios (ver AnnouncementBar). */
-  --animate-sheen: sheen 5.5s ease-in-out infinite;
-  /* Anillo que late detrás del botón flotante de WhatsApp. */
-  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 
   /*
-   * Negro de las bandas de alto contraste (cintillo de beneficios, sección de
-   * la oferta, footer). No es `neutral-900`: contra el fondo blush del sitio,
-   * el gris frío de Tailwind se lee azulado — este es un negro neutro que deja
-   * respirar al rosa de la marca al lado.
+   * Tinta de la marca (nov/26): el ciruela profundo de los títulos de los
+   * flyers de Cire, no un negro neutro. Títulos, botones y footer. Sobre el
+   * fondo cálido da 13.8:1, así que sirve también como color de texto.
    */
-  --color-ink: #1e1e1e;
-  --color-ink-soft: #2a2426;
+  --color-ink: #4b1839;
+  --color-ink-soft: #5c2347;
 
   /*
    * Fuentes de marca como tokens únicos: `font-display`/`font-sans` quedan
    * disponibles como utilidades de Tailwind y como var() en @layer base, así
    * que cambiar de tipografía es editar estas dos líneas, no cada archivo.
    */
-  --font-display: 'Bodoni Moda', serif;
-  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Jost', 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Fondo blanco cálido del sitio: el blanco puro contra el rosa polvo se
+     lee clínico; este conserva la limpieza sin frialdad de hospital. */
+  --color-paper: #fcfbf9;
 
   /*
-   * El rosa polvo del hero (paredes y luz del video) es la única nota de
-   * color de la marca — todo lo demás vive en negro/blanco/gris. Estos tonos
-   * lo llevan a las páginas internas sin competir con el B&N del contenido;
-   * Tailwind ya trae `rose-*` pero es un magenta saturado que no matchea con
-   * el pastel apagado de la foto, así que va como escala propia.
+   * "La cabina Cire" (rediseño nov/26, ver DESIGN.md). Nombres semánticos de
+   * la paleta: la interfaz es sobria (hueso + ciruela) y el color lo ponen
+   * las fotos. Reglas: rosa satinado máximo en dos bandas por página y nunca
+   * dos secciones rosas seguidas; rosa promo SOLO en elementos de promoción.
    */
-  --color-blush-50: #fbf1f2;
-  --color-blush-100: #f3dee1;
-  --color-blush-200: #e9c3c9;
-  --color-blush-300: #d9a0a9;
-  --color-blush-400: #c27e8a;
-  --color-blush-500: #a65e6d;
-  --color-blush-600: #82454f;
-  --color-blush-900: #3d1d22;
+  --color-hueso: #fcfbf9;
+  --color-ciruela: #4b1839;
+  --color-magenta: #7b2c6e;
+  --color-rosa-satin: #fdeaf0;
+  --color-rosa-promo: #fdd1e2;
+  --color-lila: #ecd3e8;
+  --color-linea: rgb(75 24 57 / 0.12);
+
+  /*
+   * Radios por nivel: cada nivel de jerarquía tiene el suyo, para que una
+   * foto grande, una tarjeta, un botón y un cupón no se lean como la misma
+   * caja. `rounded-media` / `rounded-card` / `rounded-btn` / `rounded-full`.
+   */
+  --radius-media: 24px;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+
+  /*
+   * Paleta de la empresa, tomada de los flyers (nov/26), aplicada con medida:
+   *
+   * - `blush-*`: la familia rosa de los flyers, de pastel a vino. 100 es el
+   *   campo destacado (la tarjeta de precio, el cierre), 600 el texto de
+   *   acento (6.7:1) y 900 el vino del hover y del cintillo.
+   * - `morado-*`: el orquídea y ciruela de los flyers (Combo Bikini). Con el
+   *   rosa, son los colores favoritos de la dueña (2026-11-25). 50 y 100 son
+   *   bandas y tiles, 300 el orquídea del flyer (solo decoración) y 700 el
+   *   morado de íconos, etiquetas y el cintillo (8.4:1 sobre el fondo).
+   * - El turquesa y el fucsia saturados de los flyers no entran al sitio:
+   *   quedan para los anuncios.
+   */
+  --color-blush-50: #fdeaf0;
+  --color-blush-100: #fdd1e2;
+  --color-blush-200: #fcc8d8;
+  --color-blush-300: #feaac1;
+  --color-blush-400: #f77fa3;
+  --color-blush-500: #d6457a;
+  --color-blush-600: #a32a57;
+  --color-blush-900: #6b2450;
+
+  --color-morado-50: #f6eaf5;
+  --color-morado-100: #ecd3e8;
+  --color-morado-300: #efa2da;
+  --color-morado-700: #7b2c6e;
 }
 
-@keyframes slide-in-left {
+/* Barra de avance del carrusel de "Otros tratamientos". */
+@keyframes progreso-carrusel {
   from {
-    opacity: 0;
-    transform: translateX(-3rem);
+    transform: scaleX(0);
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(3rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+    transform: scaleX(1);
   }
 }
 
@@ -81,119 +97,14 @@
 }
 
 /*
- * Los tres resplandores del fondo de las páginas internas se mueven cada uno
- * a su propio ritmo (distinta duración y trayecto) para que la deriva no se
- * vea sincronizada — eso es lo que la hace sentir orgánica y no un loop.
- */
-@keyframes drift-a {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-9%, 11%) scale(1.2);
-  }
-}
-
-@keyframes drift-b {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(10%, -13%) scale(0.85);
-  }
-}
-
-@keyframes drift-c {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-8%, -10%) scale(1.18);
-  }
-}
-
-/*
- * Brillo diagonal que barre el cintillo de anuncios de punta a punta. El tramo
- * visible es corto y la pausa larga (el keyframe llega al final del recorrido
- * en el 60% y se queda quieto el resto) para que se lea como un destello cada
- * tanto y no como una animación permanente encima del texto.
- */
-@keyframes sheen {
-  0% {
-    transform: translateX(-140%) skewX(-18deg);
-  }
-  60%,
-  100% {
-    transform: translateX(340%) skewX(-18deg);
-  }
-}
-
-/*
- * Anillo del botón flotante de WhatsApp: crece desde el borde del botón y se
- * apaga. `animate-ping` de Tailwind escala a 2x de golpe y con un botón grande
- * como el flotante eso invade media pantalla — este llega a 1.35 y se apaga
- * antes, que es el "pulso sutil" que corresponde a un CTA siempre presente.
- */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  70% {
-    transform: scale(1.35);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.35);
-    opacity: 0;
-  }
-}
-
-/*
- * Motas de luz que suben despacio detrás del contenido — el eco más liviano
- * del video del hero en páginas que no tienen imagen propia. Cada partícula
- * arranca con un `animation-delay` negativo (ver Layout.tsx) para no verse
- * arrancar todas juntas en el primer frame.
- */
-@keyframes float-particle {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-110vh) scale(1.1);
-    opacity: 0;
-  }
-}
-
-/*
  * Custom rules below live inside Tailwind's own cascade layers
  * (base/components). Unlayered CSS always wins over layered CSS
  * regardless of specificity or source order, so anything left
  * unlayered here would silently override Tailwind utility classes
- * (e.g. `.liquid-glass { position: relative }` beating `fixed`).
+ * (a layered rule never beats a utility by accident).
  */
 
 @layer base {
-  @font-face {
-    font-family: 'Helvetica Neue Roman';
-    src:
-      url('/fonts/HelveticaNeueRoman.woff2') format('woff2'),
-      url('/fonts/HelveticaNeueRoman.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-
   /*
    * Se aplica en `html` (no en `*`) para que la fuente se herede.
    * Con `*` la regla alcanzaba a cada elemento por selector propio y
@@ -222,7 +133,35 @@
     padding: 0;
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: var(--color-paper);
+  }
+
+  /*
+   * Superficies del navegador con la paleta de marca: selección, foco y
+   * cifras. Son detalles que nadie diseña a propósito, y por eso son los que
+   * más delatan un sitio armado con piezas sueltas.
+   */
+  ::selection {
+    background: var(--color-blush-200);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blush-500);
+    outline-offset: 3px;
+  }
+
+  body {
+    font-feature-settings: 'ss01' on;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Sin palabras huérfanas al final de un párrafo. */
+  p,
+  li,
+  dd,
+  blockquote {
+    text-wrap: pretty;
   }
 
   body.menu-open {
@@ -251,23 +190,133 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-weight: 500;
+    letter-spacing: -0.015em;
   }
 }
 
 @layer components {
-  .font-helvetica-neue {
-    font-family: 'Helvetica Neue Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-
-  /* h1 de marca: Bodoni Moda en mayúsculas, con más peso que el 400 anterior
-     para que la dramaticidad del tamaño no se quede corta en presencia. */
+  /* h1 de marca: Hanken Grotesk 600 con tracking cerrado (rediseño nov/26). */
   .heading-1 {
     font-family: var(--font-display);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  /*
+   * Cupón de promoción (nov/26): píldora rosa promo con borde punteado, como
+   * un cupón recortable. Es el ÚNICO lugar donde aparece una promo: nunca
+   * como sticker dentro de una foto. Lo pinta <CuponPromo>.
+   */
+  .cupon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1.5px dashed var(--color-magenta);
+    border-radius: 9999px;
+    background: var(--color-rosa-promo);
+    color: var(--color-ciruela);
+    padding: 0.375rem 0.875rem;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /*
+   * Hero controlado por el scroll (ver HeroScroll.tsx). `--t` va de 0 (video
+   * a pantalla completa) a 1 (video en el panel); lo escribe el JS en la
+   * sección. Los textos entran en la segunda mitad del encogido (cuando el
+   * panel ya casi no los tapa) y el encuadre
+   * en escritorio se corre del centro a la derecha.
+   */
+  .hero-scroll {
+    height: 400svh;
+  }
+  .hero-capa {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+  .hero-texto {
+    --o: clamp(0, (var(--t, 0) - 0.5) / 0.5, 1);
+    opacity: var(--o);
+    transform: translateY(calc((1 - var(--o)) * 1.5rem));
+  }
+  /* En celular el video a pantalla completa va corrido a la derecha para no
+     cortar la cara de la especialista; en el panel ya cabe completo. */
+  .hero-media {
+    object-position: calc(62% - var(--t, 0) * 12%) 50%;
+  }
+  @media (min-width: 1024px) {
+    .hero-media {
+      object-position: calc(50% + var(--t, 0) * 50%) 50%;
+    }
+  }
+  .hero-solo-estatico {
+    display: none;
+  }
+
+  /*
+   * Logo que viaja del centro del recuadro a la nav (ver HeroScroll). Antes
+   * del JS queda centrado en el recuadro; luego el JS lo mueve con transform.
+   * Mientras viaja, el logo real de la nav se oculta.
+   */
+  .hero-logo {
+    position: fixed;
+    z-index: 60;
+    left: calc(50% - 6.5rem);
+    top: calc((100svh + 4rem + var(--anuncio-h, 0px)) / 2 - 6.5rem);
+    width: 13rem;
+    height: 13rem;
+    color: #fff;
+    filter: drop-shadow(0 2px 14px rgb(75 24 57 / 0.35));
+    pointer-events: none;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  @media (min-width: 1024px) {
+    .hero-logo {
+      left: calc(50% - 8.5rem);
+      top: calc((100svh + 4rem + var(--anuncio-h, 0px)) / 2 - 8.5rem);
+      width: 17rem;
+      height: 17rem;
+    }
+  }
+  .logo-en-hero [data-logo-nav] {
+    opacity: 0;
+  }
+
+  /*
+   * Sin movimiento (reduced-motion o ahorro de datos; lo marca el script
+   * inline de index.html): textos visibles, imagen final fija, sin videos
+   * ni sección alta.
+   */
+  .hero-estatico .hero-scroll {
+    --t: 1;
+    height: auto;
+  }
+  .hero-estatico .hero-capa {
+    position: relative;
+    height: auto;
+  }
+  .hero-estatico .hero-texto {
+    opacity: 1;
+    transform: none;
+  }
+  .hero-estatico .hero-panel,
+  .hero-estatico .hero-logo,
+  .hero-estatico .hero-pista {
+    display: none;
+  }
+  .hero-estatico .hero-solo-estatico {
+    display: block;
+  }
+  @media (max-width: 1023.98px) {
+    .hero-estatico .hero-hueco {
+      flex: none;
+      aspect-ratio: 4 / 5;
+    }
   }
 
   /*
@@ -335,16 +384,10 @@
     display: none;
   }
 
-  /* El nav fijo mide ~5rem: sin este offset, un anchor deja el título de la
+  /* El nav fijo mide 4rem (más el cintillo): sin este offset, un anchor deja el título de la
      sección tapado justo debajo del nav. */
   .scroll-anchor {
     scroll-margin-top: 6rem;
-  }
-
-  .bg-particle {
-    animation-name: float-particle;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
   }
 
   /*
@@ -373,139 +416,99 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bg-particle {
-      animation: none;
-      opacity: 0;
-    }
-    .animate-drift-a,
-    .animate-drift-b,
-    .animate-drift-c,
-    .animate-sheen,
-    .animate-pulse-ring {
-      animation: none;
-    }
     .faq-item::details-content {
       transition: none;
     }
   }
+}
 
-  /*
-   * El hero es un video claro (rosa), donde el blanco sobre blanco de
-   * .liquid-glass deja el nav prácticamente invisible. Esta variante trae su
-   * propio velo oscuro, así el texto blanco contrasta igual sobre un fondo
-   * claro que sobre uno oscuro — y aguanta que el video cambie de brillo.
-   */
-  .glass-dark {
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(14px) saturate(1.3);
-    -webkit-backdrop-filter: blur(14px) saturate(1.3);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.16);
+/*
+ * Tratamiento de color común para las fotos provisionales de "Otros
+ * tratamientos" (vienen de videos con luces distintas): menos saturación y
+ * un punto cálido, para que se lean como serie hasta que lleguen las finales.
+ */
+@layer components {
+  .tono-cabina {
+    filter: saturate(0.78) contrast(0.97) brightness(1.03) sepia(0.08);
   }
+}
 
-  /* Misma idea que .glass-dark pero clara: pill translúcido en tono blanco/
-     rosa para el nav, que combine con la paleta blush en vez de un pill
-     negro sólido. */
-  .glass-light {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(14px) saturate(1.3);
-    -webkit-backdrop-filter: blur(14px) saturate(1.3);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 4px 28px rgba(166, 94, 109, 0.14);
+/*
+ * Hover de las tarjetas de zona y de combo (nov/26). Ver seguirCursor en
+ * ZonasGrid.tsx, que pone --px y --py (de -0.5 a 0.5) en .zc-escena.
+ * Solo con mouse (hover real); en celular no pasa nada.
+ * - La tarjeta se inclina hasta 4° hacia el cursor y sube su sombra.
+ * - El nombre y la ilustración se desplazan en sentidos opuestos (profundidad).
+ * - La ilustración se acerca 12% hacia la zona; brillo suave sigue al cursor.
+ * - Contorno magenta alrededor de la tarjeta.
+ */
+.zc-escena {
+  perspective: 900px;
+  --px: 0;
+  --py: 0;
+}
+.zc-card,
+.zc-img,
+.zc-collage,
+.zc-nombre,
+.zc-brillo {
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.5s ease;
+}
+.zc-card {
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  transition-property: transform, box-shadow, opacity, outline-color;
+}
+.zc-img {
+  transform-origin: 50% 62%;
+}
+/* El collage de combos arranca en el 36cqw de alto (debajo del nombre): crece
+   desde ahí y poco, para no meterse bajo el nombre ni cortar las etiquetas. */
+.zc-collage {
+  transform-origin: 50% 29%;
+}
+.zc-brillo {
+  opacity: 0;
+  background: radial-gradient(
+    circle at calc(50% + var(--px) * 100%) calc(50% + var(--py) * 100%),
+    rgb(255 255 255 / 0.3),
+    transparent 55%
+  );
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zc-escena:hover .zc-card {
+    transition-duration: 0.18s, 0.6s, 0.5s, 0.4s;
+    transform: rotateX(calc(var(--py) * -8deg)) rotateY(calc(var(--px) * 8deg)) scale(1.02);
+    outline-color: var(--color-magenta);
+    box-shadow: 0 28px 44px -24px rgb(75 24 57 / 0.5);
   }
-
-  .liquid-glass {
-    background: rgba(255, 255, 255, 0.01);
-    background-blend-mode: luminosity;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: none;
-    /*
-     * El glow exterior (las dos últimas capas, sin `inset`) es lo que hace
-     * que el marco "salte" incluso con un video muy claro detrás: al caer
-     * fuera de la caja, ningún hijo opaco (el propio video) lo puede tapar,
-     * a diferencia del inset de arriba que si el video es opaco casi no se
-     * nota. Es la capa que de verdad se ve — el anillo interior (::before)
-     * dibuja el filo, esta le da el aura de vidrio alrededor.
-     */
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.4),
-      inset 0 1px 1px rgba(255, 255, 255, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.9),
-      0 0 22px rgba(255, 255, 255, 0.45);
-    position: relative;
-    overflow: hidden;
+  .zc-escena:hover .zc-img {
+    transition-duration: 0.18s;
+    transform: scale(1.12) translate(calc(var(--px) * -8px), calc(var(--py) * -8px));
   }
-
-  /*
-   * El marco en sí: un anillo de ~5px tallado con la técnica padding + mask
-   * exclude (el único jeito de lograr un borde con degradado en vez de color
-   * plano). El piso de opacidad quedó en 0.78 (antes bajaba mucho más cerca
-   * de transparente) para que el vidrio se vea sólido y blanco en las 4
-   * esquinas, no solo arriba/abajo, y el diagonal 135deg en vez de vertical
-   * le da el brillo típico de vidrio en vez de leerse como una barra plana
-   * arriba y abajo.
-   *
-   * `z-index: 5` es a propósito: un video (LoopVideo) casi siempre es un
-   * hijo *posicionado* (absolute, para llenar la tarjeta) igual que este
-   * pseudo-elemento, y sin z-index ambos quedan en el mismo nivel de stacking
-   * — ahí gana el orden del DOM, y como el video suele venir después en el
-   * JSX, tapa el marco por completo. z-index:5 saca a este anillo de ese
-   * empate y lo deja siempre arriba del video, sin pisar contenido real
-   * (texto, CTAs) que use z-10 o más.
-   */
-  .liquid-glass::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    border-radius: inherit;
-    padding: 5px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(255, 255, 255, 0.85) 25%,
-      rgba(255, 255, 255, 0.78) 50%,
-      rgba(255, 255, 255, 0.85) 75%,
-      rgba(255, 255, 255, 0.98) 100%
-    );
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+  .zc-escena:hover .zc-collage {
+    transition-duration: 0.18s;
+    transform: scale(1.04) translate(calc(var(--px) * -6px), calc(var(--py) * -6px));
   }
+  .zc-escena:hover .zc-nombre {
+    transition-duration: 0.18s;
+    transform: translate(calc(var(--px) * 8px), calc(var(--py) * 8px));
+  }
+  .zc-escena:hover .zc-brillo {
+    opacity: 1;
+  }
+}
 
-  /*
-   * Cortina de la transición entre rutas (ver Layout.tsx). Pastel, no el
-   * blush-500 saturado de antes, con textura de cristal en tres capas:
-   * las líneas diagonales finas son el "grabado" del vidrio esmerilado, el
-   * gradiente diagonal es el brillo que cruza la superficie, y los inset
-   * arriba/abajo son el filo que atrapa luz en los dos bordes que sí se ven
-   * (los laterales no existen: la cortina cubre el ancho completo).
-   */
-  .route-curtain {
-    background-color: rgba(243, 222, 225, 0.72);
-    background-image:
-      repeating-linear-gradient(
-        115deg,
-        rgba(255, 255, 255, 0.18) 0px,
-        rgba(255, 255, 255, 0.18) 1px,
-        transparent 1px,
-        transparent 7px
-      ),
-      linear-gradient(
-        155deg,
-        rgba(255, 255, 255, 0.55) 0%,
-        rgba(255, 255, 255, 0) 30%,
-        rgba(255, 255, 255, 0) 65%,
-        rgba(255, 255, 255, 0.4) 100%
-      );
-    backdrop-filter: blur(28px) saturate(1.5);
-    -webkit-backdrop-filter: blur(28px) saturate(1.5);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.6),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.3);
+/* Sin inclinaciones ni zooms para quien pidió menos movimiento: solo la sombra. */
+@media (prefers-reduced-motion: reduce) {
+  .zc-escena:hover .zc-card,
+  .zc-escena:hover .zc-img,
+  .zc-escena:hover .zc-collage,
+  .zc-escena:hover .zc-nombre {
+    transform: none !important;
   }
 }

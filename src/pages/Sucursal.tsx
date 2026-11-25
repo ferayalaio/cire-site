@@ -1,8 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { PageShell, Placeholder, SectionHeading } from '../components/PageShell'
-import { Reveal } from '../components/Reveal'
 import { TestimoniosSection } from '../components/Testimonios'
-import { WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
+import { AgendarCTA, WhatsAppSection, useRememberSucursal } from '../components/WhatsAppCTA'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useSucursalJsonLd } from '../hooks/useJsonLd'
 import { HORARIO, getSucursal, mapsEmbedUrl } from '../data/sucursales'
@@ -17,6 +16,12 @@ const SERVICIOS = [
   { to: '/hifu', label: 'HIFU: lifting sin cirugía' },
   { to: '/otros-servicios', label: 'Moldeo corporal y post operatorio' },
 ]
+
+/*
+ * Sucursales cuya `foto` no es una foto del lugar (se muestra el logo o nada
+ * en su lugar). Vacío desde nov/26: Polanco ya tiene fachada real.
+ */
+const FOTO_NO_ES_SUCURSAL = new Set<string>()
 
 /* "A, B y C", para que la lista de colonias se lea como texto y no como tags. */
 function listaNatural(items: string[]): string {
@@ -54,90 +59,129 @@ export function Sucursal() {
   if (!sucursal) return <NotFound />
 
   const embedUrl = mapsEmbedUrl(sucursal)
+  const foto = sucursal.foto && !FOTO_NO_ES_SUCURSAL.has(sucursal.slug) ? sucursal.foto : undefined
+
+  const ctaContext = {
+    sku: `sucursal-${sucursal.slug}`,
+    nombre: 'una cita',
+    categoria: 'sucursal',
+    sucursal: sucursal.slug,
+    intencion: 'agendar' as const,
+  }
 
   return (
     <PageShell
-      eyebrow="Depilación láser en"
-      title={sucursal.nombre}
+      title={`Depilación láser en ${sucursal.nombre}`}
+      intro={`Cire ${sucursal.nombre}, en ${sucursal.alcaldia}. Atención con cita por WhatsApp.`}
       breadcrumbs={[
         { label: 'Inicio', to: '/' },
-        { label: 'Ubicaciones', to: '/ubicaciones' },
+        { label: 'Ubicaciones', to: '/#ubicaciones' },
       ]}
     >
-      <Reveal className="grid gap-8 md:grid-cols-2">
-        <div className="space-y-8">
-          <section className="space-y-4">
-            <SectionHeading>Dirección</SectionHeading>
-            {sucursal.direccion ? (
-              <address className="not-italic text-neutral-600">
-                <p className="leading-relaxed">{sucursal.direccion}</p>
-                {sucursal.referencias && (
-                  <p className="mt-2 text-sm text-neutral-400">{sucursal.referencias}</p>
-                )}
-                {sucursal.telefono && (
-                  <p className="mt-2 text-sm text-neutral-500">
-                    Tel:{' '}
-                    <a href={`tel:${sucursal.telefono.replace(/\s+/g, '')}`} className="text-neutral-900 hover:text-neutral-500">
-                      {sucursal.telefono}
-                    </a>
-                  </p>
-                )}
-                {sucursal.mapsUrl && (
-                  <a
-                    href={sucursal.mapsUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-6 py-3 text-sm font-medium text-neutral-900 transition-all duration-200 hover:scale-[1.03] hover:border-black/40 active:scale-[0.98]"
-                  >
-                    Abrir en Google Maps
-                  </a>
-                )}
-              </address>
-            ) : (
-              <Placeholder label="Pendiente: cargar la dirección exacta del listado oficial en src/data/sucursales.ts" />
-            )}
-          </section>
+      {/* ------------------------------------- Dirección, horario y mapa --- */}
+      <section className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-stretch lg:gap-8">
+        <div className="rounded-2xl bg-white p-6 ring-1 ring-black/[0.06] sm:p-8">
+          <h2 className="text-2xl text-ink">Dirección y horario</h2>
 
-          <section className="space-y-4">
-            <SectionHeading>Horario</SectionHeading>
-            <dl className="rounded-2xl border border-black/[0.07] bg-white p-6">
-              {HORARIO.map((horario, index) => (
-                <div
-                  key={horario.dias}
-                  className={`flex items-baseline justify-between gap-4 ${
-                    index > 0 ? 'mt-4 border-t border-black/[0.07] pt-4' : ''
-                  }`}
-                >
-                  <dt className="text-sm text-neutral-500">{horario.dias}</dt>
-                  <dd className="text-neutral-900">{horario.horas}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
+          <dl className="mt-4 divide-y divide-black/[0.08]">
+            <div className="grid gap-1 py-4">
+              <dt className="text-[15px] font-semibold text-morado-700">Dirección</dt>
+              <dd>
+                {sucursal.direccion ? (
+                  <address className="text-[17px] not-italic leading-relaxed text-neutral-700">{sucursal.direccion}</address>
+                ) : (
+                  <Placeholder label="Pendiente: cargar la dirección exacta del listado oficial en src/data/sucursales.ts" />
+                )}
+                {sucursal.referencias && (
+                  <p className="mt-1 text-[15px] text-neutral-600">{sucursal.referencias}</p>
+                )}
+              </dd>
+            </div>
+
+            <div className="grid gap-1 py-4">
+              <dt className="text-[15px] font-semibold text-morado-700">Horario</dt>
+              <dd>
+                <dl className="space-y-1">
+                  {HORARIO.map((horario) => (
+                    <div key={horario.dias} className="flex items-baseline justify-between gap-4">
+                      <dt className="text-[17px] text-ink">{horario.dias}</dt>
+                      <dd className="text-[17px] text-ink tabular-nums">{horario.horas}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </dd>
+            </div>
+
+            {sucursal.telefono && (
+              <div className="grid gap-1 py-4">
+                <dt className="text-[15px] font-semibold text-morado-700">Teléfono</dt>
+                <dd>
+                  <a
+                    href={`tel:${sucursal.telefono.replace(/\s+/g, '')}`}
+                    className="text-[17px] text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
+                  >
+                    {sucursal.telefono}
+                  </a>
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          <div className="mt-4 flex flex-col gap-2 border-t border-black/[0.08] pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
+            <AgendarCTA context={{ ...ctaContext, placement: 'card' }} className="w-full sm:w-auto">
+              Agendar en {sucursal.nombre}
+            </AgendarCTA>
+            {sucursal.mapsUrl && (
+              <a
+                href={sucursal.mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center text-[15px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
+              >
+                Abrir en Google Maps
+              </a>
+            )}
+          </div>
         </div>
 
-        <section className="space-y-4">
-          <SectionHeading>Cómo llegar</SectionHeading>
-          {/*
-            El iframe solo se monta si hay dirección o mapsQuery cargados: sin
-            eso Google Maps embebe un mapa del mundo que no dice nada.
-          */}
-          {embedUrl ? (
-            <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-black/[0.07]">
-              <iframe
-                src={embedUrl}
-                title={`Mapa de ${sucursal.nombre}`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-                className="h-full w-full border-0"
-              />
+        {/*
+          El iframe solo se monta si hay dirección o mapsQuery cargados: sin
+          eso Google Maps embebe un mapa del mundo que no dice nada.
+        */}
+        {embedUrl ? (
+          <div className="relative min-h-[18rem] overflow-hidden rounded-2xl bg-blush-50 ring-1 ring-black/[0.06] lg:min-h-0">
+            {/* Respaldo debajo del iframe: si el mapa tarda o lo bloquea el
+                navegador se ve la dirección y un enlace, no un panel vacío. */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              {sucursal.direccion && (
+                <p className="max-w-xs text-[15px] text-neutral-700">{sucursal.direccion}</p>
+              )}
+              {sucursal.mapsUrl ? (
+                <a
+                  href={sucursal.mapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center text-[15px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 hover:decoration-ink"
+                >
+                  Abrir en Google Maps
+                </a>
+              ) : (
+                <p className="text-[15px] text-neutral-600">Te compartimos la ubicación exacta por WhatsApp.</p>
+              )}
             </div>
-          ) : (
-            <Placeholder label="Pendiente: carga la dirección en src/data/sucursales.ts para embeber el mapa" />
-          )}
-        </section>
-      </Reveal>
+            <iframe
+              src={embedUrl}
+              title={`Mapa de ${sucursal.nombre}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full border-0"
+            />
+          </div>
+        ) : (
+          <Placeholder label="Pendiente: carga la dirección en src/data/sucursales.ts para embeber el mapa" />
+        )}
+      </section>
 
       {/*
         Contenido propio de cada sucursal. Sin esto la página eran ~100
@@ -146,56 +190,72 @@ export function Sucursal() {
         la zona y las colonias vecinas de sucursales.ts, los servicios de las
         rutas reales del sitio. Nada inventado sobre la sucursal en sí.
       */}
-      <Reveal as="section" className="mt-16 grid gap-10 md:grid-cols-2">
-        <div className="space-y-4">
-          <SectionHeading>{`Depilación láser en ${sucursal.nombre}`}</SectionHeading>
-          <p className="leading-relaxed text-neutral-600">
+      <section
+        className={`mt-20 grid gap-10 sm:mt-28 ${foto ? 'lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16' : ''}`}
+      >
+        <div>
+          <SectionHeading>{`Cómo trabajamos en ${sucursal.nombre}`}</SectionHeading>
+          <p className="mt-5 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
             Cire {sucursal.nombre} está en {sucursal.alcaldia}. Aquí trabajamos con láser de diodo con punta de
             zafiro, que enfría la piel en el momento del disparo, y con el {MARCA.protocolo}: un plan de 8
             sesiones ajustado a tu tipo de piel y vello. La primera cita es una evaluación con una especialista
             certificada, donde se confirma si eres candidata y se arma tu paquete.
           </p>
-          <p className="leading-relaxed text-neutral-600">
+          <p className="mt-4 max-w-[60ch] text-[17px] leading-relaxed text-neutral-700">
             Atendemos a quienes viven o trabajan en {listaNatural(sucursal.cercanas)}. Todas las citas son con
             agenda previa por WhatsApp.
           </p>
         </div>
 
-        <div className="space-y-4">
-          <SectionHeading>Servicios en esta sucursal</SectionHeading>
-          <ul className="divide-y divide-black/[0.07] rounded-2xl border border-black/[0.07] bg-white">
-            {SERVICIOS.map((servicio) => (
-              <li key={servicio.to}>
-                <Link
-                  to={servicio.to}
-                  className="flex items-center justify-between gap-4 px-6 py-4 text-neutral-900 transition-colors hover:bg-blush-50"
-                >
-                  <span>{servicio.label}</span>
-                  <span aria-hidden="true" className="text-neutral-400">→</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Reveal>
+        {foto && (
+          <img
+            src={foto}
+            alt={`Sucursal Cire ${sucursal.nombre}`}
+            loading="lazy"
+            className="aspect-[892/629] w-full rounded-2xl object-cover"
+          />
+        )}
+      </section>
 
+      {/* ----------------------------------------------------- Servicios --- */}
+      <section className="mt-20 grid gap-8 sm:mt-28 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+        <SectionHeading>Servicios en esta sucursal</SectionHeading>
+        <ul className="divide-y divide-black/[0.08] border-y border-black/[0.08]">
+          {SERVICIOS.map((servicio) => (
+            <li key={servicio.to}>
+              <Link
+                to={servicio.to}
+                className="flex min-h-11 items-center py-4 text-[17px] text-ink underline decoration-ink/20 underline-offset-4 transition-colors hover:decoration-ink"
+              >
+                {servicio.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/*
+        Sin título "de esta sucursal": el reparto de reseñas por sucursal se
+        hizo a criterio (ver testimonios.ts), así que no se presentan como
+        reseñas de este lugar.
+      */}
       {sucursal.testimonios && sucursal.testimonios.length > 0 && (
-        <Reveal as="section" className="mt-16">
-          <TestimoniosSection testimonios={sucursal.testimonios} titulo="Lo que dicen de esta sucursal" />
-        </Reveal>
+        <section className="mt-20 sm:mt-28">
+          <TestimoniosSection testimonios={sucursal.testimonios} />
+        </section>
       )}
 
       <WhatsAppSection
-        context={{
-          sku: `sucursal-${sucursal.slug}`,
-          nombre: 'una cita',
-          categoria: 'sucursal',
-          sucursal: sucursal.slug,
-          intencion: 'agendar',
-        }}
-        titulo={`Escríbenos a ${sucursal.nombre}`}
-        texto="Te confirmamos disponibilidad y te agendamos."
-      />
+        id="agendar"
+        accion="agendar"
+        context={ctaContext}
+        titulo={`Agenda tu cita en ${sucursal.nombre}`}
+        texto="Reserva en línea en nuestra agenda."
+      >
+        Agendar en {sucursal.nombre}
+      </WhatsAppSection>
+
+      <div className="h-20 sm:h-28" aria-hidden="true" />
     </PageShell>
   )
 }

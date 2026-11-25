@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { NAV_ITEMS, RUTAS_CON_AGENDAR } from '../lib/nav'
+import { NAV_ITEMS } from '../lib/nav'
+import { trackAgendarClick } from '../lib/analytics'
+import { AGENDAR_URL } from '../lib/site'
 import type { NavItem } from '../lib/nav'
 import { LOGO_IMAGE } from '../lib/constants'
 
@@ -14,97 +16,89 @@ interface NavProps {
  * (/laser/bikini marca "Láser"). El home se compara exacto: con el prefijo
  * quedaría activo en todas las rutas.
  */
-function isActive(pathname: string, to: string) {
+function matches(pathname: string, to: string) {
   if (to === '/') return pathname === '/'
   return pathname === to || pathname.startsWith(`${to}/`)
 }
 
-interface AgendarLinkProps {
-  pathname: string
-  className: string
-  children: ReactNode
+/*
+ * Una ruta puede caer bajo dos items (/laser/bikini es tab propio y también
+ * cuelga de /laser; /cera vive en el dropdown de Otros servicios). Gana la
+ * coincidencia más específica, contando las rutas de los hijos.
+ */
+function activeItemTo(pathname: string): string | undefined {
+  let best: { to: string; len: number } | undefined
+  for (const item of NAV_ITEMS) {
+    for (const to of [item.to, ...(item.children ?? []).map((c) => c.to)]) {
+      if (matches(pathname, to) && (!best || to.length > best.len)) best = { to: item.to, len: to.length }
+    }
+  }
+  return best?.to
 }
 
 /*
- * La página actual ya tiene su propio cierre de embudo (`id="agendar"`) en
- * las rutas listadas en RUTAS_CON_AGENDAR: ahí el botón hace scroll suave
- * dentro de la misma página en vez de mandar a otra ruta sin contexto. En el
- * resto (Ubicaciones, detalle de sucursal) no hay ese bloque, así que
- * conserva el link a /ubicaciones.
+ * "Agendar cita" lleva a la agenda en línea (nov/26), igual en todas las rutas.
+ * Antes hacía scroll al bloque #agendar de cada página o mandaba a
+ * /ubicaciones; ahora el sitio tiene un sistema de citas propio.
  */
-function AgendarLink({ pathname, className, children }: AgendarLinkProps) {
-  if (RUTAS_CON_AGENDAR.has(pathname)) {
-    return (
-      <a href="#agendar" className={className}>
-        {children}
-      </a>
-    )
-  }
-
+function AgendarLink({ className, children }: { className: string; children: ReactNode }) {
   return (
-    <Link to="/ubicaciones" className={className}>
+    <a
+      href={AGENDAR_URL}
+      target="_blank"
+      rel="noopener"
+      onClick={() =>
+        trackAgendarClick({ sku: 'nav-agendar', nombre: 'una cita', categoria: 'general', placement: 'hero' })
+      }
+      className={className}
+    >
       {children}
-    </Link>
-  )
-}
-
-function ArrowUpRightIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
-      <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    </a>
   )
 }
 
 export function Nav({ onOpenMenu }: NavProps) {
   const { pathname } = useLocation()
+  const activeTo = activeItemTo(pathname)
 
   return (
     /*
-     * `top` sale de `--anuncio-h` (la publica Layout): con el cintillo de
-     * anuncios abierto el nav baja esos 2.5rem, y con el cintillo cerrado la
-     * variable vale 0px y todo queda como antes. El fallback en 0px cubre
-     * cualquier montaje del nav fuera de Layout.
+     * Barra sólida (rediseño nov/26). Antes eran pastillas de vidrio flotando
+     * sobre el video del hero; sobre fondos claros se perdían y el contenido
+     * pasaba por debajo del logo. Una barra con fondo propio siempre se lee.
+     *
+     * `top` sale de `--anuncio-h` (la publica Layout): con el cintillo abierto
+     * el nav baja esos 2.5rem, y cerrado vuelve a 0.
      */
-    <nav className="fixed inset-x-0 top-[var(--anuncio-h,0px)] z-50 flex items-center justify-between px-6 py-5 transition-[top] duration-300 sm:px-10">
-      <Link to="/" className="flex items-center gap-3">
-        <img src={LOGO_IMAGE} alt="Cire Depilación" width={48} height={48} className="h-11 w-11 rounded-full sm:h-12 sm:w-12" />
-        <span aria-hidden="true" className="hidden h-7 w-px bg-black/15 sm:block" />
-        <span className="hidden text-[10px] font-medium uppercase leading-tight tracking-[0.12em] text-neutral-500 sm:block">
-          Depilación
-          <br />
-          láser diodo
-        </span>
-      </Link>
+    <nav className="fixed inset-x-0 top-[var(--anuncio-h,0px)] z-50 border-b border-black/[0.06] bg-paper/95 backdrop-blur-md transition-[top] duration-300">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6 sm:px-10">
+        <Link to="/" className="flex shrink-0 items-center gap-3">
+          <img src={LOGO_IMAGE} alt="" width={40} height={40} data-logo-nav className="h-10 w-10 rounded-full" />
+          <span className="text-[15px] font-semibold tracking-[-0.01em] text-ink">Cire Depilación</span>
+        </Link>
 
-      {/* La pastilla central es `fixed` por su cuenta (no hija del flujo del
-          nav), así que le toca sumar el cintillo a mano: 1.25rem es el `py-5`
-          del nav. */}
-      <div className="glass-light fixed left-1/2 top-[calc(var(--anuncio-h,0px)+1.25rem)] hidden -translate-x-1/2 items-center gap-0.5 rounded-full px-2 py-2 transition-[top] duration-300 md:flex">
-        {NAV_ITEMS.map((item) => (
-          <NavEntry key={item.to} item={item} active={isActive(pathname, item.to)} />
-        ))}
+        <div className="hidden items-center gap-1 lg:flex">
+          {NAV_ITEMS.map((item) => (
+            <NavEntry key={item.to} item={item} active={item.to === activeTo} />
+          ))}
+        </div>
+
+        <AgendarLink
+          className="hidden shrink-0 items-center rounded-lg bg-ink px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blush-900 lg:inline-flex"
+        >
+          Agendar cita
+        </AgendarLink>
+
+        <button
+          type="button"
+          onClick={onOpenMenu}
+          aria-label="Abrir menú"
+          className="-mr-2 flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-lg transition-colors hover:bg-black/[0.04] lg:hidden"
+        >
+          <span className="h-[1.5px] w-5 bg-ink" />
+          <span className="h-[1.5px] w-5 bg-ink" />
+        </button>
       </div>
-
-      <AgendarLink
-        pathname={pathname}
-        className="glass-light hidden shrink-0 items-center gap-2.5 rounded-full py-2 pl-5 pr-2 text-sm font-medium text-blush-900 transition-colors md:inline-flex"
-      >
-        Agendar cita
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-blush-200 bg-white text-blush-900">
-          <ArrowUpRightIcon />
-        </span>
-      </AgendarLink>
-
-      <button
-        type="button"
-        onClick={onOpenMenu}
-        aria-label="Abrir menú"
-        className="glass-light flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full md:hidden"
-      >
-        <span className="h-[1.5px] w-5 bg-neutral-900" />
-        <span className="h-[1.5px] w-3.5 bg-neutral-900" />
-      </button>
     </nav>
   )
 }
@@ -121,8 +115,8 @@ interface NavEntryProps {
  */
 function entryClass(active: boolean) {
   const base =
-    'relative rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors'
-  return `${base} ${active ? 'bg-black/[0.06] text-neutral-900' : 'text-neutral-500 hover:text-neutral-900'}`
+    'relative rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors'
+  return `${base} ${active ? 'text-ink' : 'text-neutral-600 hover:text-ink'}`
 }
 
 function NavEntry({ item, active }: NavEntryProps) {
@@ -181,21 +175,21 @@ function NavEntry({ item, active }: NavEntryProps) {
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
-        <div className="glass-light min-w-[220px] rounded-2xl p-1.5">
+        <div className="min-w-[240px] rounded-xl border border-black/[0.07] bg-white p-1.5 shadow-[0_18px_40px_-20px_rgba(43,27,30,0.35)]">
           {item.children.map((child) => (
             <NavLink
               key={child.to}
               to={child.to}
               onClick={() => setOpen(false)}
               className={({ isActive: on }) =>
-                `block rounded-xl px-3.5 py-2.5 transition-colors ${
-                  on ? 'bg-black/[0.06] text-neutral-900' : 'text-neutral-600 hover:bg-black/[0.04] hover:text-neutral-900'
+                `block rounded-lg px-3.5 py-2.5 transition-colors ${
+                  on ? 'bg-blush-50 text-ink' : 'text-neutral-700 hover:bg-blush-50 hover:text-ink'
                 }`
               }
             >
               <span className="block text-sm font-medium">{child.label}</span>
               {child.description && (
-                <span className="mt-0.5 block text-xs text-neutral-400">{child.description}</span>
+                <span className="mt-0.5 block text-[13px] text-neutral-500">{child.description}</span>
               )}
             </NavLink>
           ))}

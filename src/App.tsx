@@ -17,7 +17,6 @@ import { OtrosServiciosMoldeoCorporal } from './pages/OtrosServiciosMoldeoCorpor
 import { OtrosServiciosPostOperatorio } from './pages/OtrosServiciosPostOperatorio'
 import { PaqueteRedirect } from './pages/PaqueteRedirect'
 import { Sucursal } from './pages/Sucursal'
-import { Ubicaciones } from './pages/Ubicaciones'
 
 /*
  * El árbol de rutas va separado del router para poder montarlo con dos routers
@@ -50,7 +49,9 @@ export function AppRoutes() {
           </Route>
 
           <Route path="ubicaciones">
-            <Route index element={<Ubicaciones />} />
+            {/* El listado vive en el home (bloque #ubicaciones); esta ruta ya
+                no tiene página propia. */}
+            <Route index element={<Navigate to="/#ubicaciones" replace />} />
             {/* Una sola ruta paramétrica cubre las cinco sucursales; el slug se
                 valida dentro del componente. */}
             <Route path=":slug" element={<Sucursal />} />
@@ -73,7 +74,7 @@ export function AppRoutes() {
             <Route index element={<Navigate to="/laser" replace />} />
             <Route path=":slug" element={<PaqueteRedirect />} />
           </Route>
-          <Route path="ubicacion" element={<Navigate to="/ubicaciones" replace />} />
+          <Route path="ubicacion" element={<Navigate to="/#ubicaciones" replace />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>

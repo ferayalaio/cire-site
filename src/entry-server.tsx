@@ -44,7 +44,6 @@ export const ROUTES: string[] = [
   '/otros-servicios/moldeo-corporal',
   '/otros-servicios/cire-sculpt-anticelulitico',
   '/otros-servicios/post-operatorio',
-  '/ubicaciones',
   ...SUCURSALES.map((sucursal) => `/ubicaciones/${sucursal.slug}`),
   '/blog',
   ...BLOG_POSTS.map((post) => `/blog/${post.slug}`),

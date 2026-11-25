@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { NAV_ITEMS, RUTAS_CON_AGENDAR } from '../lib/nav'
+import { NavLink } from 'react-router-dom'
+import { NAV_ITEMS } from '../lib/nav'
+import { trackAgendarClick } from '../lib/analytics'
+import { AGENDAR_URL } from '../lib/site'
 
 interface MobileMenuProps {
   open: boolean
@@ -11,8 +13,6 @@ const EASING = 'cubic-bezier(0.77, 0, 0.18, 1)'
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const [visible, setVisible] = useState(false)
-  const { pathname } = useLocation()
-  const tieneAgendar = RUTAS_CON_AGENDAR.has(pathname)
 
   useEffect(() => {
     if (!open) {
@@ -54,31 +54,19 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         el scroll real del contenido vive en el div interno.
       */}
       <div
-        className="absolute inset-y-0 right-0 isolate w-[85%] max-w-sm overflow-hidden rounded-l-[2rem] shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.35)] transition-transform duration-500"
+        className="absolute inset-y-0 right-0 w-[85%] max-w-sm overflow-hidden bg-paper shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.35)] transition-transform duration-500"
         style={{
           transitionTimingFunction: EASING,
           transform: visible ? 'translateX(0)' : 'translateX(100%)',
         }}
       >
-        {/*
-          Fondo ambiental: el mismo lenguaje que el resplandor de fondo de las
-          páginas internas (ver Layout.tsx) — degradado blush + tres blobs
-          difuminados que derivan cada uno a su propio ritmo. Es lo que rompe
-          el blanco/negro plano y le da algo de movimiento al drawer.
-        */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-gradient-to-b from-white via-blush-50 to-blush-100">
-          <div className="animate-drift-a absolute -right-16 -top-20 h-64 w-64 rounded-full bg-blush-300/50 blur-3xl" />
-          <div className="animate-drift-b absolute -left-20 top-[45%] h-56 w-56 rounded-full bg-blush-400/30 blur-3xl" />
-          <div className="animate-drift-c absolute -bottom-24 right-4 h-52 w-52 rounded-full bg-blush-200/70 blur-3xl" />
-        </div>
-
         <div className="flex h-full flex-col overflow-y-auto">
         <div className="flex shrink-0 items-center justify-end px-6 py-5">
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar menú"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white transition-all duration-500"
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-black/10 bg-white transition-all duration-500"
             style={{
               transitionTimingFunction: EASING,
               transitionDelay: '80ms',
@@ -106,8 +94,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   className={({ isActive }) =>
                     // `py-1.5`: el texto solo (32px de line-height en
                     // text-2xl) queda corto del mínimo táctil de 44px.
-                    `block py-1.5 text-2xl font-medium transition-all duration-500 ${
-                      isActive ? 'text-neutral-900' : 'text-neutral-500'
+                    `block py-1.5 text-2xl font-semibold tracking-[-0.02em] transition-all duration-500 ${
+                      isActive && !item.to.includes('#') ? 'text-ink' : 'text-neutral-600'
                     }`
                   }
                   style={{
@@ -121,7 +109,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 </NavLink>
 
                 {item.children && (
-                  <div className="mt-1 flex flex-col border-l border-black/10 pl-4">
+                  <div className="mt-1 flex flex-col border-l border-linea pl-4">
                     {item.children.map((child) => {
                       const childDelay = 140 + stagger++ * 50
 
@@ -137,7 +125,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                              * texto (~24px) quedaba corto de 44px.
                              */
                             `block py-2.5 text-base transition-all duration-500 ${
-                              isActive ? 'text-neutral-900' : 'text-neutral-400'
+                              isActive ? 'text-ink' : 'text-neutral-600'
                             }`
                           }
                           style={{
@@ -158,49 +146,26 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           })}
         </div>
 
-        <div className="flex shrink-0 justify-center px-8 pb-10">
-          {/*
-            Igual que en Nav.tsx: si la página actual ya tiene su propio
-            cierre de embudo (`id="agendar"`), el botón hace scroll ahí en
-            vez de saltar a /ubicaciones sin contexto.
-          */}
-          {tieneAgendar ? (
-            <a
-              href="#agendar"
-              onClick={onClose}
-              className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-500 hover:bg-neutral-700"
-              style={{
-                transitionTimingFunction: EASING,
-                transitionDelay: `${140 + stagger * 50}ms`,
-                transform: visible ? 'translateY(0)' : 'translateY(24px)',
-                opacity: visible ? 1 : 0,
-              }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-              </span>
-              Agendar cita
-            </a>
-          ) : (
-            <Link
-              to="/ubicaciones"
-              onClick={onClose}
-              className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-500 hover:bg-neutral-700"
-              style={{
-                transitionTimingFunction: EASING,
-                transitionDelay: `${140 + stagger * 50}ms`,
-                transform: visible ? 'translateY(0)' : 'translateY(24px)',
-                opacity: visible ? 1 : 0,
-              }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-              </span>
-              Agendar cita
-            </Link>
-          )}
+        <div className="flex shrink-0 px-8 pb-10">
+          {/* Mismo destino que el botón del Nav: la agenda en línea. */}
+          <a
+            href={AGENDAR_URL}
+            target="_blank"
+            rel="noopener"
+            onClick={() => {
+              trackAgendarClick({ sku: 'menu-agendar', nombre: 'una cita', categoria: 'general', placement: 'hero' })
+              onClose()
+            }}
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-ink px-6 py-3 text-[15px] font-semibold text-white transition-all duration-500 hover:bg-blush-900"
+            style={{
+              transitionTimingFunction: EASING,
+              transitionDelay: `${140 + stagger * 50}ms`,
+              transform: visible ? 'translateY(0)' : 'translateY(24px)',
+              opacity: visible ? 1 : 0,
+            }}
+          >
+            Agendar cita
+          </a>
         </div>
         </div>
       </div>

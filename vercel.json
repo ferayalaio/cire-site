@@ -133,7 +133,12 @@
     },
     {
       "source": "/ubicacion",
-      "destination": "/ubicaciones",
+      "destination": "/#ubicaciones",
+      "permanent": true
+    },
+    {
+      "source": "/ubicaciones",
+      "destination": "/#ubicaciones",
       "permanent": true
     }
   ],
@@ -144,6 +149,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/hero/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
         }
       ]
     },

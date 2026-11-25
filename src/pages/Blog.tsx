@@ -11,8 +11,7 @@ export function Blog() {
 
   return (
     <PageShell
-      eyebrow="Blog"
-      title="Guías y preguntas frecuentes"
+      title="Guías de depilación láser"
       intro="Lo que nos preguntan en cabina, explicado con calma: cuántas sesiones, cómo prepararte y qué esperar de cada tratamiento."
       breadcrumbs={[{ label: 'Inicio', to: '/' }]}
     >

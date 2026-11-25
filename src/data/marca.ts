@@ -111,25 +111,6 @@ export const GOOGLE_REVIEWS = {
 }
 
 /*
- * Gancho de captura del formulario de leads del home (ver LeadForm.tsx). Es la
- * única promesa comercial del sitio fuera de los precios, así que va textual y
- * en un solo lugar: quien atiende en WhatsApp tiene que poder honrar
- * exactamente esto.
- */
-export const LEAD_MAGNET = {
-  /*
-   * Etiqueta de la insignia que corona la tarjeta (ver LeadForm.tsx). Dice
-   * "web" a propósito: acota la promesa al canal donde se ve, así quien
-   * atiende en WhatsApp no tiene que honrarla en una llamada ni en mostrador.
-   */
-  badge: 'Promoción exclusiva web',
-  titulo: 'Obtén un 10% de descuento en tu primera sesión o una evaluación de piel gratuita',
-  texto:
-    '¿Todavía no te decides? Déjanos tus datos y una especialista te contacta con el beneficio aplicado, sin compromiso.',
-  cta: 'Obtener mi descuento',
-}
-
-/*
  * Línea de cumplimiento sanitario. El permiso COFEPRIS existe pero el documento
  * NO se publica por confidencialidad: va solo esta línea genérica, textual.
  */
@@ -139,4 +120,20 @@ export const COFEPRIS = 'Cumplimos con la normativa sanitaria vigente para proce
 export const REDES = {
   instagram: 'https://www.instagram.com/ciredepilacion/',
   facebook: 'https://www.facebook.com/cire.depilacion/',
+}
+
+/*
+ * Calificación agregada de Google para el hero y el encabezado de reseñas
+ * (rediseño nov/26).
+ *
+ * TODO(datos): cargar `rating` (ej. '4.8') y `total` (ej. 1250) leídos del
+ * perfil de Google Business, y `url` con el link oficial de reseñas. Mientras
+ * sean null, el sitio en producción NO muestra estrellas ni números (en
+ * desarrollo se ve un recuadro "dato pendiente"). No inventar: cualquiera lo
+ * contrasta en Maps en dos segundos.
+ */
+export const GOOGLE_CALIFICACION = {
+  rating: null as string | null,
+  total: null as number | null,
+  url: null as string | null,
 }

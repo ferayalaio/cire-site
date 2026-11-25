@@ -20,27 +20,6 @@ export interface NavItem {
   children?: NavChild[]
 }
 
-/*
- * Rutas que, tras la restructuración en secciones, terminan con su propio
- * bloque `id="agendar"`. El botón "Agendar cita" del nav usa esta lista para
- * decidir si hace smooth-scroll dentro de la página actual o si navega a
- * /ubicaciones (única opción razonable en páginas sin ese bloque, como
- * Ubicaciones mismo o el detalle de una sucursal).
- */
-export const RUTAS_CON_AGENDAR = new Set([
-  '/',
-  '/laser',
-  '/laser/zonas',
-  '/laser/bikini',
-  '/laser/cuerpo-completo',
-  '/cera',
-  '/hifu',
-  '/otros-servicios',
-  '/otros-servicios/moldeo-corporal',
-  '/otros-servicios/cire-sculpt-anticelulitico',
-  '/otros-servicios/post-operatorio',
-])
-
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Inicio', to: '/' },
   {
@@ -48,16 +27,16 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/laser',
     children: [
       { label: 'Por zonas', to: '/laser/zonas', description: 'Precio de cada zona individual' },
-      { label: 'Bikini', to: '/laser/bikini', description: 'Los 4 niveles de cobertura' },
       { label: 'Cuerpo completo', to: '/laser/cuerpo-completo', description: 'Full Body en una sesión' },
     ],
   },
-  { label: 'Cera', to: '/cera' },
-  { label: 'HIFU', to: '/hifu' },
+  { label: 'Bikini', to: '/laser/bikini' },
   {
     label: 'Otros servicios',
     to: '/otros-servicios',
     children: [
+      { label: 'Cera', to: '/cera', description: 'Cera italiana, resultado inmediato' },
+      { label: 'HIFU', to: '/hifu', description: 'Lifting facial y corporal sin cirugía' },
       { label: 'Moldeo corporal', to: '/otros-servicios/moldeo-corporal', description: 'Moldeo Cire-Na y Cire Body' },
       {
         label: 'Cire Sculpt Anticelulítico',
@@ -71,5 +50,5 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-  { label: 'Ubicaciones', to: '/ubicaciones' },
+  { label: 'Ubicaciones', to: '/#ubicaciones' },
 ]

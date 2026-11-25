@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { AnimatedHeading } from './AnimatedHeading'
-import { Reveal } from './Reveal'
 import { PROMO_ACTIVA } from '../data/precios'
 import { useBreadcrumbJsonLd } from '../hooks/useJsonLd'
 
@@ -11,7 +9,6 @@ interface Crumb {
 }
 
 interface PageShellProps {
-  eyebrow?: string
   title: string
   intro?: string
   /**
@@ -26,6 +23,12 @@ interface PageShellProps {
   /** Acento de video opcional junto al título (ver VideoAccent), solo visible desde `md`. Sin esto, el header queda igual que siempre. */
   media?: ReactNode
   children?: ReactNode
+  /**
+   * Encabezado apretado para páginas donde lo importante es el contenido de
+   * abajo (p. ej. /laser/bikini): menos aire, intro más chico y la promo en
+   * una línea, para que el contenido principal entre en la primera pantalla.
+   */
+  compact?: boolean
 }
 
 /*
@@ -39,28 +42,29 @@ interface PageShellProps {
  * corre esos 2.5rem cuando el cintillo está abierto, y sin sumarlos acá el nav
  * quedaba a 4px del breadcrumb en celular en vez de tener aire.
  */
-export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, media, children }: PageShellProps) {
+export function PageShell({ title, intro, introExtra, breadcrumbs, media, children, compact = false }: PageShellProps) {
   // Las migas visibles también salen como BreadcrumbList: Google las muestra
   // en el resultado en lugar de la URL cruda.
   useBreadcrumbJsonLd(breadcrumbs, title)
 
   return (
-    <main className="mx-auto max-w-6xl px-6 pt-[calc(8rem+var(--anuncio-h,0px))] sm:px-10 sm:pt-[calc(10rem+var(--anuncio-h,0px))]">
+    <main
+      className={`mx-auto max-w-6xl px-6 sm:px-10 ${
+        compact
+          ? 'pt-[calc(6rem+var(--anuncio-h,0px))] sm:pt-[calc(7rem+var(--anuncio-h,0px))]'
+          : 'pt-[calc(6.5rem+var(--anuncio-h,0px))] sm:pt-[calc(8.5rem+var(--anuncio-h,0px))]'
+      }`}
+    >
       <div className={media ? 'grid items-center gap-10 md:grid-cols-[1fr_320px] md:gap-14' : undefined}>
-        {/*
-         * El bloque de encabezado entra igual que el h1 del hero (fade-up en
-         * vez de slide horizontal, porque acá hay una sola línea de contenido
-         * y no dos): es el eco de esa animación en cada página interna.
-         */}
-        <div className="animate-fade-in-up motion-reduce:animate-none">
+        <div>
           {breadcrumbs && breadcrumbs.length > 0 && (
-            <nav aria-label="Ruta" className="mb-6 flex flex-wrap items-center gap-2 text-sm text-neutral-400">
+            <nav aria-label="Ruta" className={`${compact ? 'mb-3' : 'mb-5'} flex flex-wrap items-center gap-2 text-[14px] text-neutral-600`}>
               {breadcrumbs.map((crumb, index) => (
                 <span key={crumb.to} className="flex items-center gap-2">
                   {/* El separador va antes, no después: puesto al final queda una
                       barra colgando sin nada que la siga. */}
                   {index > 0 && <span aria-hidden="true">/</span>}
-                  <Link to={crumb.to} className="hover:text-neutral-900">
+                  <Link to={crumb.to} className="underline-offset-4 hover:text-ink hover:underline">
                     {crumb.label}
                   </Link>
                 </span>
@@ -68,23 +72,24 @@ export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, medi
             </nav>
           )}
 
-          {/*
-           * Mismo tratamiento que el h1 del hero (Bodoni Moda, mayúsculas,
-           * tracking positivo) para que la identidad de marca no se quede solo
-           * en el home — ver public/tipografias.html para el porqué de la
-           * fuente. El underline se dibuja después de que entran las palabras,
-           * como firma visual de que esta es la página en la que estás.
-           */}
-          <PageHeading eyebrow={eyebrow} className="text-5xl leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl">
+          <PageHeading>
             {title}
           </PageHeading>
 
-          {intro && <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-500">{intro}</p>}
+          {intro && (
+            <p
+              className={`max-w-[60ch] leading-relaxed text-neutral-700 ${
+                compact ? 'mt-3 text-[16px] sm:text-[17px]' : 'mt-5 text-[17px] sm:text-lg'
+              }`}
+            >
+              {intro}
+            </p>
+          )}
           {introExtra}
         </div>
 
         {media && (
-          <div className="hidden animate-fade-in-up motion-reduce:animate-none [animation-delay:150ms] md:block">
+          <div className="hidden md:block">
             {media}
           </div>
         )}
@@ -95,50 +100,35 @@ export function PageShell({ eyebrow, title, intro, introExtra, breadcrumbs, medi
        * PROMO_ACTIVA (src/data/precios.ts) se vea en todo el sitio con un
        * solo cambio de dato, no solo en /laser como antes.
        */}
-      {PROMO_ACTIVA && (
-        <Reveal className="mt-10 rounded-2xl border border-blush-200 bg-blush-100 px-6 py-4">
-          <p className="text-sm text-neutral-600">
-            <span className="font-medium text-neutral-900">{PROMO_ACTIVA.nombre}:</span>{' '}
-            {PROMO_ACTIVA.detalle}
+      {PROMO_ACTIVA &&
+        (compact ? (
+          <p className="mt-4 inline-block rounded-full bg-blush-100 px-4 py-1.5 text-[14px] text-blush-900/85">
+            <span className="font-semibold text-ink">{PROMO_ACTIVA.nombre}:</span>{' '}
+            {PROMO_ACTIVA.corto ?? PROMO_ACTIVA.detalle}
           </p>
-        </Reveal>
-      )}
+        ) : (
+          <div className="mt-10 rounded-2xl bg-blush-100 px-6 py-4">
+            <p className="text-[15px] text-blush-900/85">
+              <span className="font-semibold text-ink">{PROMO_ACTIVA.nombre}:</span> {PROMO_ACTIVA.detalle}
+            </p>
+          </div>
+        ))}
 
-      {children && <div className="mt-14">{children}</div>}
+      {children && <div className={compact ? 'mt-6 sm:mt-8' : 'mt-14'}>{children}</div>}
     </main>
   )
 }
 
 /*
- * H1 de página con el eyebrow ADENTRO. Se ve igual que antes (la línea chica
- * rosa arriba del título grande), pero para Google el h1 pasa de "Cuerpo
- * completo" a "Depilación láser Cuerpo completo": la palabra clave de la
- * página queda en el h1 sin cambiar el diseño ni esconder texto. Por eso el
- * eyebrow de cada página tiene que ser la búsqueda que la página ataca, no
- * una categoría genérica tipo "Servicios".
- *
- * El `{' '}` entre los dos spans no se ve (los dos son block) pero evita que
- * el texto extraído salga pegado: "Depilación láserCuerpo completo".
+ * H1 de página (rediseño nov/26). Antes llevaba un "eyebrow" en mayúsculas
+ * arriba del título para meter la palabra clave en el h1; ahora cada página
+ * pasa un título natural que ya la contiene ("Depilación láser de cuerpo
+ * completo"), sin etiqueta encima.
  */
-export function PageHeading({
-  eyebrow,
-  className = '',
-  children,
-}: {
-  eyebrow?: string
-  className?: string
-  children: string
-}) {
+export function PageHeading({ className = '', children }: { className?: string; children: string }) {
   return (
-    <h1>
-      {eyebrow && (
-        <span className="mb-3 block text-xs font-medium uppercase tracking-[0.18em] text-blush-500">
-          {eyebrow}
-        </span>
-      )}{' '}
-      <AnimatedHeading as="span" underline className={`heading-1 block ${className}`}>
-        {children}
-      </AnimatedHeading>
+    <h1 className={`heading-1 text-[2.5rem] leading-[1.04] text-ink sm:text-[3.25rem] lg:text-[3.75rem] ${className}`}>
+      {children}
     </h1>
   )
 }
@@ -146,11 +136,7 @@ export function PageHeading({
 // h2 de sección, usado por todas las páginas internas: el tamaño y la
 // animación de entrada viven acá una sola vez en vez de repetirse por página.
 export function SectionHeading({ children, className = '' }: { children: string; className?: string }) {
-  return (
-    <AnimatedHeading as="h2" className={`text-3xl text-neutral-900 sm:text-4xl ${className}`}>
-      {children}
-    </AnimatedHeading>
-  )
+  return <h2 className={`text-[2.125rem] leading-[1.05] text-ink text-balance sm:text-[3rem] ${className}`}>{children}</h2>
 }
 
 interface LinkCardProps {
@@ -172,24 +158,15 @@ export function LinkCard({ to, title, description, meta, accent }: LinkCardProps
   return (
     <Link
       to={to}
-      className={`group flex flex-col rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blush-300 hover:shadow-[0_20px_45px_-20px_rgba(166,94,109,0.35)] ${
-        accent
-          ? 'border-blush-200 bg-gradient-to-br from-blush-50 to-white shadow-[0_15px_35px_-22px_rgba(166,94,109,0.4)]'
-          : 'border-black/[0.07] bg-white'
+      className={`group flex flex-col rounded-2xl p-6 transition-colors duration-200 sm:p-7 ${
+        accent ? 'bg-blush-100 hover:bg-blush-200/70' : 'bg-white ring-1 ring-black/[0.06] hover:ring-black/20'
       }`}
     >
-      {meta && (
-        <span className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-blush-500">
-          {meta}
-        </span>
-      )}
-      <span className="text-xl text-neutral-900">{title}</span>
-      <span className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">{description}</span>
-      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-neutral-900">
-        Ver más
-        <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">
-          →
-        </span>
+      <span className="text-2xl font-semibold tracking-[-0.02em] text-ink">{title}</span>
+      <span className="mt-2 flex-1 text-[15px] leading-relaxed text-neutral-700">{description}</span>
+      {meta && <span className="mt-4 text-[15px] font-semibold text-ink tabular-nums">{meta}</span>}
+      <span className="mt-5 text-[15px] font-semibold text-ink underline decoration-ink/25 underline-offset-4 group-hover:decoration-ink">
+        Ver detalle
       </span>
     </Link>
   )
@@ -200,7 +177,7 @@ export function LinkCard({ to, title, description, meta, accent }: LinkCardProps
 export function Placeholder({ label }: { label: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-black/10 bg-neutral-50/60 px-6 py-10 text-center">
-      <p className="text-sm text-neutral-400">{label}</p>
+      <p className="text-[15px] text-neutral-600">{label}</p>
     </div>
   )
 }

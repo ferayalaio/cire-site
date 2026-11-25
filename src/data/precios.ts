@@ -29,6 +29,8 @@
  */
 
 /** Precio en MXN. `null` = todavía sin cargar del tarifario. */
+import { PROMO_TEMPORADA, promoVigente } from './promos'
+
 export type Precio = number | null
 
 export function formatPrecio(precio: Precio): string | undefined {
@@ -71,6 +73,8 @@ export interface Promo {
   nombre: string
   /** Una línea, sin signos de exclamación ni urgencia agresiva. */
   detalle: string
+  /** Versión de pocas palabras para páginas con encabezado compacto (ver PageShell `compact`). */
+  corto?: string
   /** Fecha de fin en ISO (`2026-11-20`), solo para referencia del equipo. */
   hasta?: string
 }
@@ -80,7 +84,16 @@ export interface Promo {
  * Para lanzar una, reemplazá el null por el objeto. Es lo único que hay que
  * tocar en todo el repo.
  */
-export const PROMO_ACTIVA: Promo | null = null
+// Se apaga sola al pasar `PROMO_TEMPORADA.hasta` (ver data/promos.ts).
+export const PROMO_ACTIVA: Promo | null = promoVigente()
+  ? {
+      nombre: 'Buen Fin',
+      detalle:
+        'Combos desde $4,500 y zonas individuales desde $1,200, en todas las sucursales, hasta el 30 de noviembre. Detalle en el inicio, sección Promociones.',
+      corto: 'combos desde $4,500 y zonas desde $1,200, hasta el 30 de noviembre.',
+      hasta: PROMO_TEMPORADA.hasta,
+    }
+  : null
 
 /* -------------------------------------------------------------------------- */
 /* Zonas individuales — /laser/zonas                                          */
@@ -99,6 +112,11 @@ export interface Zona {
    * la página.
    */
   sinComboExacto?: boolean
+  /**
+   * Partes entre las que la clienta escoge, al mismo precio (Medias Piernas:
+   * arriba o abajo). Cada `slug` da la foto `zonas/{zona}-{slug}.jpg`.
+   */
+  opciones?: { slug: string; nombre: string }[]
 }
 
 /*
@@ -114,7 +132,17 @@ export interface Zona {
  */
 export const ZONAS: Zona[] = [
   { slug: 'gluteos', nombre: 'Glúteos', precioSesion: null, precioPaquete: 2500, sesiones: 8, sinComboExacto: true },
-  { slug: 'medias-piernas', nombre: 'Medias Piernas', precioSesion: null, precioPaquete: 3500, sesiones: 8 },
+  {
+    slug: 'medias-piernas',
+    nombre: 'Medias Piernas',
+    precioSesion: null,
+    precioPaquete: 2400,
+    sesiones: 8,
+    opciones: [
+      { slug: 'arriba', nombre: 'Arriba' },
+      { slug: 'abajo', nombre: 'Abajo' },
+    ],
+  },
   { slug: 'piernas-completas', nombre: 'Piernas Completas', precioSesion: null, precioPaquete: 5000, sesiones: 8 },
   { slug: 'pies', nombre: 'Pies', precioSesion: null, precioPaquete: 1800, sesiones: 8 },
   {
@@ -291,6 +319,95 @@ export const COMBOS: Combo[] = [
 ]
 
 /* -------------------------------------------------------------------------- */
+/* Paquetes del home — "O mejor, un paquete"                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Slug de una zona de `ZONAS`, o `'bikini'` cuando el paquete trae "bikini a
+ * elegir" (básico, sexy, french o brazilian).
+ */
+export type ZonaIncluida = string
+
+export interface PaqueteHome {
+  slug: string
+  nombre: string
+  /** Zonas que trae, en el orden en que se muestran como chips. */
+  incluye: ZonaIncluida[]
+  /**
+   * Precio regular del tarifario. `null` cuando no hay un combo del tarifario
+   * que corresponda con seguridad (ver la nota de cada uno): sin precio
+   * regular no se tacha nada.
+   */
+  precioRegular: Precio
+  sesiones: number
+  /**
+   * true cuando el equipo confirmó que el combo del tarifario regular trae
+   * exactamente estas zonas. Sin esto, el paquete solo se muestra mientras
+   * hay promo (su contenido sale del flyer de la promo).
+   */
+  regularConfirmado?: boolean
+}
+
+/*
+ * Catálogo de los combos que se muestran en el home (nov/26). Lo que trae cada
+ * uno sale de los flyers aprobados; el precio de temporada vive en
+ * data/promos.ts y el ahorro lo calcula lib/precios.ts. Nadie escribe un
+ * ahorro a mano.
+ *
+ * TODO(precios): el tarifario regular no dice qué zonas trae cada combo
+ * (`COMBOS[].incluye` está vacío). Cuando termine la promo, estos combos
+ * solo se muestran si tienen precio vigente: confirmar con el equipo el
+ * contenido y precio regular de cada uno.
+ */
+export const PAQUETES_HOME: PaqueteHome[] = [
+  {
+    slug: 'combo-sexy',
+    nombre: 'Combo Sexy',
+    incluye: ['piernas-completas', 'axilas', 'bikini'],
+    // TODO(precios): el tarifario tiene "Combo Sexy Sexy" y "Combo Sexy Brazilian" ($7,750), no "Combo Sexy".
+    precioRegular: null,
+    sesiones: 8,
+  },
+  {
+    slug: 'combo-playa',
+    nombre: 'Combo Playa',
+    incluye: ['medias-piernas', 'axilas', 'bikini'],
+    // TODO(precios): el tarifario solo tiene "Combo Playa Brazilian" ($6,750).
+    precioRegular: null,
+    sesiones: 8,
+  },
+  {
+    slug: 'combo-piernas',
+    nombre: 'Combo Piernas',
+    incluye: ['piernas-completas', 'bikini'],
+    precioRegular: 6500,
+    sesiones: 8,
+  },
+  {
+    slug: 'combo-axilas',
+    nombre: 'Combo Axilas',
+    incluye: ['axilas', 'piernas-completas'],
+    precioRegular: 5000,
+    sesiones: 8,
+  },
+  {
+    slug: 'combo-bikini',
+    nombre: 'Combo Bikini',
+    incluye: ['axilas', 'bikini'],
+    precioRegular: 5000,
+    sesiones: 8,
+  },
+]
+
+/* Paquete puntual de /laser (antes estaba escrito a mano en Laser.tsx). */
+export const CRACK_MUJER = {
+  slug: 'laser-crack-mujer',
+  nombre: 'Crack Mujer',
+  precioPaquete: 1625 as Precio,
+  sesiones: 8,
+}
+
+/* -------------------------------------------------------------------------- */
 /* Full Body — la venta principal                                            */
 /* -------------------------------------------------------------------------- */
 
@@ -303,6 +420,13 @@ export const FULL_BODY = {
 
   /** Zonas incluidas, confirmado por el equipo. */
   incluye: ['Piernas Completas', 'Brazos Completos', 'Axilas', 'Espalda Completa', 'Zona Íntima'] as string[],
+
+  /*
+   * Las mismas zonas como slugs, para calcular el ahorro contra comprarlas por
+   * separado (ver lib/precios.ts). "Zona Íntima" se cuenta como `bikini`, y
+   * `bikini` vale lo del bikini básico: es el ahorro mínimo garantizado.
+   */
+  incluyeZonas: ['piernas-completas', 'brazos-completos', 'axilas', 'espalda-completa', 'bikini'] as ZonaIncluida[],
 
   /*
    * Las tres zonas que el Full Body NO cubre. Esto viene del brief y se
