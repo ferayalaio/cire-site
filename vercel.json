@@ -22,6 +22,22 @@
     {
       "source": "/sistema/:path*",
       "destination": "https://sistema.ciredepilacion.com/:path*"
+    },
+    {
+      "source": "/opinion",
+      "destination": "https://agenda.ciredepilacion.com/opinion"
+    },
+    {
+      "source": "/opinion/:path*",
+      "destination": "https://agenda.ciredepilacion.com/opinion/:path*"
+    },
+    {
+      "source": "/tarjeta",
+      "destination": "https://agenda.ciredepilacion.com/tarjeta"
+    },
+    {
+      "source": "/tarjeta/:path*",
+      "destination": "https://agenda.ciredepilacion.com/tarjeta/:path*"
     }
   ],
   "redirects": [
