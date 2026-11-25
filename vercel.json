@@ -2,6 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/agendar",
+      "destination": "https://agenda.ciredepilacion.com/agendar"
+    },
+    {
+      "source": "/agendar/:path*",
+      "destination": "https://agenda.ciredepilacion.com/agendar/:path*"
+    },
+    {
+      "source": "/agenda-assets/:path*",
+      "destination": "https://agenda.ciredepilacion.com/agenda-assets/:path*"
+    }
+  ],
   "redirects": [
     {
       "source": "/paquetes",
