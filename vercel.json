@@ -14,6 +14,14 @@
     {
       "source": "/agenda-assets/:path*",
       "destination": "https://agenda.ciredepilacion.com/agenda-assets/:path*"
+    },
+    {
+      "source": "/sistema",
+      "destination": "https://sistema.ciredepilacion.com/"
+    },
+    {
+      "source": "/sistema/:path*",
+      "destination": "https://sistema.ciredepilacion.com/:path*"
     }
   ],
   "redirects": [
@@ -153,6 +161,15 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/sistema(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }
