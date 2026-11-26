@@ -243,10 +243,10 @@
     opacity: var(--o);
     transform: translateY(calc((1 - var(--o)) * 1.5rem));
   }
-  /* En celular el video a pantalla completa va corrido a la derecha para no
-     cortar la cara de la especialista; en el panel ya cabe completo. */
+  /* En celular el recuadro vertical va cargado a la derecha (igual que el
+     canvas en HeroScroll); en el panel ya cabe casi todo el recorte. */
   .hero-media {
-    object-position: calc(62% - var(--t, 0) * 12%) 50%;
+    object-position: calc(75% - var(--t, 0) * 25%) 50%;
   }
   @media (min-width: 1024px) {
     .hero-media {
