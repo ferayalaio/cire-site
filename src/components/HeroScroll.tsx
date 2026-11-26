@@ -8,9 +8,10 @@ import { LogoCire } from './LogoCire'
  * La sección mide 400svh y adentro hay una capa `sticky` de una pantalla. El
  * avance del scroll dentro de la sección (0 → 1) se reparte así:
  *
- *   0.00 – 0.40  video 1 en un recuadro grande (súper zoom → especialista)
+ *   0.00 – 1.00  el video corre de principio a fin, sin pausas
+ *   0.00 – 0.40  recuadro grande (súper zoom al maneral → especialista)
  *   0.40 – 0.55  la imagen se encoge al panel y entran los textos (--t: 0 → 1)
- *   0.58 – 1.00  video 2 dentro del panel (la especialista aplica el maneral)
+ *   0.55 – 1.00  dentro del panel (la especialista aplica el maneral)
  *
  * Al final la sección se suelta y la página sigue. Si se sube, todo se rebobina.
  *
@@ -28,10 +29,9 @@ import { LogoCire } from './LogoCire'
  *
  * No se usa <video>: adelantar y rebobinar un video con currentTime no es
  * fluido en Safari ni en muchos celulares. En su lugar hay una secuencia de
- * 97 cuadros WebP (uno de cada dos del video de 8 s, public/hero/secuencia/)
- * que se dibuja en un canvas, mezclando los dos cuadros vecinos para que el
- * movimiento se vea continuo. El cuadro 48 es a la vez el final del video 1 y
- * el inicio del video 2.
+ * 97 cuadros WebP (todos los del video de 4 s a 24 fps, NuevaCosmeHERO.mp4,
+ * en public/hero/secuencia/) que se dibuja en un canvas, mezclando los dos
+ * cuadros vecinos para que el movimiento se vea continuo.
  *
  * Los cuadros se cargan por pasadas (cada 16, luego cada 8, 4, 2, 1): con
  * pocos cientos de KB ya se puede recorrer todo, y se va afinando.
@@ -41,16 +41,15 @@ import { LogoCire } from './LogoCire'
  * index.html pone `hero-estatico` en <html> y el CSS muestra textos y la
  * imagen final fija, sin descargar la secuencia.
  *
- * Escritorio: cuadros 1280×720. Móvil y tablet: recorte 4:5 alrededor del
- * 55 % horizontal, 720×900. Generados con ffmpeg (HDR HLG → SDR BT.709) a
+ * Escritorio: cuadros 1280×720. Móvil y tablet: recorte 4:5 de 720×900 que
+ * sigue al sujeto (maneral al inicio, cara de la especialista después), por
+ * eso en móvil el canvas lo dibuja centrado. Generados con ffmpeg (HDR HLG → SDR BT.709) a
  * partir de public/hero/fuente/.
  */
 
 const TOTAL = 97
-const MEDIO = 48
 const FIN_V1 = 0.4
 const FIN_MORPH = 0.55
-const INICIO_V2 = 0.58
 /** Igual que --radius-media. */
 const RADIO_PX = 24
 /** Tramo del scroll en el que el logo viaja a la nav. */
@@ -84,9 +83,7 @@ function ordenDeCarga(): number[] {
 
 /** Cuadro (con decimales) que toca según el avance del scroll. */
 function cuadroPara(p: number): number {
-  if (p <= FIN_V1) return (p / FIN_V1) * MEDIO
-  if (p < INICIO_V2) return MEDIO
-  return MEDIO + ((p - INICIO_V2) / (1 - INICIO_V2)) * (TOTAL - 1 - MEDIO)
+  return p * (TOTAL - 1)
 }
 
 function Foto({ nombre, prioridad = false }: { nombre: 'inicio' | 'final'; prioridad?: boolean }) {
@@ -184,11 +181,11 @@ export function HeroScroll({ children }: { children: ReactNode }) {
     }
 
     /** Dibuja `img` cubriendo el rectángulo, como object-fit: cover + object-position. */
-    const cubrir = (img: HTMLImageElement, x: number, y: number, w: number, h: number, posX: number) => {
+    const cubrir = (img: HTMLImageElement, x: number, y: number, w: number, h: number, posX: number, posY: number) => {
       const escala = Math.max(w / img.naturalWidth, h / img.naturalHeight)
       const dw = img.naturalWidth * escala
       const dh = img.naturalHeight * escala
-      ctx.drawImage(img, x + (w - dw) * posX, y + (h - dh) / 2, dw, dh)
+      ctx.drawImage(img, x + (w - dw) * posX, y + (h - dh) * posY, dw, dh)
     }
 
     // Logo volador: se mide contra el logo real de la nav.
@@ -277,8 +274,10 @@ export function HeroScroll({ children }: { children: ReactNode }) {
         const y = origen.y + (destino.y - origen.y) * e
         const w = origen.w + (destino.w - origen.w) * e
         const h = origen.h + (destino.h - origen.h) * e
-        // Encuadre: escritorio del centro a la derecha; celular un poco a la derecha.
-        const posX = escritorio ? 0.5 + 0.5 * e : 0.62 - 0.12 * e
+        // Encuadre: escritorio del centro a la derecha; en celular el recorte ya sigue al sujeto.
+        const posX = escritorio ? 0.5 + 0.5 * e : 0.5
+        // En celular el panel final es bajo: se sube el encuadre para no cortar la cara.
+        const posY = escritorio ? 0.5 : 0.5 - 0.35 * e
 
         const f = cuadroPara(p)
         const i0 = Math.floor(f)
@@ -294,10 +293,10 @@ export function HeroScroll({ children }: { children: ReactNode }) {
           ctx.roundRect(x, y, w, h, RADIO_PX)
           ctx.clip()
           ctx.globalAlpha = 1
-          cubrir(a, x, y, w, h, posX)
+          cubrir(a, x, y, w, h, posX, posY)
           if (b) {
             ctx.globalAlpha = mezcla
-            cubrir(b, x, y, w, h, posX)
+            cubrir(b, x, y, w, h, posX, posY)
           }
           // Velo ciruela del inicio (el mismo tramo en que viaja el logo).
           const velo = VELO_MAX * (1 - (1 - (1 - clamp(p / FIN_LOGO)) ** 3))
