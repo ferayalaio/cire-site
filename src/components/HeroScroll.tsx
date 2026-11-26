@@ -65,6 +65,14 @@ const FONDO_LOGO = 'rgb(253 253 253)'
 const VELO_MAX = 0.5
 
 const MQ_ESCRITORIO = '(min-width: 1024px)'
+/*
+ * Versión de los archivos del hero. /hero/ se cachea 30 días en el navegador
+ * (vercel.json) y los cuadros conservan su nombre, así que al cambiar el video
+ * hay que subir este número: si no, quien ya visitó el sitio sigue viendo los
+ * cuadros viejos.
+ */
+const VERSION_HERO = '2'
+const v = (url: string) => `${url}?v=${VERSION_HERO}`
 
 const clamp = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x)
 
@@ -95,11 +103,11 @@ function cuadroPara(p: number): number {
 function Foto({ nombre, prioridad = false }: { nombre: 'inicio' | 'final'; prioridad?: boolean }) {
   return (
     <picture>
-      <source media={MQ_ESCRITORIO} srcSet={`/hero/${nombre}.avif`} type="image/avif" />
-      <source media={MQ_ESCRITORIO} srcSet={`/hero/${nombre}.webp`} type="image/webp" />
-      <source srcSet={`/hero/${nombre}-movil.avif`} type="image/avif" />
+      <source media={MQ_ESCRITORIO} srcSet={v(`/hero/${nombre}.avif`)} type="image/avif" />
+      <source media={MQ_ESCRITORIO} srcSet={v(`/hero/${nombre}.webp`)} type="image/webp" />
+      <source srcSet={v(`/hero/${nombre}-movil.avif`)} type="image/avif" />
       <img
-        src={`/hero/${nombre}-movil.webp`}
+        src={v(`/hero/${nombre}-movil.webp`)}
         alt=""
         aria-hidden="true"
         width={864}
@@ -147,7 +155,7 @@ export function HeroScroll({ children }: { children: ReactNode }) {
         const i = cola.shift()!
         const img = new Image()
         img.decoding = 'async'
-        img.src = `/hero/secuencia/${carpeta}/${String(i).padStart(3, '0')}.webp`
+        img.src = v(`/hero/secuencia/${carpeta}/${String(i).padStart(3, '0')}.webp`)
         try {
           await img.decode()
         } catch {
