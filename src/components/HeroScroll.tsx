@@ -51,6 +51,13 @@ import { LogoCire } from './LogoCire'
 
 const TOTAL = 97
 const MEDIO = 48
+/*
+ * Cuadros donde la vista se detiene (inicio, pausa con los textos y final):
+ * además de la versión de la secuencia tienen una nítida (hd-NNN.webp, 1920 px
+ * en escritorio y el recorte completo de 864×1080 en móvil, calidad alta).
+ * Si no, en el panel se ven borrosos detalles como el logo del uniforme.
+ */
+const NITIDOS = [0, 48, 96]
 const FIN_V1 = 0.4
 const FIN_MORPH = 0.55
 const INICIO_V2 = 0.58
@@ -146,23 +153,33 @@ export function HeroScroll({ children }: { children: ReactNode }) {
     const escritorio = window.matchMedia(MQ_ESCRITORIO).matches
     const carpeta = escritorio ? 'd' : 'm'
     const cuadros: (HTMLImageElement | null)[] = new Array(TOTAL).fill(null)
+    const nitidos: (HTMLImageElement | null)[] = new Array(TOTAL).fill(null)
     let vivo = true
 
-    // Carga por pasadas, con 6 descargas a la vez.
-    const cola = ordenDeCarga()
+    // Carga por pasadas, con 6 descargas a la vez. Los cuadros nítidos entran
+    // después del primer esqueleto (cada 16), para no retrasar el recorrido.
+    const orden = ordenDeCarga()
+    const esqueleto = Math.ceil(TOTAL / 16) + 1
+    const cola: { i: number; nitido: boolean }[] = [
+      ...orden.slice(0, esqueleto).map((i) => ({ i, nitido: false })),
+      ...NITIDOS.map((i) => ({ i, nitido: true })),
+      ...orden.slice(esqueleto).map((i) => ({ i, nitido: false })),
+    ]
     const cargarSiguiente = async (): Promise<void> => {
       while (vivo && cola.length) {
-        const i = cola.shift()!
+        const { i, nitido } = cola.shift()!
+        const nombre = `${nitido ? 'hd-' : ''}${String(i).padStart(3, '0')}.webp`
         const img = new Image()
         img.decoding = 'async'
-        img.src = v(`/hero/secuencia/${carpeta}/${String(i).padStart(3, '0')}.webp`)
+        img.src = v(`/hero/secuencia/${carpeta}/${nombre}`)
         try {
           await img.decode()
         } catch {
           continue
         }
         if (!vivo) return
-        cuadros[i] = img
+        if (nitido) nitidos[i] = img
+        else cuadros[i] = img
         pedir(true)
       }
     }
@@ -298,7 +315,8 @@ export function HeroScroll({ children }: { children: ReactNode }) {
         const f = cuadroPara(p)
         const i0 = Math.floor(f)
         const mezcla = f - i0
-        const a = cuadros[i0] ?? cercano(i0)
+        // Detenido justo en un cuadro nítido: se usa su versión en alta calidad.
+        const a = (mezcla <= 0.01 ? nitidos[i0] : null) ?? cuadros[i0] ?? cercano(i0)
         const b = mezcla > 0.01 && cuadros[i0] ? cuadros[Math.min(i0 + 1, TOTAL - 1)] : null
 
         if (a) {
