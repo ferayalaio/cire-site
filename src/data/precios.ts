@@ -3,6 +3,11 @@
  * CAPA DE PRECIOS — el único archivo que se toca para actualizar tarifas.
  * ============================================================================
  *
+ * EL CLIENTE EDITA ESTO DESDE EL PORTAL (/admin). Lo que publica ahí se aplica
+ * encima de los valores de este archivo al compilar (ver
+ * src/content/editable.ts). Este archivo es la base: si cambiás un precio acá
+ * y en el portal hay una versión publicada con ese precio, gana el portal.
+ *
  * Los precios cambian ~mensualmente y hay promos estacionales (Buen Fin, Hot
  * Sale, Aniversario Cire, Hot Summer). Por eso NINGÚN precio vive dentro del
  * JSX de una página: todos salen de acá. Actualizar tarifas es editar este
@@ -15,8 +20,8 @@
  *    el sitio.
  * 2. `null` significa "pendiente de cargar" y la página lo muestra como tal en
  *    lugar de inventar un número. NO pongas `0` para eso: `0` es un precio.
- * 3. Para una promo estacional, editá `PROMO_ACTIVA` abajo. Poner `null`
- *    apaga el banner en todo el sitio.
+ * 3. La promo estacional vive en data/promos.ts (`PROMO_TEMPORADA`); el
+ *    texto del aviso superior es su campo `anuncio`.
  *
  * LO QUE NO VA EN EL SITIO (decisión de negocio, no técnica)
  * ----------------------------------------------------------
@@ -28,8 +33,10 @@
  *   fijo. Excluir zonas no genera descuento.
  */
 
-/** Precio en MXN. `null` = todavía sin cargar del tarifario. */
+import { editableLista, editableObjeto } from '../content/editable'
 import { PROMO_TEMPORADA, promoVigente } from './promos'
+
+/** Precio en MXN. `null` = todavía sin cargar del tarifario. */
 
 export type Precio = number | null
 
@@ -57,12 +64,12 @@ export function hayPrecio(...precios: Precio[]): boolean {
  * aplican; si es `null` la página solo dice que hay MSI disponibles sin
  * prometer un mínimo que después no se cumple en caja.
  */
-export const MSI = {
+export const MSI = editableObjeto('msi', {
   disponible: true,
   meses: [3, 6] as number[],
   minimo: null as Precio,
   nota: 'Meses sin intereses con tarjetas participantes.',
-}
+})
 
 /* -------------------------------------------------------------------------- */
 /* Promo estacional                                                           */
@@ -87,10 +94,9 @@ export interface Promo {
 // Se apaga sola al pasar `PROMO_TEMPORADA.hasta` (ver data/promos.ts).
 export const PROMO_ACTIVA: Promo | null = promoVigente()
   ? {
-      nombre: 'Buen Fin',
-      detalle:
-        'Combos desde $4,500 y zonas individuales desde $1,200, en todas las sucursales, hasta el 30 de noviembre. Detalle en el inicio, sección Promociones.',
-      corto: 'combos desde $4,500 y zonas desde $1,200, hasta el 30 de noviembre.',
+      nombre: PROMO_TEMPORADA.nombre,
+      detalle: PROMO_TEMPORADA.anuncio.detalle,
+      corto: PROMO_TEMPORADA.anuncio.corto || undefined,
       hasta: PROMO_TEMPORADA.hasta,
     }
   : null
@@ -130,7 +136,7 @@ export interface Zona {
  * de una decisión de diseño previa, no una confirmación nueva de qué cubre
  * cada combo (los combos siguen sin `incluye` definido).
  */
-export const ZONAS: Zona[] = [
+export const ZONAS: Zona[] = editableLista('zonas', [
   { slug: 'gluteos', nombre: 'Glúteos', precioSesion: null, precioPaquete: 2500, sesiones: 8, sinComboExacto: true },
   {
     slug: 'medias-piernas',
@@ -193,7 +199,7 @@ export const ZONAS: Zona[] = [
   { slug: 'rostro-completo', nombre: 'Rostro Completo', precioSesion: null, precioPaquete: 2750, sesiones: 8 },
   { slug: 'medio-rostro', nombre: 'Medio Rostro', precioSesion: null, precioPaquete: 2250, sesiones: 8 },
   { slug: 'bigote', nombre: 'Bigote', precioSesion: null, precioPaquete: 1250, sesiones: 8 },
-]
+])
 
 /* -------------------------------------------------------------------------- */
 /* Niveles de bikini — /laser/bikini                                          */
@@ -222,7 +228,7 @@ export interface NivelBikini {
  * viajan a Meta como `content_ids`, así que conviene no renombrarlos una vez
  * publicados: se corta el histórico del anterior.
  */
-export const NIVELES_BIKINI: NivelBikini[] = [
+export const NIVELES_BIKINI: NivelBikini[] = editableLista('bikini', [
   {
     slug: 'bikini-basico',
     nombre: 'Bikini Básico',
@@ -259,7 +265,7 @@ export const NIVELES_BIKINI: NivelBikini[] = [
     precioPaquete: 4000,
     sesiones: 8,
   },
-]
+])
 
 /* -------------------------------------------------------------------------- */
 /* Combos — tabla comparativa en /laser/cuerpo-completo                       */
@@ -284,7 +290,7 @@ export interface Combo {
  * `incluye` sigue vacío para todos: qué zonas trae cada combo no vino en este
  * tarifario.
  */
-export const COMBOS: Combo[] = [
+export const COMBOS: Combo[] = editableLista('combos', [
   { slug: 'combo-axilas', nombre: 'Combo Axilas', incluye: [], precioSesion: null, precioPaquete: 5000, sesiones: 8 },
   { slug: 'combo-bikini', nombre: 'Combo Bikini', incluye: [], precioSesion: null, precioPaquete: 5000, sesiones: 8 },
   { slug: 'combo-abdomen', nombre: 'Combo Abdomen', incluye: [], precioSesion: null, precioPaquete: 4500, sesiones: 8 },
@@ -316,7 +322,7 @@ export const COMBOS: Combo[] = [
     precioPaquete: 6750,
     sesiones: 8,
   },
-]
+])
 
 /* -------------------------------------------------------------------------- */
 /* Paquetes del home — "O mejor, un paquete"                                  */
@@ -359,7 +365,7 @@ export interface PaqueteHome {
  * solo se muestran si tienen precio vigente: confirmar con el equipo el
  * contenido y precio regular de cada uno.
  */
-export const PAQUETES_HOME: PaqueteHome[] = [
+export const PAQUETES_HOME: PaqueteHome[] = editableLista('paquetesHome', [
   {
     slug: 'combo-sexy',
     nombre: 'Combo Sexy',
@@ -397,21 +403,21 @@ export const PAQUETES_HOME: PaqueteHome[] = [
     precioRegular: 5000,
     sesiones: 8,
   },
-]
+])
 
 /* Paquete puntual de /laser (antes estaba escrito a mano en Laser.tsx). */
-export const CRACK_MUJER = {
+export const CRACK_MUJER = editableObjeto('crackMujer', {
   slug: 'laser-crack-mujer',
   nombre: 'Crack Mujer',
   precioPaquete: 1625 as Precio,
   sesiones: 8,
-}
+})
 
 /* -------------------------------------------------------------------------- */
 /* Full Body — la venta principal                                            */
 /* -------------------------------------------------------------------------- */
 
-export const FULL_BODY = {
+export const FULL_BODY = editableObjeto('fullBody', {
   slug: 'full-body',
   nombre: 'Full Body',
   precioSesion: null as Precio,
@@ -434,7 +440,7 @@ export const FULL_BODY = {
    * evita la discusión incómoda en la sucursal.
    */
   noIncluye: ['Manos', 'Pies', 'Nuca'],
-}
+})
 
 /* -------------------------------------------------------------------------- */
 /* Cera italiana — /cera                                                      */
@@ -446,7 +452,7 @@ export interface ZonaCera {
   precio: Precio
 }
 
-export const CERA: ZonaCera[] = [
+export const CERA: ZonaCera[] = editableLista('cera', [
   { slug: 'bikini-basico', nombre: 'Bikini Básico', precio: 390 },
   { slug: 'sexy-bikini', nombre: 'Sexy Bikini', precio: 460 },
   { slug: 'coxis', nombre: 'Coxis', precio: 130 },
@@ -459,7 +465,7 @@ export const CERA: ZonaCera[] = [
   { slug: 'axilas', nombre: 'Axilas', precio: 150 },
   { slug: 'espalda-completa', nombre: 'Espalda Completa', precio: 550 },
   { slug: 'hombros', nombre: 'Hombros', precio: 200 },
-]
+])
 
 /* -------------------------------------------------------------------------- */
 /* HIFU — /hifu                                                               */
@@ -498,7 +504,7 @@ export interface PaqueteConSesiones {
  * inventó descripción clínica sin confirmarla. "Cire Lift 2 Sesiones" es el
  * único marcado `destacado` — es "el más popular", confirmado.
  */
-export const HIFU_PROTOCOLOS: PaqueteConSesiones[] = [
+export const HIFU_PROTOCOLOS: PaqueteConSesiones[] = editableLista('hifu', [
   {
     slug: 'cire-lift-1-sesion',
     nombre: 'Cire Lift 1 Sesión',
@@ -596,7 +602,7 @@ export const HIFU_PROTOCOLOS: PaqueteConSesiones[] = [
     duracion: '10 sesiones',
     incluye: ['10 sesiones de Skin Reset'],
   },
-]
+])
 
 /* -------------------------------------------------------------------------- */
 /* Otros servicios — /otros-servicios                                         */
@@ -633,7 +639,7 @@ export interface OtroServicio {
  * (se lee como typo de "anticelulítico" — confirmar el rótulo exacto antes de
  * publicar si no es eso).
  */
-export const OTROS_SERVICIOS: OtroServicio[] = [
+export const OTROS_SERVICIOS: OtroServicio[] = editableLista('otrosServicios', [
   {
     slug: 'moldeo-corporal',
     nombre: 'Moldeo Corporal',
@@ -655,7 +661,7 @@ export const OTROS_SERVICIOS: OtroServicio[] = [
     precioDesde: 899,
     ruta: '/otros-servicios/post-operatorio',
   },
-]
+])
 
 /*
  * Catálogo de /otros-servicios/moldeo-corporal. Dos tratamientos distintos
@@ -663,7 +669,7 @@ export const OTROS_SERVICIOS: OtroServicio[] = [
  * HIFU_PROTOCOLOS. `resumen` queda pendiente de copy real por el mismo motivo
  * que en HIFU: no se inventa descripción clínica sin confirmarla.
  */
-export const MOLDEO_CORPORAL: PaqueteConSesiones[] = [
+export const MOLDEO_CORPORAL: PaqueteConSesiones[] = editableLista('moldeoCorporal', [
   {
     slug: 'moldeo-cire-na-1',
     nombre: 'Moldeo Cire-Na (1 sesión)',
@@ -708,10 +714,10 @@ export const MOLDEO_CORPORAL: PaqueteConSesiones[] = [
     duracion: '6 sesiones',
     incluye: ['6 sesiones de Cire Body'],
   },
-]
+])
 
 /* Catálogo de /otros-servicios/cire-sculpt-anticelulitico. */
-export const CIRE_SCULPT_ANTICELULITICO: PaqueteConSesiones[] = [
+export const CIRE_SCULPT_ANTICELULITICO: PaqueteConSesiones[] = editableLista('cireSculpt', [
   {
     slug: 'cire-sculpt-anti-1',
     nombre: 'Cire Sculpt Anti (1 sesión)',
@@ -737,10 +743,10 @@ export const CIRE_SCULPT_ANTICELULITICO: PaqueteConSesiones[] = [
     duracion: '12 sesiones',
     incluye: ['12 sesiones de Cire Sculpt Anti'],
   },
-]
+])
 
 /* Catálogo de /otros-servicios/post-operatorio. */
-export const CIRE_SCULPT_POST_OPERATORIO: PaqueteConSesiones[] = [
+export const CIRE_SCULPT_POST_OPERATORIO: PaqueteConSesiones[] = editableLista('postOperatorio', [
   {
     slug: 'post-op-1',
     nombre: 'Post Op (1 sesión)',
@@ -767,4 +773,4 @@ export const CIRE_SCULPT_POST_OPERATORIO: PaqueteConSesiones[] = [
     duracion: '12 sesiones',
     incluye: ['12 sesiones de Post Op'],
   },
-]
+])

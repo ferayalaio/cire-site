@@ -4,15 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/imagenes.mjs",
+    "predev": "node scripts/imagenes.mjs && node scripts/contenido.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/imagenes.mjs",
+    "prebuild": "node scripts/imagenes.mjs && node scripts/contenido.mjs",
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "imagenes": "node scripts/imagenes.mjs"
+    "imagenes": "node scripts/imagenes.mjs",
+    "dev:portal": "vercel dev",
+    "crear-usuario": "node scripts/crear-usuario.mjs"
   },
   "dependencies": {
+    "@vercel/blob": "^2.9.0",
     "framer-motion": "^12.42.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

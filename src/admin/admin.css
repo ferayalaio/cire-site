@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+@source './';
+
+/* Mismos tokens que el sitio (src/index.css), solo los que usa el portal. */
+@theme {
+  --font-display: 'Jost', 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --color-ink: #4b1839;
+  --color-ink-soft: #5c2347;
+  --color-hueso: #fcfbf9;
+  --color-magenta: #7b2c6e;
+  --color-linea: rgb(75 24 57 / 0.12);
+  --radius-media: 24px;
+  --radius-card: 12px;
+  --color-blush-50: #fdeaf0;
+  --color-blush-100: #fdd1e2;
+  --color-blush-200: #fcc8d8;
+  --color-blush-600: #a32a57;
+  --color-blush-900: #6b2450;
+  --color-morado-50: #f6eaf5;
+  --color-morado-100: #ecd3e8;
+  --color-morado-700: #7b2c6e;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    color-scheme: light;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-hueso);
+  }
+}

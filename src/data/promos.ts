@@ -10,7 +10,10 @@
  * quemado en una imagen no lo lee Google ni un lector de pantalla y caduca.
  *
  * Para la próxima temporada: cambiar nombre, `hasta` y precios, nada más.
+ * El cliente lo hace desde el portal (/admin, sección Promoción); ver
+ * src/content/editable.ts.
  */
+import { editableObjeto } from '../content/editable'
 
 export interface PaquetePromo {
   /** Slug de `PAQUETES_HOME` (o `full-body`) en data/precios.ts. */
@@ -36,7 +39,7 @@ export interface ListaPromo {
   items: ZonaPromo[]
 }
 
-export const PROMO_TEMPORADA = {
+export const PROMO_TEMPORADA = editableObjeto('promo', {
   activa: true,
   nombre: 'Buen Fin',
   /** Último día de la promo ("liquida antes del 30 de noviembre"). */
@@ -45,6 +48,14 @@ export const PROMO_TEMPORADA = {
   hastaTexto: 'hasta el 30 de noviembre',
   condicion: 'Gran preventa: liquida tu paquete antes del 30 de noviembre.',
   aviso: 'Esta promoción no se volverá a repetir: agenda tu valoración.',
+
+  /** Texto del aviso que se muestra arriba en todas las páginas (PageShell). */
+  anuncio: {
+    detalle:
+      'Combos desde $4,500 y zonas individuales desde $1,200, en todas las sucursales, hasta el 30 de noviembre. Detalle en el inicio, sección Promociones.',
+    /** Versión de pocas palabras para encabezados compactos. */
+    corto: 'combos desde $4,500 y zonas desde $1,200, hasta el 30 de noviembre.',
+  },
 
   combos: [
     { slug: 'full-body', precio: 8500, msi: 6 },
@@ -87,7 +98,7 @@ export const PROMO_TEMPORADA = {
       ],
     },
   ] as ListaPromo[],
-}
+})
 
 /** true mientras la promo esté activa y no haya pasado su último día (hora de CDMX). */
 export function promoVigente(hoy: Date = new Date()): boolean {

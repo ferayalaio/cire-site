@@ -32,3 +32,8 @@ public/images/_opt
 
 # Videos fuente del hero (HDR, 17 MB): solo sirven para regenerar public/hero/
 public/hero/fuente/
+.env*
+!.env.example
+
+# Contenido publicado desde el portal: lo baja scripts/contenido.mjs en cada build.
+src/content/publicado.json
