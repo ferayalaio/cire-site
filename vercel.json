@@ -8,6 +8,10 @@
       "destination": "https://agenda.ciredepilacion.com/agendar"
     },
     {
+      "source": "/agendar-equipo",
+      "destination": "https://agenda.ciredepilacion.com/agendar-equipo"
+    },
+    {
       "source": "/agendar/:path*",
       "destination": "https://agenda.ciredepilacion.com/agendar/:path*"
     },
@@ -191,6 +195,15 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/agendar-equipo",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     },
